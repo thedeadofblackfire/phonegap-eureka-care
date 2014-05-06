@@ -72,18 +72,19 @@ var app = {
             id:      1,
             title:   'Reminder',
             message: 'Dont forget to buy some flowers.',
-            repeat:  'minutely',
-            sound:   '/www/sounds/fr_alarm01.mp3',
+            repeat:  'daily',
+            sound:   '/www/audio/beep.mp3',
             //sound:   'TYPE_ALARM',
             autoCancel: true,
             date:    _30_seconds_from_now
         });
 
        // window.plugin.notification.local.add({ message: 'Great app!' });
-        
+        /*
         window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
         });
+        */
         
         ln.init();
 				
