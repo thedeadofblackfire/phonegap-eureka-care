@@ -68,6 +68,8 @@ var app = {
         var now                  = new Date().getTime(),
         _30_seconds_from_now = new Date(now + 30*1000);
 
+        var package_name = "com.mls.eboxsmart";
+        
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder',
@@ -76,6 +78,7 @@ var app = {
             //sound:   '/www/audio/beep.mp3',
             sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
+            badge: 0,
             autoCancel: true,
             date:    _30_seconds_from_now
         });
