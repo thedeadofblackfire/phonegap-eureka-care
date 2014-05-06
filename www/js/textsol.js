@@ -66,21 +66,24 @@ var app = {
         
         
         var now                  = new Date().getTime(),
-        _60_seconds_from_now = new Date(now + 60*1000);
+        _30_seconds_from_now = new Date(now + 30*1000);
 
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder',
             message: 'Dont forget to buy some flowers.',
-            repeat:  'daily',
-            sound:   'TYPE_ALARM',
+            repeat:  'minutely',
+            sound:   '/www/sounds/fr_alarm01.mp3',
+            //sound:   'TYPE_ALARM',
             autoCancel: true,
-            date:    _60_seconds_from_now
+            date:    _30_seconds_from_now
         });
 
-        window.plugin.notification.local.add({ message: 'Great app!' });
+       // window.plugin.notification.local.add({ message: 'Great app!' });
         
-        
+        window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
+             alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
+        });
         
         ln.init();
 				
