@@ -266,6 +266,7 @@ i.ks-tabbar-icon-4 {
     
     
 .navbar {
+  height: 46px;
   left: 0;
   top: 0;
   background: #3B3B3B;
