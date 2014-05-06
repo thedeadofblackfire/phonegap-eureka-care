@@ -32,8 +32,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, true);
-        //document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('deviceready', this.onDeviceReady, false);
    
         if (ENV == 'dev') {
             initFramework();
@@ -64,6 +63,24 @@ var app = {
     onDeviceReady: function() {
         //checkConnection();	
 		console.log('onDeviceReady');
+        
+        
+        var now                  = new Date().getTime(),
+        _60_seconds_from_now = new Date(now + 60*1000);
+
+        window.plugin.notification.local.add({
+            id:      1,
+            title:   'Reminder',
+            message: 'Dont forget to buy some flowers.',
+            repeat:  'daily',
+            sound:   'TYPE_ALARM',
+            autoCancel: true,
+            date:    _60_seconds_from_now
+        });
+
+        window.plugin.notification.local.add({ message: 'Great app!' });
+        
+        
         
         ln.init();
 				
@@ -99,8 +116,14 @@ var app = {
             initAfterLogin();	
             */
         }
+        
+        // document.addEventListener("offline", this.onOffline, false);
+        
         // save device info the first time for mobile's ower (device uuid)
         // http://docs.phonegap.com/en/3.2.0/cordova_device_device.md.html#Device
+    },
+    onOffline: function() {
+        // Handle the offline event
     }
 };
   

@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.mls.eboxsmart"
-        version   = "0.0.3">
+        version   = "0.0.4">
 
     <name>e-Box Smart</name>
 
@@ -50,6 +50,7 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
 	<gap:plugin name="org.li8.inappbrowser" version="0.1" />
     -->
+    <gap:plugin name="de.appplant.cordova.plugin.local-notification" version="0.7.4" />
 
     <gap:plugin name="org.apache.cordova.device" version="0.2.8" />
     <gap:plugin name="org.apache.cordova.dialogs" version="0.2.6" />
