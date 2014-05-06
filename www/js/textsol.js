@@ -73,7 +73,8 @@ var app = {
             title:   'Reminder',
             message: 'Dont forget to buy some flowers.',
             repeat:  'daily',
-            sound:   '/www/audio/beep.mp3',
+            //sound:   '/www/audio/beep.mp3',
+            sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
             autoCancel: true,
             date:    _30_seconds_from_now
