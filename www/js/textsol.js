@@ -67,6 +67,7 @@ var app = {
         
         var now                  = new Date().getTime(),
         _30_seconds_from_now = new Date(now + 30*1000);
+        _60_seconds_from_now = new Date(now + 60*1000);
 
         var package_name = "com.mls.eboxsmart";
         
@@ -75,14 +76,27 @@ var app = {
             title:   'Reminder',
             message: 'Dont forget to buy some flowers.',
             repeat:  'daily',
-            //sound:   '/www/audio/beep.mp3',
-            sound: 'android.resource://' + package_name + '/raw/beep',
+            sound:   '/www/res/raw/beep.mp3',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
             badge: 0,
             autoCancel: true,
             date:    _30_seconds_from_now
         });
 
+        
+        window.plugin.notification.local.add({
+            id:      2,
+            title:   'Reminder2',
+            message: 'Allo',
+            repeat:  'daily',
+            sound:   '/www/res/raw/beep',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound:   'TYPE_ALARM',
+            badge: 0,
+            autoCancel: true,
+            date:    _60_seconds_from_now
+        });
        // window.plugin.notification.local.add({ message: 'Great app!' });
         /*
         window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
