@@ -1,0 +1,45 @@
+{
+    "label":
+    {
+        "chats": "Chats",
+        "settings": "Settings",
+        "visitors": "Visitors",
+        "list": "List",
+		"signout": "Sign Out",		
+		"availability": "Availability",
+		"notification": "Notification",
+        "language": "Language",
+		"on": "On",
+		"off": "Off",
+        "chatclosed": "Chat Closed",
+        "closechat": "Close Chat",                
+        "country": "Country",
+        "browser": "Browser",
+        "city": "City",
+		"url": "Url",
+        "send": "Send",                
+        "pressenter": "Type and press Enter...",            
+        "confirmclosechat": "Are you sure want to close this chat session?",                
+        "somethingwrong": "Something went wrong. Please try again later.",
+        "wait": "Wait...",
+        "pleaseenteryourmessage": "Please enter your message.",
+        "closepanel": "Close panel",
+        "details": "Details",
+        "platform": "Platform",
+        "region": "Region",
+        "visittime": "Visit Time",
+        "ip": "IP Address",
+        "email": "Email",
+        "phone": "Phone",
+        "browsing": "Last visitors",
+        "unknowreferrer": "Unknow referrer",
+        "yesterday": "Yesterday",
+        "archives": "Archives"
+    },
+    "description":
+    {
+        "currentlyactivechats": "Your currently active chats",
+        "nochatsinprogress": "There are currently no chats in progress.",
+        "settings": "Below are your settings"
+    }  
+}

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="with-statusbar-overlay">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+	<!--<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">-->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>e-Box Smart</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.min.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">    
+  </head>
+  <body>
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p><center><a href="#" class="button button-cancel close-panel" data-i18n="label.closepanel">label.closepanel</a></center></p>
+      </div> 
+      <div class="content-block-title title_bluexxx">Active chats</div>
+      <div class="list-block">
+        <ul id="panel_userlist">
+          <li><a href="modals.html" class="close-panel item-link">
+              <div class="item-content">
+                <div class="item-media"><i class="icon icon-f7"></i></div>
+                <div class="item-inner">
+                  <div class="item-title">Modals</div>
+                </div>
+              </div></a></li>             
+        </ul>
+      </div>
+      
+      <div class="content-block-title"><span data-i18n="label.visitors">label.visitors</span>: <span class="totalvisitors">0</span></div>
+      <div class="content-block">
+        
+      </div>
+      
+      <!--<div class="content-block-title title_bluexxx">More</div>-->
+        <div class="list-block">
+        <ul>
+                      
+              <li><a href="#" onclick="return goMainTab('#tab-3');" class="close-panel tab-link item-link item-content">
+              <div class="item-inner">
+                <div class="item-title" data-i18n="label.settings">label.settings</div>
+              </div></a></li>
+              
+               <li><a href="#" class="close-panel item-link item-content btn-logout">
+              <div class="item-inner">
+                <div class="item-title" data-i18n="label.signout">label.signout</div>
+              </div></a></li>
+                      
+        </ul>
+      </div>
+    
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">      
+      <!--<div class="content-block"> 
+          <div class="row no-gutter">
+            <div class="col-50"><h3 data-i18n="label.details">label.details</h3></div>
+            <div class="col-50"><a href="#" class="button button-cancel close-panel" data-i18n="label.closepanel">label.closepanel</a></div>
+          </div>          
+      <!--</div>-->
+      <div class="content-block">
+      <p><center><a href="#" class="button button-cancel close-panel" data-i18n="label.closepanel">label.closepanel</a></center></p>
+      </div>
+      <div class="content-block" id="panelvisitor">     
+      </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+        <!-- Top Navbar-->
+       <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left"><img src="img/logo.png" width="65"/>&nbsp; <span style="color:#007AFF">Smart</span></div>
+            <!--<div class="center sliding" id="nickname" style="color:#007AFF;">e-Box Smart</div>-->
+            <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars-white"></i></a></div>
+          </div>
+        </div>
+		
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="index" class="page no-toolbar toolbar-fixed">
+            <div class="toolbar tabbar tabbar-labels" style="display:none">
+              <div class="toolbar-inner">
+                <a href="#tab-1" class="tab-link active"><i id="badge-chat" class="icon size-32 ion-ios7-chatbubble-outline"></i><span class="tabbar-label" data-i18n="label.chats">label.chats</span></a>
+                <a href="#tab-2" class="tab-link"><i id="badgetotalvisitors" class="icon ks-tabbar-icon-1"></i><span class="tabbar-label" data-i18n="label.visitors">label.visitors</span></a>
+                <a href="#tab-archives" class="tab-link"><i class="icon ks-tabbar-icon-2"></i> <span class="tabbar-label" data-i18n="label.archives">label.archives</span></a>
+                <a href="#tab-3" class="tab-link"><i class="icon ks-tabbar-icon-3"></i><span class="tabbar-label" data-i18n="label.settings">label.settings</span></a>
+                 <!--<a href="#tab-3" class="tab-link"><i class="iconx size-32 ion-ios7-chatbubble-outline"></i> <span class="tabbar-label" data-i18n="label.chats">label.chats</span></a>--->
+              </div>
+            </div>     
+            <!-- Scrollable page content-->
+            <div class="page-content" style="background: url('img/homebgxxx.png') repeat;/*background:#99CCCC;*/"> 
+       
+       <div class="tabs">
+        <div id="tab-1" class="tab active">
+          <!--
+          <div class="content-block" id="container_chat_userlist">
+               <div class="content-blockxxx row ks-preloaders">                
+                 <center><span class="preloader ks-preloader-big"></span></center>
+               </div>        
+          </div>
+          -->
+          
+          <!--<div class="content-block-title">Navigation</div> -->
+          <div class="content-block">
+            <div class="row" style="text-align:center;font-weight:bold;font-size:18px;">
+                <div class="col-50" style="text-align:center">
+                    <img src="img/calendar_date.png" alt="" />
+                    <br>Treatments
+                </div>
+                <div class="col-50">
+                    <img src="img/chart.png" alt="" />
+                     <br>Archives
+                </div>
+            </div>
+            
+            <br>
+            
+            <br>
+            
+             <div class="row" style="text-align:center;font-weight:bold;font-size:18px;">
+                <div class="col-50" style="text-align:center">
+                    <img src="img/photo.png" alt="" />
+                    <br>Video Chat
+                </div>
+                <div class="col-50">
+                    <img src="img/process.png" alt="" />
+                     <br>Settings
+                </div>
+            </div>
+            
+         </div>
+
+        </div>
+        <div id="tab-2" class="tab">
+          <div class="content-block">
+            <!--<p>Active Visitors: <span class="totalvisitors">0</span></p>           -->
+            <!--<a href="#" class="open-panel">Left panel</a>-->
+            
+     
+      
+            <div id="container_visitor_list"></div>
+     
+    
+            
+            <ul id="app-status-ul"></ul>
+          </div>
+        </div>
+        <div id="tab-archives" class="tab">
+          <div id="container_archives_list" class="content-block">               
+          </div>
+        </div>
+        <div id="tab-3" class="tab">
+          <div class="content-block">
+                 
+              <span data-i18n="description.settings">description.settings</span>
+         
+              <div class="list-block">
+               <ul>  
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label" style="width: 48%;" data-i18n="label.availability">label.availability</div>
+                        <div class="item-input">
+                          <label class="label-switch">
+                            <input type="checkbox" name="toggleswitchremotechat" id="toggleswitchremotechat" value="On" >
+							<div class="checkbox"></div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </li>          
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label" style="width: 48%;" data-i18n="label.notification">label.notification</div>
+                        <div class="item-input">
+                          <label class="label-switch">
+                            <input type="checkbox" name="toggleswitchnotification" id="toggleswitchnotification" value="On" >
+							<div class="checkbox"></div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </li>          
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label" style="width: 48%;" data-i18n="label.language">label.language</div>
+                        <div class="item-input">
+                          <select name="selectlanguage" id="selectlanguage">
+                             <option value="en">English</option>
+                             <option value="fr">French</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </li>          
+                </ul>
+              </div>      
+              
+              <div class="list-block insetxxx">
+                <ul>    
+                  <li><a href="#" class="list-button item-link button-red btn-logout" data-i18n="label.signout">label.signout</a></li> 
+                </ul>
+              </div>
+    
+          </div>
+        </div>      
+        <!-- end settings -->
+        
+      </div>   
+      <!-- end tab -->
+           
+            </div>
+            
+          </div>
+        </div>     
+		
+      </div>
+   
+   </div>
+    
+    <div class="popover popover-menu">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block" id="popovervisitor">
+          <ul>
+            <li><a href="modals.html" class="list-button item-link">Modals</a></li>
+            <li><a href="popover.html" class="list-button item-link">Popover</a></li>
+            <li><a href="tabs.html" class="list-button item-link">Tabs</a></li>
+            <li><a href="panels.html" class="list-button item-link">Side Panels</a></li>
+            <li><a href="list-view.html" class="list-button item-link">List View</a></li>
+            <li><a href="forms.html" class="list-button item-link">Forms</a></li>
+          </ul>
+        </div>               
+      </div>
+    </div>
+    
+    <div class="play"></div>
+    
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script> 
+    <script type="text/javascript" charset="utf-8" src="js/framework7.min.js"></script>    
+    <script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>        
+    <script type="text/javascript" charset="utf-8" src="js/i18next-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/ln.js"></script>   
+    
+    <!--<script type="text/javascript" charset="utf-8" src="PushNotification.js"></script> -->
+ 
+    <script type="text/javascript" charset="utf-8" src="js/textsol.js"></script>		             
+    <!--
+    <script type="text/javascript" charset="utf-8" src="js/textsol.chat.js"></script>
+    
+    <script type="text/javascript" charset="utf-8" src="js/textsol.impush.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/textsol.push.js"></script>   
+-->    
+    <!--<script type="text/javascript" charset="utf-8" src="js/my-app.js"></script>-->
+         
+    <script type="text/javascript" charset="utf-8">     
+            // http://blogs.telerik.com/appbuilder/posts/13-11-07/everything-hybrid-web-apps-need-to-know-about-the-status-bar-in-ios7			
+            var updateStatusBar = navigator.userAgent.match(/iphone|ipad|ipod/i) &&
+            parseInt(navigator.appVersion.match(/OS (\d)/)[1], 10) >= 7;
+	
+            if (updateStatusBar) {
+                //document.body.style.webkitTransform = 'translate3d(0, 20px, 0)';
+                document.body.style.marginTop = '20px';
+            }
+			
+            app.initialize();
+                        
+    </script>    
+  </body>
+</html>

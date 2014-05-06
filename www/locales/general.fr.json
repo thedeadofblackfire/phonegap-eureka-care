@@ -1,0 +1,45 @@
+{
+    "label":
+    {
+        "chats": "Chats",
+        "settings": "Préférences",
+        "visitors": "Visiteurs",
+        "list": "Liste",
+		"signout": "Quitter",		
+		"availability": "Disponibilité",
+		"notification": "Notification",
+        "language": "Langage",
+		"on": "Oui",
+		"off": "Non",
+        "chatclosed": "Chat Closed",
+        "closechat": "Close Chat",                
+        "country": "Pays",
+        "browser": "Navigateur",
+        "city": "Ville",
+		"url": "Url",
+        "send": "Envoyer",                
+        "pressenter": "Ecrire et pressez la touche entrée...",
+        "confirmclosechat": "Etes vous sûr de fermer cette conversation ?",                
+        "somethingwrong": "Erreur! Merci de reessayer ultérieurement.",
+        "wait": "En cours...",
+        "pleaseenteryourmessage": "Entrer votre message...",
+        "closepanel": "Fermer",
+        "details": "Détails",
+        "platform": "OS",
+        "region": "Région",
+        "visittime": "Visite",
+        "ip": "Adresse IP",
+        "email": "Email",
+        "phone": "Téléphone",
+        "browsing": "Visiteurs",
+        "unknowreferrer": "Source inconnue",
+        "yesterday": "Hier",
+        "archives": "Archives"
+    },
+    "description":
+    {
+        "currentlyactivechats": "Vos conversations en cours",
+        "nochatsinprogress": "Il n'y a pas de conversations en cours.",
+        "settings": "Vos préférences"
+    }
+}

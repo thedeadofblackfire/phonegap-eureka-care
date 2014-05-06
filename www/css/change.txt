@@ -1,0 +1,1 @@
+change spin to spin2 dans framework7.min.css for loading
