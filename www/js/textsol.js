@@ -72,12 +72,13 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:50:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:57:00');
+        traceHandler(_30_seconds_from_now);
         
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder',
-            message: 'Dont forget '+_30_seconds_from_now,
+            message: 'Dont forget ',
             repeat:  'daily',
             //sound:   '/www/res/raw/beep.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
@@ -167,6 +168,14 @@ function initAfterLogin() {
 // functions
 // --
 
+
+
+ 
+            function traceHandler(message) {
+               // console.log(message);                
+                $("#app-status-ul").append('<li>'+message+'</li>');
+            }
+            
 //2013-06-03 08:00:00
 function formatDateToTimestamp(d) {
     //new Date().getTime()
