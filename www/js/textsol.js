@@ -37,7 +37,7 @@ var app = {
         if (ENV == 'dev') {
             initFramework();
         
-        formatDateToTimestamp('2013-06-03 08:00:00');
+         formatDateToTimestamp('2014-05-07 09:40:00');
         /*
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
@@ -66,13 +66,13 @@ var app = {
 		console.log('onDeviceReady');
         
         
-        var now                  = new Date().getTime(),
-        _30_seconds_from_now = new Date(now + 30*1000);
-        _60_seconds_from_now = new Date(now + 60*1000);
+        var now                  = new Date().getTime();
+        //_30_seconds_from_now = new Date(now + 30*1000);
+        var _60_seconds_from_now = new Date(now + 60*1000);
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:40:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:50:00');
         
         window.plugin.notification.local.add({
             id:      1,
@@ -84,7 +84,7 @@ var app = {
             sound:   'TYPE_ALARM',
             badge: 0,
             autoCancel: true,
-            smallIcon: 'ic_dialog_email',
+            //smallIcon: 'ic_dialog_email',
             date:    _30_seconds_from_now
         });
 
@@ -175,6 +175,7 @@ function formatDateToTimestamp(d) {
     
     var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
     console.log(current.getTime());
+    console.log(current);
 	return current;    
 }
 
