@@ -37,6 +37,7 @@ var app = {
         if (ENV == 'dev') {
             initFramework();
         
+        formatDateToTimestamp('2013-06-03 08:00:00');
         /*
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
@@ -71,16 +72,19 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:40:00');
+        
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder',
-            message: 'Dont forget to buy some flowers.',
+            message: 'Dont forget '+_30_seconds_from_now,
             repeat:  'daily',
-            sound:   '/www/res/raw/beep.mp3',
+            //sound:   '/www/res/raw/beep.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
-            //sound:   'TYPE_ALARM',
+            sound:   'TYPE_ALARM',
             badge: 0,
             autoCancel: true,
+            smallIcon: 'ic_dialog_email',
             date:    _30_seconds_from_now
         });
 
@@ -162,6 +166,18 @@ function initAfterLogin() {
 // --
 // functions
 // --
+
+//2013-06-03 08:00:00
+function formatDateToTimestamp(d) {
+    //new Date().getTime()
+    //(year, month, day, hours, minutes, seconds, milliseconds)    
+    console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
+    
+    var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
+    console.log(current.getTime());
+	return current;    
+}
+
 function formatDate(d) {
 	var str = d.substr(11,8);
 	if (parseInt(d.substr(11,2)) < 12) str += ' am';
@@ -193,15 +209,6 @@ if(!String.linkify) {
             .replace(emailAddressPattern, '<a target="_blank" href="mailto:$&" class="external">$&</a>');
     };
 }
-//alert('totototo fsdf www.yahoo.fr qsdkqsdkl ckxlwklcl'.linkify());       
-
-//http://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
-            /*
-             $.ajaxSetup({
-                //headers: {"X-Requested-With":"XMLHttpRequest"},
-                crossDomain: false
-            });
-            */
             
 jQuery(document).ready(function($){
 		        
