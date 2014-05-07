@@ -1,14 +1,11 @@
-
-//var BASE_URL = 'http://staging.textsol.com';
-var BASE_URL = 'http://www.textsol.com';
+var BASE_URL = 'https://vendor.eureka-platform.com';
 var ENV = 'production';
 var ENV_TARGET = 'phonegap'; // html5, phonegap
 if (window.location.hostname == 'eboxsmart.phonegap.local') {
-    BASE_URL = 'http://textwc.local';
+    BASE_URL = 'http://eureka.vendor';
     ENV = 'dev';
 }
-var API = BASE_URL+'/api';
-var AjaxURL = BASE_URL+'/chat/';
+var API = BASE_URL+'/api/mobile';
 
 var objUser = {};
 var objChat = {};
@@ -39,7 +36,7 @@ var app = {
         
          var a = formatDateToTimestamp('2014-05-07 09:40:00');
          traceHandler(a);
-        /*
+        
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
             if (objUser) {
@@ -56,7 +53,7 @@ var app = {
             } 
             
             initAfterLogin();			
-*/
+
         }
 		        
 		//document.addEventListener('load', this.onDeviceReady, true);		
@@ -169,13 +166,10 @@ function initAfterLogin() {
 // functions
 // --
 
-
-
- 
-            function traceHandler(message) {
-               // console.log(message);                
-                $("#app-status-ul").append('<li>'+message+'</li>');
-            }
+function traceHandler(message) {
+    // console.log(message);                
+    $("#app-status-ul").append('<li>'+message+'</li>');
+}
             
 //2013-06-03 08:00:00
 function formatDateToTimestamp(d) {
@@ -183,9 +177,8 @@ function formatDateToTimestamp(d) {
     //(year, month, day, hours, minutes, seconds, milliseconds)    
     console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
     
-    traceHandler(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
-        
-        
+    //traceHandler(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
+                
     var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
     console.log(current.getTime());
     console.log(current);
@@ -342,10 +335,7 @@ jQuery(document).ready(function($){
 
     function handleLoginForm() {
 		console.log('handleLoginForm');			
-		var form = $("#loginForm");  	
-		//disable the button so we can't resubmit while we wait
-		//$("#submitButton",form).attr("disabled","disabled");
-		//$("#btnLogin").attr("disabled","disabled");
+		var form = $("#loginForm");  		
 		var u = $("#username", form).val();
 		var p = $("#password", form).val();
         handleLogin(u, p, true); 
@@ -371,10 +361,10 @@ jQuery(document).ready(function($){
                       
             $.ajax({
                 type: "POST",
-                url: API+"/account/login",
+                url: API+"/authlogin",
                 async: true,
                 dataType: 'json',
-                data: {username:u,password:p},
+                data: {username:u, password:p, rememberme:1},
                 success: function(res, textStatus, jqXHR) {
                     console.log(res);
                     //$.mobile.hidePageLoadingMsg();
@@ -396,13 +386,9 @@ jQuery(document).ready(function($){
                         //window.sessionStorage["user_id"] = res.user.user_id; 
                         window.sessionStorage.setItem('user', JSON.stringify(res.user));
 
-                        objUser = res.user;
+                        //dbAppUser.put(res.user);
                         
-                        /*
-                        if (objUser.country == 'FR') lang.set('fr');
-                        else if (objUser.country == 'MEX') lang.set('es');
-                        lang.initialize();
-                        */
+                        objUser = res.user;                                     
             
                         // launch the push notification center because it's required objUser
                         if (ENV == 'production') {
