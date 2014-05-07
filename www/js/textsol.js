@@ -37,7 +37,8 @@ var app = {
         if (ENV == 'dev') {
             initFramework();
         
-         formatDateToTimestamp('2014-05-07 09:40:00');
+         var a = formatDateToTimestamp('2014-05-07 09:40:00');
+         traceHandler(a);
         /*
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
@@ -72,7 +73,7 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 09:57:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 10:10:00');
         traceHandler(_30_seconds_from_now);
         
         window.plugin.notification.local.add({
@@ -182,6 +183,9 @@ function formatDateToTimestamp(d) {
     //(year, month, day, hours, minutes, seconds, milliseconds)    
     console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
     
+    traceHandler(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
+        
+        
     var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
     console.log(current.getTime());
     console.log(current);
