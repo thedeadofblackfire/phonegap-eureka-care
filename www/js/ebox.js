@@ -70,14 +70,14 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-07 10:10:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-09 09:00:00');
         traceHandler(_30_seconds_from_now);
         
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder',
             message: 'Dont forget ',
-            repeat:  'daily',
+            //repeat:  'daily',
             //sound:   '/www/res/raw/beep.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             sound:   'TYPE_ALARM',
@@ -92,11 +92,11 @@ var app = {
             id:      2,
             title:   'Reminder2',
             message: 'Allo',
-            repeat:  'daily',
+            //repeat:  'daily',
             sound:   '/www/res/raw/beep',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
-            badge: 0,
+            badge: 1,
             autoCancel: true,
             date:    _60_seconds_from_now
         });
