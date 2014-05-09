@@ -70,7 +70,7 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-09 09:00:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-05-09 11:12:00');
         traceHandler(_30_seconds_from_now);
         
         window.plugin.notification.local.add({
