@@ -119,6 +119,10 @@ var app = {
         });
         */
         
+        window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
+             alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
+        });
+
         ln.init();
 				
         if (ENV == 'production') {
