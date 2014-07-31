@@ -59,6 +59,16 @@ var app = {
 		//document.addEventListener('load', this.onDeviceReady, true);		
     },
     // deviceready Event Handler
+    getPhoneGapPath: function () {
+        'use strict';
+        var path = window.location.pathname;
+        var phoneGapPath = path.substring(0, path.lastIndexOf('/') + 1);
+        return phoneGapPath;
+        	
+        // iOS: /var/mobile/Applications/{GUID}/{appName}/www/
+
+        //Android: /android_asset/www/
+    },
     onDeviceReady: function() {
         //checkConnection();	
 		console.log('onDeviceReady');
@@ -101,19 +111,38 @@ var app = {
             alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
         };
         */
+        var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
+        traceHandler(resourceaudio);
         
         window.plugin.notification.local.add({
             id:      2,
-            title:   'Reminder sound',
-            message: 'Allo',
+            title:   'Reminder sound 1',
+            message: 'Allo 1',
+            sound: resourceaudio,
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
-            sound:   '/www/sounds/fr_alarm01.mp3',
+           // sound:   '/www/sounds/fr_alarm01.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
             badge: 1,
             autoCancel: true,
             date:    _60_seconds_from_now
+        });
+        
+        var _30_seconds_from_now = new Date(now + 30*1000);   
+        window.plugin.notification.local.add({
+            id:      3,
+            title:   'Reminder sound 2',
+            message: 'Allo 2',
+            sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
+            //repeat:  'daily',
+            //sound:   '/www/res/raw/beep',
+           // sound:   '/www/sounds/fr_alarm01.mp3',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound:   'TYPE_ALARM',
+            badge: 1,
+            autoCancel: true,
+            date:    _30_seconds_from_now
         });
        // window.plugin.notification.local.add({ message: 'Great app!' });
        
@@ -169,6 +198,7 @@ var app = {
     }
 };
   
+
 
 function initAfterLogin() {
   doRefresh = true;
