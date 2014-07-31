@@ -72,7 +72,7 @@ var app = {
         
         _30_seconds_from_now = formatDateToTimestamp('2014-07-31 10:00:00');
         traceHandler(_30_seconds_from_now);
-        
+        /*
         window.plugin.notification.local.add({
             id:      1,
             title:   'Reminder drug 0h',
@@ -81,6 +81,7 @@ var app = {
             //sound:   '/www/res/raw/beep.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             sound:   'TYPE_ALARM',
+            //sound: 'TYPE_NOTIFICATION',
             badge: 0,
             json: {'message': 'alert'},
             autoCancel: true,
@@ -99,13 +100,15 @@ var app = {
         window.plugin.notification.local.onclick   = function (id, state, json) {
             alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
         };
+        */
         
         window.plugin.notification.local.add({
             id:      2,
-            title:   'Reminder2',
+            title:   'Reminder sound',
             message: 'Allo',
             //repeat:  'daily',
-            sound:   '/www/res/raw/beep',
+            //sound:   '/www/res/raw/beep',
+            sound:   '/www/sounds/fr_alarm01.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             //sound:   'TYPE_ALARM',
             badge: 1,
@@ -113,15 +116,13 @@ var app = {
             date:    _60_seconds_from_now
         });
        // window.plugin.notification.local.add({ message: 'Great app!' });
+       
         /*
+     
         window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
         });
         */
-        
-        window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
-             alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
-        });
 
         ln.init();
 				
