@@ -70,23 +70,35 @@ var app = {
 
         var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-05-09 11:12:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-07-31 10:00:00');
         traceHandler(_30_seconds_from_now);
         
         window.plugin.notification.local.add({
             id:      1,
-            title:   'Reminder',
-            message: 'Dont forget ',
+            title:   'Reminder drug 0h',
+            message: 'Dont forget your drug',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
             sound:   'TYPE_ALARM',
             badge: 0,
+            json: {'message': 'alert'},
             autoCancel: true,
             //smallIcon: 'ic_dialog_email',
             date:    _30_seconds_from_now
         });
 
+        window.plugin.notification.local.onadd = function (id, state, json) {
+            alert('onadd '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+        window.plugin.notification.local.ontrigger  = function (id, state, json) {
+            alert('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+        window.plugin.notification.local.onclick   = function (id, state, json) {
+            alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
+        };
         
         window.plugin.notification.local.add({
             id:      2,
