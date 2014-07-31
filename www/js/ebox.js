@@ -119,7 +119,8 @@ var app = {
             id:      2,
             title:   'Reminder sound 1',
             message: 'Allo 1',
-            sound:  'android.resource://' + package_name + '/raw/beep',
+            //sound:  'android.resource://' + package_name + '/raw/beep',
+            sound: 'beep.wav',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
@@ -130,16 +131,18 @@ var app = {
             date:    _60_seconds_from_now
         });
         
-            var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        traceHandler(resourceaudio);
+          //  var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
+        //traceHandler(resourceaudio);
         
         
         var _30_seconds_from_now = new Date(now + 30*1000);   
+        
         window.plugin.notification.local.add({
             id:      3,
             title:   'Reminder sound 2',
             message: 'Allo 2',
-            sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
+            sound:   '/www/audio/beep.mp3',
+            //sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
