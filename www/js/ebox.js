@@ -34,6 +34,9 @@ var app = {
         if (ENV == 'dev') {
             initFramework();
         
+          var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
+        traceHandler(resourceaudio);
+        
          var a = formatDateToTimestamp('2014-05-07 09:40:00');
          traceHandler(a);
         
@@ -111,14 +114,12 @@ var app = {
             alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
         };
         */
-        var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        traceHandler(resourceaudio);
-        
+    
         window.plugin.notification.local.add({
             id:      2,
             title:   'Reminder sound 1',
             message: 'Allo 1',
-            sound: resourceaudio,
+            sound:  'android.resource://' + package_name + '/raw/beep',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
@@ -128,6 +129,10 @@ var app = {
             autoCancel: true,
             date:    _60_seconds_from_now
         });
+        
+            var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
+        traceHandler(resourceaudio);
+        
         
         var _30_seconds_from_now = new Date(now + 30*1000);   
         window.plugin.notification.local.add({
@@ -214,7 +219,7 @@ function initAfterLogin() {
 // --
 
 function traceHandler(message) {
-    // console.log(message);                
+     console.log(message);                
     $("#app-status-ul").append('<li>'+message+'</li>');
 }
             
@@ -350,7 +355,7 @@ jQuery(document).ready(function($){
     function mofAlert(message, title) {
         //$.mobile.loading('show');
         //$.mobile.loading('hide');
-        if (title == undefined) title = 'Live Chat';
+        if (title == undefined) title = 'Alert';
         myApp.alert(message, title);               
     }
     
@@ -1479,7 +1484,7 @@ function initFramework() {
     myApp = new Framework7({
         fastClicks : false,
         cache: false,
-		modalTitle: 'Live Chat'
+		modalTitle: 'eBox Smart'
     });
     
     // Expose Internal DOM library
@@ -1518,7 +1523,7 @@ function initFramework() {
                
         if (page.name === 'messages') {        
              $$('.demo-remove-callback').on('deleted', function () {
-                myApp.alert('Thanks, item removed!', 'Live Chat');
+                myApp.alert('Thanks, item removed!', 'eBox Smart');
             });
 
             console.log('message to load');
