@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eboxsmart"
-        version   = "0.2.2">
+        version   = "0.2.3">
 
     <name>e-Box Smart</name>
 
@@ -50,18 +50,21 @@
     <gap:platform name="android" />
     
     <!-- Plugins can also be added here. -->   
-    <!--
-    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
-	<gap:plugin name="org.li8.inappbrowser" version="0.1" />
-    -->
-    <gap:plugin name="de.appplant.cordova.plugin.local-notification" version="0.7.4" />
-
+  
     <gap:plugin name="org.apache.cordova.device" version="0.2.8" />
     <gap:plugin name="org.apache.cordova.dialogs" version="0.2.6" />
     <gap:plugin name="org.apache.cordova.media" version="0.2.8" />
     <gap:plugin name="org.apache.cordova.network-information" version="0.2.7" />
     <gap:plugin name="org.apache.cordova.vibration" version="0.3.7" />
     <gap:plugin name="org.apache.cordova.globalization" version="0.2.6" />
+
+    <!--
+    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
+	<gap:plugin name="org.li8.inappbrowser" version="0.1" />
+    -->    
+    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
+    <gap:plugin name="de.appplant.cordova.plugin.local-notification" version="0.7.4" />
+
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />

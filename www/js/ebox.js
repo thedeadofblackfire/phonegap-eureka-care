@@ -32,16 +32,15 @@ var app = {
         document.addEventListener('deviceready', this.onDeviceReady, false);
    
         if (ENV == 'dev') {
+            
             initFramework();
-        
-          var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        traceHandler(resourceaudio);
-        
-         var a = formatDateToTimestamp('2014-05-07 09:40:00');
-         traceHandler(a);
+               
+            //var a = formatDateToTimestamp('2014-05-07 09:40:00');
+            //traceHandler(a);
         
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
+            
             if (objUser) {
                 objUser = JSON.parse(objUser);	
                 console.log('retrieved user: ', objUser);
@@ -156,8 +155,7 @@ var app = {
         });
        // window.plugin.notification.local.add({ message: 'Great app!' });
        
-        /*
-     
+        /*     
         window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
         });
@@ -179,7 +177,7 @@ var app = {
     
             initFramework();
             
-            /*
+            
             objUser = window.sessionStorage.getItem('user');
             if (objUser) {
                 objUser = JSON.parse(objUser);	
@@ -195,7 +193,7 @@ var app = {
             } 
             
             initAfterLogin();	
-            */
+            
         }
         
         // document.addEventListener("offline", this.onOffline, false);
@@ -264,7 +262,6 @@ if(!String.linkify) {
         var pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
 
         // Email addresses
-        //var emailAddressPattern = /\w+@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6})+/gim;
 		var emailAddressPattern = /(([a-zA-Z0-9_\-\.]+)@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6}))+/gim;
 
         return this
@@ -303,7 +300,7 @@ jQuery(document).ready(function($){
        //alert(current_status);
        //displayLanguage();
        
-         i18n.setLng(current_status, function(t)
+       i18n.setLng(current_status, function(t)
                 {
                     //handleRefreshOnlineUser(true);
                     $('body').i18n();
@@ -379,9 +376,7 @@ jQuery(document).ready(function($){
 		console.log('checkPreAuth');
                           
         var result = false;                    
-		if(Object.keys(objUser).length == 0 && window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
-			//$("#username", form).val(window.localStorage["username"]);
-			//$("#password", form).val(window.localStorage["password"]);            
+		if(Object.keys(objUser).length == 0 && window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {			         
 			handleLogin(window.localStorage["username"], window.localStorage["password"], false);
 		} else if (Object.keys(objUser).length == 0) {
             if (login === false) mofChangePage('login.html');
@@ -418,10 +413,10 @@ jQuery(document).ready(function($){
                       
             $.ajax({
                 type: "POST",
-                url: API+"/authlogin",
+                url: API+"/authloginpatient",
                 async: true,
                 dataType: 'json',
-                data: {username:u, password:p, rememberme:1},
+                data: {login:u,pass:p,rememberme:1},
                 success: function(res, textStatus, jqXHR) {
                     console.log(res);
                     //$.mobile.hidePageLoadingMsg();
@@ -491,7 +486,7 @@ jQuery(document).ready(function($){
 	function handleLogout() {
 		console.log('handleLogout');	
 		mofProcessBtn(".btn-logout", true);
-		$.getJSON(API+"/account/logout", function(res) {
+		$.getJSON(API+"/authlogoutpatient", function(res) {
 			if (res.success) {
 				window.localStorage.clear();  
 				window.sessionStorage.clear();	
@@ -1128,9 +1123,6 @@ function loadChatInit() {
                 
             });
                   
-            // visitors
-           //refreshVisitors();		    
-            
         } else {
 			console.log('Chat restart');
 			console.log(objChat);
@@ -1248,8 +1240,7 @@ function generateLineVisitor(v) {
 function refreshVisitors() {
       console.log('refreshVisitors');
       if (doRefresh) {
-          var limit = 25;
-          //$.getJSON(API+"/account/totalvisitors?user_id="+objUser.user_id, function(res) {	
+          var limit = 25;	
           $.getJSON(API+"/account/visitors?limit="+limit+"&user_id="+objUser.user_id, function(res) {			
             //console.log(res);
             
@@ -1478,8 +1469,7 @@ function refreshArchives() {
 }
 
 function goRegister() {
-	window.plugins.ChildBrowser.showWebPage('http://m.blastis.com',
-                                        { showLocationBar: true });
+	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
 }
 
 var myApp;
@@ -1503,7 +1493,7 @@ function initFramework() {
     // Events for specific pages when it initialized
     $$(document).on('pageInit', function (e) {
         var page = e.detail.page;
-        //console.log(page.name);
+        // console.log(page.name);
         // handle index loader
         if (page.name === 'index' || page.name === 'index.html') {
             // to prevent back url on login
@@ -1512,7 +1502,7 @@ function initFramework() {
                var result = checkPreAuth(false); 
                if (!result) return;
             }                 
-            
+           
             initAfterLogin();
                     
         }
