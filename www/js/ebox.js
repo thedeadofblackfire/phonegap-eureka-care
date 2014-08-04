@@ -444,7 +444,7 @@ jQuery(document).ready(function($){
             
                         // launch the push notification center because it's required objUser
                         if (ENV == 'production') {
-                            push_onDeviceReady();
+                            //push_onDeviceReady();
                         }
                         
                         mofLoading(false);
@@ -473,7 +473,7 @@ jQuery(document).ready(function($){
                 }                   
 			});
 		} else {        
-			if (ENV == 'dev') {
+			if (ENV == 'dev' || ENV == 'production' ) {
 				mofAlert('You must enter a username and password');                
 			} else {
 				navigator.notification.alert("You must enter a username and password", alertDismissed);
