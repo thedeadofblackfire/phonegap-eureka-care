@@ -357,7 +357,7 @@ jQuery(document).ready(function($){
     function mofAlert(message, title) {
         //$.mobile.loading('show');
         //$.mobile.loading('hide');
-        if (title == undefined) title = 'Alert';
+        if (title == undefined) title = 'e-Box Smart';
         myApp.alert(message, title);               
     }
     
@@ -463,7 +463,7 @@ jQuery(document).ready(function($){
                          
                         mofLoading(false);
                         
-                        if (ENV == 'dev') {
+                        if (ENV == 'dev' || ENV == 'production') {
                             mofAlert(res.message);
                         } else {
                             navigator.notification.alert(res.message, alertDismissed);
