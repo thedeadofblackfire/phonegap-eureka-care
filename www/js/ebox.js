@@ -1515,6 +1515,33 @@ function initFramework() {
             }
   
         }
+        
+        //alert(page.name);
+        
+        if (page.name === 'video') {
+            console.log('video.html pageinit'); 
+            if (Object.keys(objUser).length == 0) {
+                doRefresh = false;
+            }
+            
+            $.ajax({
+              url: 'js/vline.js',
+              dataType: "script",
+              success: function() {
+                
+                 $.ajax({
+                  url: 'js/mls.vline.js',
+                  dataType: "script",
+                  success: function() {
+                                   
+                        handleVideo();
+                  }
+                 });
+             
+              }
+            });
+            
+        }
                
         if (page.name === 'messages') {        
              $$('.demo-remove-callback').on('deleted', function () {
