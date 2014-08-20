@@ -1525,12 +1525,13 @@ function initFramework() {
             }
             
             $.ajax({
-              url: 'js/vline.js',
+              //url: 'js/vline.js',
+              url: 'https://static.vline.com/vline.js',
               dataType: "script",
               success: function() {
                 
                  $.ajax({
-                  url: 'js/mls.vline.js',
+                  url: 'js/mls.vline.js',                  
                   dataType: "script",
                   success: function() {
                                    
@@ -1541,6 +1542,18 @@ function initFramework() {
               }
             });
             
+        }
+        
+        if (page.name === 'ble') { 
+       
+            $.ajax({
+                  url: 'js/mls.ble.js',                  
+                  dataType: "script",
+                  success: function() {
+                                   
+                        handleBle();
+                  }
+                 });
         }
                
         if (page.name === 'messages') {        

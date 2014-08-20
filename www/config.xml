@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eboxsmart"
-        version   = "0.2.7">
+        version   = "0.2.8">
 
     <name>e-Box Smart</name>
 
@@ -65,6 +65,10 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
     <gap:plugin name="de.appplant.cordova.plugin.local-notification" version="0.7.4" />
     <!-- <gap:plugin name="com.simonmacdonald.telephonenumber" version="1.0.0" /> -->
+    
+    <gap:plugin name="com.randdusing.bluetoothle" version="1.0.2" />
+    
+    <!--<gap:plugin name="com.evothings.ble" version="1.0.0" /> -->
 
 
     <!-- Define app icon for each platform. -->
