@@ -43,8 +43,19 @@ function traceLog(m) {
   function checkBluetoothStatus() {
         var btstatus = document.getElementById('status');
         btstatus.innerHTML = "Checking bluetooth information";
-        window.bluetoothle.isEnabled(isEnabledSuccess);
+        //window.bluetoothle.isEnabled(isEnabledSuccess);
         // window.bluetooth.isEnabled(isEnabledSuccess, isEnabledError);
+        
+        bluetoothSerial.isEnabled(
+                function() { 
+                    console.log("Bluetooth is enabled");
+                   btstatus.innerHTML = 'Bluetooth is enabled';
+                },
+                function() { 
+                    console.log("Bluetooth is *not* enabled");
+                     btstatus.innerHTML = 'Bluetooth is disabled';
+                }
+            );  
     }
 
     function isEnabledSuccess(isEnabled){
