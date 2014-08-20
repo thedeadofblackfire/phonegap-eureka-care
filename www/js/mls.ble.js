@@ -17,8 +17,19 @@
             var btstatus = document.getElementById('status');
             btstatus.innerHTML = "Getting bluetooth information";
 
-            window.bluetoothle.isEnabled(isEnabledSuccess);
+            //window.bluetoothle.isEnabled(isEnabledSuccess);
             
+            bluetoothSerial.isEnabled(
+                function() { 
+                    console.log("Bluetooth is enabled");
+                   btstatus.innerHTML = 'Bluetooth is enabled';
+                },
+                function() { 
+                    console.log("Bluetooth is *not* enabled");
+                     btstatus.innerHTML = 'Bluetooth is disabled';
+                }
+            );    
+
         
     }
     
