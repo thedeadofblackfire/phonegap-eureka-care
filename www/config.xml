@@ -5,9 +5,9 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eboxsmart"
-        version   = "0.2.84">
+        version   = "0.2.85">
 
-    <name>e-Box Smart</name>
+    <name>e-Box Smart2</name>
 
     <description>
          e-Box Smart for patient
