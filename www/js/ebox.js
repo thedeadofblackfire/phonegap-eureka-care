@@ -80,9 +80,10 @@ var app = {
         //_30_seconds_from_now = new Date(now + 30*1000);
         var _60_seconds_from_now = new Date(now + 60*1000);
 
-        var package_name = "com.mls.eboxsmart";
+        var package_name = "com.cordova.eboxsmart";
+        //var package_name = "com.mls.eboxsmart";
         
-        _30_seconds_from_now = formatDateToTimestamp('2014-07-31 10:00:00');
+        _30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
         traceHandler(_30_seconds_from_now);
         /*
         window.plugin.notification.local.add({
@@ -114,11 +115,19 @@ var app = {
         };
         */
     
+        var url_sound = 'sounds/fr_alarm01.mp3';
+    	if (device.platform == 'Android') {
+            url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
+            traceHandler(url_sound);
+        }
+        url_sound = 'android.resource://' + package_name + '/raw/beep';
+    
         window.plugin.notification.local.add({
             id:      2,
             title:   'Reminder sound 1',
             message: 'Allo 1',
-            sound:  'android.resource://' + package_name + '/raw/beep',
+            sound: url_sound,
+            //sound:  'android.resource://' + package_name + '/raw/beep',
             //sound: 'beep.wav',
             //sound: 'https://office.eureka-platform.com/assets/media/en_alarm01.mp3',
             //repeat:  'daily',
@@ -128,6 +137,9 @@ var app = {
             //sound:   'TYPE_ALARM',
             badge: 1,
             autoCancel: true,
+            //repeat: 2, // 2 minutes
+            //icon: 'file:///android_asset/www/img/flower128.png',
+            led: 'FFFFFF',
             date:    _60_seconds_from_now
         });
         
@@ -141,6 +153,7 @@ var app = {
             id:      3,
             title:   'Reminder sound 2',
             message: 'Allo 2',
+            sound: url_sound,
             //sound:   '/www/audio/beep.mp3',
             //sound: 'https://office.eureka-platform.com/assets/media/en_taking02.mp3',
             //sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
@@ -148,9 +161,10 @@ var app = {
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
             //sound: 'android.resource://' + package_name + '/raw/beep',
-            sound:   'TYPE_NOTIFICATION',
+            //sound:   'TYPE_NOTIFICATION',
             badge: 1,
             autoCancel: true,
+            led: 'A0FF05',
             date:    _30_seconds_from_now
         });
        // window.plugin.notification.local.add({ message: 'Great app!' });

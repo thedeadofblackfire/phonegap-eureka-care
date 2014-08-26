@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cordova.eboxsmart" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>e-Box SMART</name>
+<widget id="com.cordova.eboxsmart" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Eureka Care</name>
     <description>
-        e-Box Smart for patient
+        Eureka Care for patient
     </description>
     <author href="http://www.robotiktechnology.com" email="n.thomas@robotikdose.com">
         MLS Technologies
     </author>
     <content src="index.html" />
+    <icon src="icon.png" />
+    <preference name="Fullscreen" value="true" />
     <access origin="*" />
 </widget>
