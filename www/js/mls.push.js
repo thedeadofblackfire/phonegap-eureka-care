@@ -4,14 +4,30 @@
             
             var push_homeid = 'index';
             
+                    
+            function push_obj_init() {
+                ImPush.vendorSeq = objUser.vendor_seq;
+                ImPush.userId = objUser.user_id;
+                ImPush.officeSeq = objUser.reference;
+                ImPush.deviceSerial = objUser.device_serial;
+                if (!ImPush.deviceSerial) {
+                    ImPush.deviceSerial = window.localStorage["device_serial"];
+                }
+                traceHandler('device_serial=' + ImPush.deviceSerial);
+				//alert(ImPush.userId);
+                ImPush.appCode = "eureka_care";
+                //ImPush.appCode = "539F5-D40CA";
+                ImPush.appVersion = "1.0";
+            }
+        
             function push_onDeviceReady() {
-                console.log('push_onDeviceReady');
+                traceHandler('push_onDeviceReady');
             
-                traceHandler('<li>deviceready event received</li>');
+                traceHandler('PUSH - deviceready event received');
                 
 				document.addEventListener("backbutton", function(e)
 				{
-                	traceHandler('<li>backbutton event received</li>');
+                	traceHandler('PUSH - backbutton event received');
   					
       				if( $("#home").length > 0 || $(push_homeid).length > 0 || doRefresh)
 					{
@@ -21,7 +37,6 @@
                         
                         /*
                         ImPush.userId = objUser.user_id;
-                        ImPush.operatorId = objUser.operator_id;
                         ImPush.appCode = "539F5-D40CA";
                         ImPush.unregister(function(data) {                        
                             traceHandler("ImPush unregister success: " + JSON.stringify(data));
@@ -30,7 +45,7 @@
                         });
                         */
                     
-                        ImPush.sendAppClose();
+                        //ImPush.sendAppClose();
 						navigator.app.exitApp();
 					}
 					else
@@ -43,10 +58,10 @@
 				{ 
                 	pushNotification = window.plugins.pushNotification;
                 	if (device.platform == 'android' || device.platform == 'Android') {
-						traceHandler('<li>registering android</li>');
+						traceHandler('PUSH - registering android');
                     	pushNotification.register(successHandler, errorHandler, {"senderID":push_senderID,"ecb":"onNotificationGCM"});		// required!
 					} else {
-						traceHandler('<li>registering iOS</li>');
+						traceHandler('PUSH - registering iOS');
                     	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});	// required!
                 	}
                 }
@@ -61,11 +76,11 @@
             // handle APNS notifications for iOS
             function onNotificationAPN(e) {
                 if (e.alert) {
-                     traceHandler('<li>push-notification: ' + e.alert + '</li>');
+                     traceHandler('PUSH - push-notification: ' + e.alert);
                      //navigator.notification.alert(e.alert);
                      
-                     chat_update();
-                     traceHandler('<li>--chat_update--' + '</li>');
+                     //chat_update();
+                     //traceHandler('PUSH - --chat_update--');
                         
                      // JSON.stringify(e)  //if you want to access additional custom data in the payload
                 }
@@ -83,28 +98,33 @@
             
             // handle GCM notifications for Android
             function onNotificationGCM(e) {
-                traceHandler('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+                traceHandler('PUSH - EVENT -> RECEIVED: ' + e.event);
                 
                 switch( e.event )
                 {
                     case 'registered':
 					if ( e.regid.length > 0 )
 					{
-						traceHandler('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+						traceHandler('PUSH - REGISTERED -> REGID=' + e.regid);
 						// Your GCM push server needs to know the regID before it can push to this device
 						// here is where you might want to send it the regID for later use.
-						console.log("regID = " + e.regid);
+						//console.log("regID = " + e.regid);
                         
                          // Your GCM push server needs to know the regID before it can push to this device
                          // here is where you might want to send it the regID for later use.
-                         ImPush.userId = objUser.user_id;
-                         ImPush.operatorId = objUser.operator_id;
-						 //alert(ImPush.userId);
-                         ImPush.appCode = "539F5-D40CA";
+                         push_obj_init();
+                                     
                          ImPush.register(e.regid, function(data) {                             
-                             traceHandler("ImPush register success: " + JSON.stringify(data));
-                             
-                             ImPush.sendAppOpen();
+                             traceHandler("PUSH - ImPush register success: " + JSON.stringify(data));
+                                                                   
+                             // save device_serial on localstorage
+                             if (data.device_serial) {
+                                traceHandler("PUSH - local store device_serial="+data.device_serial);
+                                window.localStorage["device_serial"] = data.device_serial;
+                                objUser.device_serial = data.device_serial;
+                             }
+                    
+                             //ImPush.sendAppOpen();
                          }, function(errorregistration) {
                              alert("Couldn't register with ImPush" +  errorregistration);
                          });
@@ -127,48 +147,44 @@
                     	// you might want to play a sound to get the user's attention, throw up a dialog, etc.
                     	if (e.foreground)
                     	{
-							traceHandler('<li>--INLINE NOTIFICATION--' + '</li>');
+							traceHandler('PUSH - --INLINE NOTIFICATION--');
 							
 							// if the notification contains a soundname, play it.
                             //var my_media = new Media("/android_asset/www/"+e.soundname);
 							var my_media = new Media("/android_asset/www/"+e.payload.soundname);
 							my_media.play();
-                            
-                            //chat_update();
-							//traceHandler('<li>--chat_update--' + '</li>');
+                    					
 						}
 						else
 						{	// otherwise we were launched because the user touched a notification in the notification tray.
 							if (e.coldstart)
-								traceHandler('<li>--COLDSTART NOTIFICATION--' + '</li>');
+								traceHandler('PUSH - --COLDSTART NOTIFICATION--');
 							else
-							traceHandler('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+							traceHandler('PUSH - --BACKGROUND NOTIFICATION--');
 						}
 							
-                        chat_update();
-                        traceHandler('<li>--chat_update--' + '</li>');
+                        //chat_update();
                              
-						traceHandler('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
-						traceHandler('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+						traceHandler('PUSH - MESSAGE -> MSG: ' + e.payload.message);
+						traceHandler('PUSH - MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
                     break;
                     
                     case 'error':
-						traceHandler('<li>ERROR -> MSG:' + e.msg + '</li>');
+						traceHandler('PUSH - ERROR -> MSG:' + e.msg);
                     break;
                     
                     default:
-						traceHandler('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+						traceHandler('PUST - EVENT -> Unknown, an event was received and we do not know what it is');
                     break;
                 }
             }
             
-            function tokenHandler (result) {
-                traceHandler('<li>token: '+ result +'</li>');
+            function tokenHandler(result) {
+                traceHandler('token: '+ result);
                 // Your iOS push server needs to know the token before it can push to this device
                 // here is where you might want to send it the token for later use.
-                ImPush.userId = objUser.user_id;
-                ImPush.operatorId = objUser.operator_id;
-                ImPush.appCode = "539F5-D40CA";
+                push_obj_init();
+        
                 ImPush.register(result, function(data) {            
                         traceHandler("ImPush register success: " + JSON.stringify(data));
                     }, function(errorregistration) {
@@ -186,17 +202,19 @@
                 */
             }
 			
-            function successHandler (result) {
-                traceHandler('<li>success:'+ result +'</li>');
+            function successHandler(result) {
+                traceHandler('success:'+ result);
             }
             
-            function errorHandler (error) {
-                traceHandler('<li>error:'+ error +'</li>');
+            function errorHandler(error) {
+                traceHandler('error:'+ error);
             }
             
+            /*
             function traceHandler(message) {
                 console.log(message);                
                 //$("#app-status-ul").append(message);
             }
+            */
             
 			//document.addEventListener('deviceready', push_onDeviceReady, true);

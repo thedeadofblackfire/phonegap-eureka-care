@@ -5,7 +5,7 @@ var ImPush = {
         
         register : function(token, lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'registerDevice';
+                var url = ImPush.baseurl + 'registerdevice';
                 
                 var offset = new Date().getTimezoneOffset() * 60;        //in seconds
                 
@@ -23,154 +23,156 @@ var ImPush = {
 				var deviceModel = device.model || '';
 				var deviceVersion = device.version || '';
 
-                var params = {
-								//user_id : ImPush.userId,
-                                request : {
-                                        user_id : ImPush.userId,
-                                        operator_id : ImPush.operatorId,
-                                        application : ImPush.appCode,
+                var params = {				
+                                        vendor_seq : ImPush.vendorSeq,
+                                        user_id : ImPush.userId,  
+                                        office_seq : ImPush.officeSeq,
+                                        device_serial : ImPush.deviceSerial,                                        
+                                        app_code : ImPush.appCode,
+                                        app_version : ImPush.appVersion,
                                         push_token : token,
                                         language : lang,
                                         hwid : ImPush.getHWId(),
                                         timezone : offset,
-                                        device_type : deviceType,
+                                        brand : deviceType,
                                         model : deviceModel,
                                         version : deviceVersion
-                                }
-                        };
+                        };                        
 
 				//payload = params;
-                payload = (params) ? JSON.stringify(params) : '';			
+                //payload = (params) ? JSON.stringify(params) : '';	
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';                		
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
         
         unregister : function(lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'unregisterDevice';
+                var url = ImPush.baseurl + 'unregisterdevice';
                 
-                var params = {
-                                request : {
+                var params = {                          
                                         user_id : ImPush.userId,
-                                        operator_id : ImPush.operatorId,
-                                        application : ImPush.appCode,
-                                        hwid : ImPush.getHWId()
-                                }
+                                        device_serial : ImPush.deviceSerial,                         
+                                        app_code : ImPush.appCode,
+                                        hwid : ImPush.getHWId()                             
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
         
         sendBadge : function(badgeNumber, lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'setBadge';
+                var url = ImPush.baseurl + 'setbadge';
                 
                 var params = {
-                                request : {
-                                        application : ImPush.appCode,
+                                        app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId(),
                                         badge: badgeNumber
-                                }
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
 
         sendAppOpen : function(lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'applicationOpen';
+                var url = ImPush.baseurl + 'applicationopen';
                 
                 var params = {
-                                request : {
                                         user_id : ImPush.userId,
-                                        operator_id : ImPush.operatorId,
-                                        application : ImPush.appCode,
+                                        app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId()
-                                }
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
 
         sendAppClose : function(lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'applicationClose';
+                var url = ImPush.baseurl + 'applicationclose';
                 
                 var params = {
-                                request : {
                                         user_id : ImPush.userId,
-                                        operator_id : ImPush.operatorId,
-                                        application : ImPush.appCode,
+                                        app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId()
-                                }
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
         
         sendPushStat : function(hashValue, lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'pushStat';
+                var url = ImPush.baseurl + 'pushstat';
                 
                 var params = {
-                                request : {
                                         user_id : ImPush.userId,
-                                        operator_id : ImPush.operatorId,
-                                        application : ImPush.appCode,
+                                        app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId(),
                                         hash: hashValue
-                                }
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
                 
         setTags : function(tagsJsonObject, lambda, lambdaerror) {
                 var method = 'POST';
-                var url = ImPush.baseurl + 'setTags';
+                var url = ImPush.baseurl + 'settags';
                 
                 var params = {
-                                request : {
-                                        application : ImPush.appCode,
+                                        app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId(),
                                         tags: tagsJsonObject
-                                }
                         };
 
-                payload = (params) ? JSON.stringify(params) : '';
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
         
+        getAsUriParameters : function(data) {
+           var url = '';
+           for (var prop in data) {
+              url += encodeURIComponent(prop)+'='+encodeURIComponent(data[prop])+'&';
+           }
+           return url.substring(0, url.length - 1);
+        },
+    
         helper : function(url, method, params, lambda, lambdaerror) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {		
                         if(xhr.readyState == 4) { //Request complete !!
                                 if(xhr.status == 200) {
-                                        if(lambda) lambda(xhr.responseText);
+                                        // process response in JSON directly
+                                        if(lambda) lambda(JSON.parse(xhr.responseText));
+                                        //if(lambda) lambda(xhr.responseText);                                        
                                 }
                                 else {
-                                        if(lambdaerror) lambdaerror(xhr.responseText);
+                                        if(lambdaerror) lambdaerror(JSON.parse(xhr.responseText));
+                                        //if(lambdaerror) lambdaerror(xhr.responseText);
                                 }
                         }
                 };
 
                 // open the client
                 xhr.open(method, url, true);
-                xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-				//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
-		
+                //xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');        
+         
                 // send the data
 				//alert("helper: " + params);
                 xhr.send(params);
         }
 };
 
-ImPush.baseurl = BASE_URL+'/api/notification/';
-//if (ENV == 'dev') ImPush.baseurl = BASE_URL+'/api/notification/';
+ImPush.baseurl = BASE_URL+'/api/mobile/';
 /*
       ImPush.userId = 374;
                          ImPush.appCode = "539F5-D40CA";

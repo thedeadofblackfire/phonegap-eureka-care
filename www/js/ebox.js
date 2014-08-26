@@ -236,7 +236,7 @@ function initAfterLogin() {
 // --
 
 function traceHandler(message) {
-     console.log(message);                
+    console.log(message);                
     $("#app-status-ul").append('<li>'+message+'</li>');
 }
             
@@ -458,7 +458,7 @@ jQuery(document).ready(function($){
             
                         // launch the push notification center because it's required objUser
                         if (ENV == 'production') {
-                            //push_onDeviceReady();
+                            push_onDeviceReady();
                         }
                         
                         mofLoading(false);
