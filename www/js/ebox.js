@@ -114,7 +114,7 @@ var app = {
             alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
         };
         */
-    
+    /*
         var url_sound = 'sounds/fr_alarm01.mp3';
     	if (device.platform == 'Android') {
             url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
@@ -169,6 +169,7 @@ var app = {
         });
        // window.plugin.notification.local.add({ message: 'Great app!' });
        
+       */
         /*     
         window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
