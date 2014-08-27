@@ -25,8 +25,8 @@ var ImPush = {
 
                 var params = {				
                                         vendor_seq : ImPush.vendorSeq,
-                                        user_id : ImPush.userId,  
-                                        office_seq : ImPush.officeSeq,
+                                        pid : ImPush.pid,  
+                                        mid : ImPush.mid,
                                         device_serial : ImPush.deviceSerial,                                        
                                         app_code : ImPush.appCode,
                                         app_version : ImPush.appVersion,
@@ -50,7 +50,7 @@ var ImPush = {
                 var url = ImPush.baseurl + 'unregisterdevice';
                 
                 var params = {                          
-                                        user_id : ImPush.userId,
+                                        pid : ImPush.pid,
                                         device_serial : ImPush.deviceSerial,                         
                                         app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId()                             
@@ -81,7 +81,7 @@ var ImPush = {
                 var url = ImPush.baseurl + 'applicationopen';
                 
                 var params = {
-                                        user_id : ImPush.userId,
+                                        pid : ImPush.pid,
                                         app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId()
                         };
@@ -96,7 +96,7 @@ var ImPush = {
                 var url = ImPush.baseurl + 'applicationclose';
                 
                 var params = {
-                                        user_id : ImPush.userId,
+                                        pid : ImPush.pid,
                                         app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId()
                         };
@@ -111,7 +111,7 @@ var ImPush = {
                 var url = ImPush.baseurl + 'pushstat';
                 
                 var params = {
-                                        user_id : ImPush.userId,
+                                        pid : ImPush.pid,
                                         app_code : ImPush.appCode,
                                         hwid : ImPush.getHWId(),
                                         hash: hashValue

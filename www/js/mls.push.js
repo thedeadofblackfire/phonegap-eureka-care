@@ -7,14 +7,13 @@
                     
             function push_obj_init() {
                 ImPush.vendorSeq = objUser.vendor_seq;
-                ImPush.userId = objUser.user_id;
-                ImPush.officeSeq = objUser.reference;
+                ImPush.pid = objUser.user_id;
+                ImPush.mid = objUser.reference;
                 ImPush.deviceSerial = objUser.device_serial;
                 if (!ImPush.deviceSerial) {
                     ImPush.deviceSerial = window.localStorage["device_serial"];
                 }
-                traceHandler('device_serial=' + ImPush.deviceSerial);
-				//alert(ImPush.userId);
+                traceHandler('device_serial=' + ImPush.deviceSerial);		
                 ImPush.appCode = "eureka_care";
                 //ImPush.appCode = "539F5-D40CA";
                 ImPush.appVersion = "1.0";
@@ -151,10 +150,8 @@
 							
 							// if the notification contains a soundname, play it.
                             traceHandler('PUSH - ' + JSON.stringify(e));
-                            //var my_media = new Media("file:///android_asset/www/audio/"+e.soundname);
-                            //my_media.play();
-                            
-                            var my_media = new Media("file:///android_asset/www/audio/"+e.payload.soundname);
+                            var my_media = new Media("file:///android_asset/www/audio/"+e.soundname);                     
+                            //var my_media = new Media("file:///android_asset/www/audio/"+e.payload.soundname);
                             my_media.play();
                    
                     					

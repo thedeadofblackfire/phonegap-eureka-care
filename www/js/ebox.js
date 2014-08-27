@@ -228,7 +228,7 @@ function initAfterLogin() {
              
   $('#nickname').html(objUser.first_name);
             
-  loadChatInit();		
+  //loadChatInit();		
 }
 
 
