@@ -137,6 +137,22 @@ var ImPush = {
                 ImPush.helper(url, method, payload, lambda, lambdaerror);
         },
         
+        getNearestZone : function(lat, lng, lambda, lambdaerror) {
+                var method = 'POST';
+                var url = ImPush.baseurl + 'getnearestzone';
+                
+                var params = {
+                                        app_code : ImPush.appCode,
+                                        hwid : ImPush.getHWId(),
+                                        lat: lat,
+                                        lng: lng
+                        };
+
+                //payload = (params) ? JSON.stringify(params) : '';
+                payload = (params) ? ImPush.getAsUriParameters(params) : '';
+                ImPush.helper(url, method, payload, lambda, lambdaerror);
+        },
+        
         getAsUriParameters : function(data) {
            var url = '';
            for (var prop in data) {

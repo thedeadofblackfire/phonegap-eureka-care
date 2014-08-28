@@ -964,46 +964,7 @@ function generatePageSession(data) {
     
 
     $('#popovervisitor').html(popover);    
-*/    
-       /*
-    str += '<div class="zone_session2" id="'+data.session_id+'">';
-    //str += generateDetailVisitor(data);
-    generateDetailVisitor(data);
-    
-    str += '<div class="plugins">';    
-    
-    str += '<a href="#panelvisitor" class="btn btn-primary" style="width:auto!important;color:white;"><i class="icon-info-sign"></i> '+i18n.t('label.details')+'</a>&nbsp;&nbsp;';
-     
-    if (displayChatClose) {
-		str += '<a class="btn btn-success disabled">'+i18n.t('label.chatclosed')+'</a>';		
-	} else {
-		str += '<a class="btn closeChat btn-danger" style="width:auto!important;color:white;"><i class="icon-remove"></i> '+i18n.t('label.closechat')+'</a>';		
-	}      
-    str += '</div>';
-    
-    str += '<input type="hidden" name="current_session_id" id="current_session_id" value="'+data.session_id+'" />';
-    
-    str += '<ul class="messageWrapper chat-messages">';
-    if (data.conversation != null) {
-        $.each(data.conversation, function(k, v) {        
-            str += updateSessionMessage(v.message, false);			
-            if (v.reply != null) {
-                $.each(v.reply, function(i, r) {
-                    str += updateSessionReply(r, false);
-                }); 
-            }
-        });
-    }
-    str += '</ul>';
-    	
-	str += '<div class="chat-footer chatform">';
-    str += '<input type="text" data-session="'+data.session_id+'" name="chatText" id="chatInput" class="input-light input-large brad chat-search" placeholder="'+i18n.t('label.pressenter')+'">';
-    //str += '<a data-role="button" href="#" data-session="'+data.session_id+'" class="btn btn-primary btnChatSendReply">'+i18n.t('label.send')+'</a>';
-    str += '<a href="#" data-session="'+data.session_id+'" class="ui-btn ui-icon-arrow-r ui-btn-icon-right ui-shadow ui-corner-all btnChatSendReply" data-i18n="label.send">'+i18n.t('label.send')+'</a>';  
-    str += '</div>';				
-        
-    str += '</div>';
-    */
+*/   
     
     return str;
 }
@@ -1623,3 +1584,39 @@ function goMainTab(link) {
                     }
                     
 }
+
+// ---------------------
+// TREATMENT
+// ---------------------
+function loadTreatment(page) {
+        console.log('loadArchiveSession );
+        
+        // show loading icon
+        mofLoading(true);
+
+        $.ajax({
+              url: API+"/gettreatment",
+              datatype: 'json',      
+              type: "post",
+              data: {limit: 50, session_id: sessionid, user_id: objUser.user_id},   
+              success:function(res){                    
+                 console.log(res);
+     
+                 var str = generatePageArchive(res);
+               
+                 mofLoading(false);               
+
+                 mainView.loadContent(str);
+           
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+				 mofLoading(false);  
+                 alert('Error loading datas, try again!');
+				 alert(textStatus);
+				 alert(errorThrown);
+              }
+           });
+           
+        return true;
+}
+    
