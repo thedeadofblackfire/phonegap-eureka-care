@@ -19,6 +19,8 @@ var doRefresh = true;
 var firstAudioMessage = true;
 var firstAudioChat = true;
 
+var current_treatment_page = 0;
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -1588,17 +1590,22 @@ function goMainTab(link) {
 // ---------------------
 // TREATMENT
 // ---------------------
-function loadTreatment(page) {
-        console.log('loadArchiveSession );
+// load 7 last days
+function loadTreatment() {
+        console.log('loadTreatment');
         
         // show loading icon
         mofLoading(true);
+        
+        //if (!current_treatment_page) current_treatment_page = 0;
+        current_treatment_page++;
+        var last_days = 7;
 
         $.ajax({
               url: API+"/gettreatment",
               datatype: 'json',      
               type: "post",
-              data: {limit: 50, session_id: sessionid, user_id: objUser.user_id},   
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
               success:function(res){                    
                  console.log(res);
      
