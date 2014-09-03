@@ -33,8 +33,18 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
    
+        
         if (ENV == 'dev') {
             
+            jQuery(document).ready(function($){	
+               
+                // Adjust canvas size when browser resizes
+                $(window).resize( respondPill );
+
+                // Adjust the canvas size when the document has loaded.
+                respondPill();
+            });
+        
             initFramework();
                
             //var a = formatDateToTimestamp('2014-05-07 09:40:00');
@@ -76,6 +86,15 @@ var app = {
     onDeviceReady: function() {
         //checkConnection();	
 		console.log('onDeviceReady');
+        
+        jQuery(document).ready(function($){	
+               
+            // Adjust canvas size when browser resizes
+            $(window).resize( respondPill );
+
+            // Adjust the canvas size when the document has loaded.
+            respondPill();
+        });
         
         
         var now                  = new Date().getTime();
@@ -1627,3 +1646,77 @@ function loadTreatment() {
         return true;
 }
     
+function respondPill() {
+                var canvas = $('#pill')
+                //var container = $(canvas).parent()
+                var width = $(document).width(); //$(window).width();
+                var height = $(document).height();
+                traceHandler(width +' x '+ height);
+                if (width >= 900) width = 900;
+                else width = width * 90 / 100;
+                //if (width > 1150) width = 720;
+                //else if (width > 700 && width <=1150) width = 450; 
+                
+                canvas.css('width', width ); // Max width
+                canvas.css('height', width );
+                //canvas.attr('height', $(container).height() ) // Max height
+                renderPill(width);
+};
+            
+function renderPill(width) {   
+            traceHandler('renderPill width='+width);
+            var config = {
+                'tl': 'pillbox_quart_full_tl', //'pillbox_quart_empty_tl',
+                'tr': 'pillbox_quart_full_tr', //'pillbox_quart_empty_tr',
+                'bl': 'pillbox_quart_full_bl', //'pillbox_quart_empty_bl',
+                'br': 'pillbox_quart_empty_br', 
+                'pillbox_quart_width': 441, // 900 = 441 * 2 + 18
+                'width_pillbox_base_vert': 18,
+                'width_pillbox_base_horiz': 18,
+                'width_pillbox_center_logo': 111,
+                'width_pillbox_time': 120,                
+                'night': 'finaliconnight',
+                'morning': 'finaliconmorning',
+                'evening': 'finaliconevening',
+                'noon': 'finaliconnoon'
+            };
+            /*
+            if (width == 450) {
+                config.pillbox_quart_width = 220;
+                config.width_pillbox_base_vert = 9;
+                config.width_pillbox_base_horiz = 9;
+                */
+            if(width == 900) {
+                config.pillbox_quart_width = 441;
+                config.width_pillbox_base_vert = 18;
+                config.width_pillbox_base_horiz = 18;
+                config.width_pillbox_center_logo = 111;
+                config.width_pillbox_time = 120;
+            } else {
+                // 720
+                config.pillbox_quart_width = (width / 100) * 49;
+                config.width_pillbox_base_vert = (width / 100) * 2; // + 0.01;
+                config.width_pillbox_base_horiz = (width / 100) * 2; // + 0.01;
+                config.width_pillbox_center_logo = (width / 100) * 14;
+                config.width_pillbox_time = (width / 100) * 8;
+            }
+          
+            var str = '';
+            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
+            str += '<img width="'+config.width_pillbox_base_vert+'" height="100%" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
+            //str += '<img width="'+config.width_pillbox_base_vert+'" border="0" "style="position:absolute;top:0;left:49%;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
+            //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:51%;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
+            str += '<img width="100%" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
+            //str += '<img height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:49%;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
+            //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:51%;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';            
+            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
+            
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.night+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.night+'.png\';" src="img/ebox/'+config.night+'.png">';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.morning+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.morning+'.png\';" src="img/ebox/'+config.morning+'.png">';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.evening+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.evening+'.png\';" src="img/ebox/'+config.evening+'.png">';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.noon+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.noon+'.png\';" src="img/ebox/'+config.noon+'.png">';
+            str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:43%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
+            document.getElementById("pill").innerHTML = str;
+}
