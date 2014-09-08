@@ -20,6 +20,9 @@ var firstAudioMessage = true;
 var firstAudioChat = true;
 
 var current_treatment_page = 0;
+var package_name = "com.cordova.eboxsmart";
+//var package_name = "com.mls.eboxsmart";
+        
 
 var app = {
     // Application Constructor
@@ -97,13 +100,12 @@ var app = {
         });
         
         
+        localNotificationInit();
+        
         var now                  = new Date().getTime();
         //_30_seconds_from_now = new Date(now + 30*1000);
         var _60_seconds_from_now = new Date(now + 60*1000);
 
-        var package_name = "com.cordova.eboxsmart";
-        //var package_name = "com.mls.eboxsmart";
-        
         _30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
         traceHandler(_30_seconds_from_now);
         /*
@@ -266,13 +268,13 @@ function traceHandler(message) {
 function formatDateToTimestamp(d) {
     //new Date().getTime()
     //(year, month, day, hours, minutes, seconds, milliseconds)    
-    console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
+    //console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
     
     //traceHandler(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
                 
     var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
-    console.log(current.getTime());
-    console.log(current);
+    //console.log(current.getTime());
+    //console.log(current);
 	return current;    
 }
 
@@ -1628,22 +1630,218 @@ function loadTreatment() {
               success:function(res){                    
                  console.log(res);
      
-                 var str = generatePageArchive(res);
+                 //var str = generatePageArchive(res);
                
-                 mofLoading(false);               
+                 mofLoading(false); 
 
-                 mainView.loadContent(str);
+                 /*
+                $.each(res.items, function(k, v) { 
+                    console.log(k+' | '+v.delivery_day);
+                });        
+*/                
+                processLocalNotification(res.items);
+                 //mainView.loadContent(str);
            
               },
               error: function(jqXHR, textStatus, errorThrown) {
 				 mofLoading(false);  
                  alert('Error loading datas, try again!');
-				 alert(textStatus);
-				 alert(errorThrown);
+				 console.log(textStatus);
+				 console.log(errorThrown);
               }
            });
            
         return true;
+}
+
+ var _constant = {};
+_constant.STATUS_TODAY_BEFORE           = _constant.STATUS_TODAY_BEFORE         || 0;
+_constant.STATUS_TODAY                  = _constant.STATUS_TODAY                || 1;
+_constant.STATUS_TODAY_AFTER            = _constant.STATUS_TODAY_AFTER          || 2;
+
+_constant.STATUS_PENDING                = _constant.STATUS_PENDING              || 0;
+_constant.STATUS_COMPLETED              = _constant.STATUS_COMPLETED            || 1;
+_constant.STATUS_INPROGRESS             = _constant.STATUS_INPROGRESS           || 2;
+_constant.STATUS_COMPLETEDWITHERRORS    = _constant.STATUS_COMPLETEDWITHERRORS  || 3;
+
+
+function localNotificationInit() {
+    console.log('localNotificationInit');
+        /*
+        window.plugin.notification.local.onadd = function (id, state, json) {
+            console.log('onadd '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        */
+        
+        window.plugin.notification.local.ontrigger  = function (id, state, json) {
+            console.log('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+        window.plugin.notification.local.onclick   = function (id, state, json) {
+            console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+}
+
+function localNotificationCancelAll() {
+  window.plugin.notification.local.cancelAll(function() {
+             console.log('All notifications have been canceled');
+        }); 
+}
+
+function localNotificationGetScheduledIds() {
+  window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
+             console.log('Scheduled IDs: ' + scheduledIds.join(' ,'));
+        }); 
+}
+
+function processLocalNotification(data) {
+   // add new local notification for upcoming days 
+   var now = new Date().getTime();
+        //_30_seconds_from_now = new Date(now + 30*1000);
+        var _60_seconds_from_now = new Date(now + 60*1000);
+
+        // status_today: before today (0), today (1), after today (2)
+        // status: pending(0), completed(1), inprogress(2) (mix of completed/pending), completedwitherror(3)
+        // ios limits to first 64 scheduled local notifications.
+        $.each(data, function(k_day, v_day) { 
+            console.log(k_day+' | '+v_day.delivery_day);
+            if (v_day.status_today === _constant.STATUS_TODAY_AFTER || v_day.status_today === _constant.STATUS_TODAY) {
+                if (v_day.status === _constant.STATUS_PENDING || v_day.status === _constant.STATUS_INPROGRESS) {
+                     $.each(v_day.children, function(k_delivery, v_delivery) { 
+                        console.log(k_delivery+' | '+v_delivery.delivery_dt+ ' | '+v_delivery.status);
+                        
+                        if (v_delivery.status === _constant.STATUS_PENDING) {
+                            var notification_id = '' + v_delivery.delivery_day + v_delivery.delivery_time; //uniq, for android it must be convert to integer
+                            var notification_date = formatDateToTimestamp(v_delivery.delivery_dt);                       
+                            var notification_title = 'Rappel Prise '+v_delivery.display_delivery_time; //Reminder
+                            var notification_message = 'Il est temps de prendre vos médicaments!';
+                            
+                            console.log(notification_id + ' | ' + notification_title);
+                            
+                            var url_sound = 'sounds/fr_alarm01.mp3';
+                            if (device.platform == 'Android') {
+                                url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
+                                //traceHandler(url_sound);
+                            }
+                            url_sound = 'android.resource://' + package_name + '/raw/beep';
+        
+                            window.plugin.notification.local.add({
+                                    id: notification_id,
+                                    title: notification_title,
+                                    message: notification_message,
+                                    sound: url_sound,
+                                    badge: 1,
+                                    json: {'message': 'alert', 'delivery_dt': v_delivery.delivery_dt },
+                                    autoCancel: true,
+                                    ongoing: false,
+                                    repeat: 5, // 2 minutes
+                                    //icon: 'file:///android_asset/www/img/flower128.png',                               
+                                    date: notification_date
+                                });
+                        }
+    
+                     });           
+                }       
+            }
+        });    
+              
+                  
+        //_30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
+        //traceHandler(_30_seconds_from_now.getTime());
+        
+ 
+        /*
+        window.plugin.notification.local.add({
+            id:      1,
+            title:   'Reminder drug 0h',
+            message: 'Dont forget your drug',
+            //repeat:  'daily',
+            //sound:   '/www/res/raw/beep.mp3',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
+            sound:   'TYPE_ALARM',
+            //sound: 'TYPE_NOTIFICATION',
+            badge: 0,
+            json: {'message': 'alert'},
+            autoCancel: true,
+            //smallIcon: 'ic_dialog_email',
+            date:    _30_seconds_from_now
+        });
+
+        window.plugin.notification.local.onadd = function (id, state, json) {
+            alert('onadd '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+        window.plugin.notification.local.ontrigger  = function (id, state, json) {
+            alert('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        
+        window.plugin.notification.local.onclick   = function (id, state, json) {
+            alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
+        };
+        */
+    /*
+        var url_sound = 'sounds/fr_alarm01.mp3';
+    	if (device.platform == 'Android') {
+            url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
+            traceHandler(url_sound);
+        }
+        url_sound = 'android.resource://' + package_name + '/raw/beep';
+    
+        window.plugin.notification.local.add({
+            id:      2,
+            title:   'Reminder sound 1',
+            message: 'Allo 1',
+            sound: url_sound,
+            //sound:  'android.resource://' + package_name + '/raw/beep',
+            //sound: 'beep.wav',
+            //sound: 'https://office.eureka-platform.com/assets/media/en_alarm01.mp3',
+            //repeat:  'daily',
+            //sound:   '/www/res/raw/beep',
+           // sound:   '/www/sounds/fr_alarm01.mp3',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound:   'TYPE_ALARM',
+            badge: 1,
+            autoCancel: true,
+            //repeat: 2, // 2 minutes
+            //icon: 'file:///android_asset/www/img/flower128.png',
+            led: 'FFFFFF',
+            date:    _60_seconds_from_now
+        });
+        
+          //  var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
+        //traceHandler(resourceaudio);
+        
+        
+        var _30_seconds_from_now = new Date(now + 30*1000);   
+        
+        window.plugin.notification.local.add({
+            id:      3,
+            title:   'Reminder sound 2',
+            message: 'Allo 2',
+            sound: url_sound,
+            //sound:   '/www/audio/beep.mp3',
+            //sound: 'https://office.eureka-platform.com/assets/media/en_taking02.mp3',
+            //sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
+            //repeat:  'daily',
+            //sound:   '/www/res/raw/beep',
+           // sound:   '/www/sounds/fr_alarm01.mp3',
+            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound:   'TYPE_NOTIFICATION',
+            badge: 1,
+            autoCancel: true,
+            led: 'A0FF05',
+            date:    _30_seconds_from_now
+        });
+       // window.plugin.notification.local.add({ message: 'Great app!' });
+       
+       */
+        /*     
+        window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
+             alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
+        });
+        */
+        
 }
     
 function respondPill() {
@@ -1703,11 +1901,11 @@ function renderPill(width) {
           
             var str = '';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
-            str += '<img width="'+config.width_pillbox_base_vert+'" height="100%" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
+            str += '<img width="'+config.width_pillbox_base_vert+'" height="'+width+'px" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             //str += '<img width="'+config.width_pillbox_base_vert+'" border="0" "style="position:absolute;top:0;left:49%;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:51%;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
-            str += '<img width="100%" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
+            str += '<img width="'+width+'px" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             //str += '<img height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:49%;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:51%;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';            
