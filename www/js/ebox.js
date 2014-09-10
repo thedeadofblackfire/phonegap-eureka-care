@@ -9,8 +9,6 @@ var API = BASE_URL+'/api/mobile';
 
 var objUser = {};
 var objChat = {};
-var objSession = {}; // notification
-var badgeChatCount = 0;
 var audioEnable = true;
 var isChatSession = false;
 var current_session_id = '';
@@ -370,8 +368,6 @@ jQuery(document).ready(function($){
      */
     function mofChangePage(pageid, options) {
         console.log('mofChangePage '+pageid);
-        //$.mobile.changePage("some.html");				
-        //$.mobile.changePage(pageid, options);
         mainView.loadPage(pageid);
         //$('body').i18n();
     }
@@ -381,11 +377,9 @@ jQuery(document).ready(function($){
      * show: true/false
      */
     function mofLoading(show) {
-        //$.mobile.loading('show');
-        //$.mobile.loading('hide');
         console.log('loading '+show); 
-        if (show) myApp.showPreloader();
-        else myApp.hidePreloader();               
+        if (show) fw7.showPreloader();
+        else fw7.hidePreloader();               
     }
     
     /* 
@@ -393,10 +387,8 @@ jQuery(document).ready(function($){
      * show: true/false
      */
     function mofAlert(message, title) {
-        //$.mobile.loading('show');
-        //$.mobile.loading('hide');
         if (title == undefined) title = 'e-Box Smart';
-        myApp.alert(message, title);               
+        fw7.alert(message, title);               
     }
     
     function mofProcessBtn(id, state) {
@@ -597,9 +589,7 @@ jQuery(document).ready(function($){
                                           
                  isChatSession = true;
                  
-                 // flag unread 
-                 checkUnread(sessionid);
-         
+       
                  mofLoading(false);               
 
                  mainView.loadContent(str);
@@ -625,11 +615,7 @@ jQuery(document).ready(function($){
                 console.log(res);
                 
                 objChat.online_user = res.online_user;
-                
-                // @todo bug here : clean badge, bad thing
-                //badgeChatCount = 0;
-                //displayBadgeChat();
-                          
+      
                 // loop online users to display list of active chats
                 loadDataUserList(objChat);
                 
@@ -680,418 +666,6 @@ function loadDataUserList(data) {
                       
 }
 
-function updateSession(v) {
-    if( !objSession[ v.session_id ] ) {
-        console.log('updateUser new='+v.session_id);
-        v.unreadMessage = 0; // should be 1
-        objSession[ v.session_id ] = v; //{}
-    } else {
-        // update
-        console.log('updateUser update='+v.session_id);
-          
-        var sess = objSession[ v.session_id ];     
-        sess.end_date = v.end_date;
-        var newIncomingMessage = parseInt(v.totalmsg) - parseInt(sess.totalmsg);
-        sess.totalmsg = v.totalmsg;
-        sess.unreadMessage = sess.unreadMessage + newIncomingMessage;
-        //objSession[ v.session_id ] = sess;
-        
-        badgeChatCount += newIncomingMessage;
-        displayBadgeChat();
-
-        console.log(sess); 
-    }        
-}
-
-function displayBadgeChat() {
-	console.log('displayBadgeChat '+badgeChatCount);
-    //if (badgeChatCount > 0) $('.badge-chat').html(badgeChatCount).fadeIn();
-    //else $('.badge-chat').html('').fadeOut();
-	if (badgeChatCount > 0) $('#badge-chat').html('<span class="badge badge-green">'+badgeChatCount+'</span>');
-	else $('#badge-chat').html('');
-}
-
-function addUnread(session_id) {
-	console.log('addUnread '+session_id+' badgeChatCount='+badgeChatCount);	
-	// don't display bubble if current session
-	if (isChatSession && session_id == current_session_id) {
-		// do nothing but play the incoming message sound
-	} else {
-		var sess = objSession[ session_id ]; 
-        if (sess) {		 
-            sess.unreadMessage += 1; 
-            badgeChatCount += 1;
-            displayBadgeChat();
-            //console.log(sess);
-        }
-	}
-        
-    // update total in list        
-    updateBadgeUser(session_id);
-}
-
-function updateBadgeUser(session_id) {
-    // update total in list        
-    var currentLi = $('#chat_userlist').find('a[sid="' + session_id + '"]'); 
-    //alert(currentLi.length);    
-    if (currentLi.length > 0) {    
-        var currentTotal = currentLi.find('.badge').html();
-        currentTotal = parseInt(currentTotal) + 1;
-        console.log('currentTotal='+currentTotal);
-        currentLi.find('.badge').html(currentTotal);
-    }
-}
-
-function checkUnread(session_id) {
-    console.log('checkUnread '+session_id+' badgeChatCount='+badgeChatCount);
-    var sess = objSession[ session_id ]; 
-	//console.log(sess);
-    if (sess && sess.unreadMessage > 0) {     
-        console.log('checkUnread '+session_id);   
-        badgeChatCount -= sess.unreadMessage; 
-        sess.unreadMessage = 0;         
-        displayBadgeChat();    
-           
-        //removeNewUserTag(session_id);        
-        //console.log(sess); 
-    }
-}
-
-function removeNewUserTag(session_id) {
-	 console.log('removeNewUserTag '+session_id);     
-     var find = $('#chat_userlist').find('a[sid="' + session_id + '"]');
-	 //console.log(find);     
-	 if (find.length > 0) {	    
-		//find.parent('li').removeClass('new_user');
-	 }       
-}
-
-function pictureBrowser(v) {
-    var browser = '';    
-    if (v.browser == 'Internet Explorer') browser = 'IE.png';
-    else if (v.browser == 'Google Chrome') browser = 'Chrome.png';
-    else if (v.browser == 'Mozilla Firefox') browser = 'Firefox.png';
-    else if (v.browser == 'Apple Safari') browser = 'Safari.png';
-    else if (v.browser == 'Netscape') browser = 'Netscape.png';
-    else if (v.browser == 'Opera') browser = 'Opera.png';
-    else if (v.browser == 'Maxthon') browser = 'Maxthon.png';
-    else browser = 'TheWorld.png';
-    return browser;
-}
-
-function generateLineUser(v, newuser) {
-    //htmlUserList += '<li data-icon="false"><a href="#pageChatSession?id='+v.session_id+'" sid="'+v.session_id+'" data-theme="e">'+v.name+'<p>CA</p> <p class="ui-li-aside"><strong>'+formatDate(v.start_date)+'</strong></p> <span class="ui-li-count">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></a></li>';
-    
-    // state http://www.iconarchive.com/show/american-states-icons-by-custom-icon-design.html    
- 
-    var browser = '';
-	browser = pictureBrowser(v);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+v.browser+'" width="32">';
-    	
-    var lg = '';
-    lg = pictureCountry(v.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+v.country+'" border="0" width="32" style="margin-left:2px;">';    
-    //var lg = '<img src="img/country/64/us.png" alt="United States" border="0" width="32" style="margin-left:2px;">';
-        
-    var info = lg;
-    if (v.city && v.city != '') info += ' '+v.city;
-    if (v.region && v.region != '') info += ', '+v.region;
-    //if (v.country && v.country != '' && v.country != 'Reserved' ) info += ' '+v.country;
-    
-    /*
-    var str = '<li data-icon="false"';   
-    if (newuser) str += 'class="new_user"';    
-    //str += '><a href="#pageChatSession?id=' + v.session_id + '" sid="'+v.session_id+'" data-theme="e">' + lg + '<h2>' +v.name + '</h2><p>started at <strong>'+formatDate(v.start_date)+'</strong></p> <span class="ui-li-count">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></a></li>';
-    str += '><a href="#pageChatSession?id=' + v.session_id + '" sid="'+v.session_id+'" data-theme="a">' + browser + '<h3>' + v.name + '</h3><p>'+info+'</p> <p class="ui-li-aside"><small>'+formatDate(v.start_date)+'</small></p> <span class="ui-li-count">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></a></li>';
-    */
-    //str += '><a href="#pageChatSession?id=' + v.session_id + '" sid="'+v.session_id+'" data-theme="e">' + lg + v.name + ' <p class="ui-li-aside">started at <strong>'+formatDate(v.start_date)+'</strong></p> <span class="ui-li-count">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></a></li>';
-    var totalmsg = parseInt(v.totalmsg) + parseInt(v.totalreply);
-    if (newuser) totalmsg = 0; // adding by new_message
-	
-    var str = '<li><a href="#" sid="'+v.session_id+'" onclick="return loadChatSession(\''+v.session_id+'\');" class="item-link">'+
-                      '<div class="item-content">'+
-                        '<div class="item-media">'+browser+' '+lg+'</div>'+
-                        '<div class="item-inner">'+
-                          '<div class="item-title">'+v.name+'</div>'+
-						  '<div class="item-after"><span class="badge">'+totalmsg+'</span></div>'+
-                        '</div>'+
-                      '</div></a></li>';
-                      
-    updateSession(v); 
-    
-    return str;
-}
-
-function generateDetailVisitor(data) {
-    console.log('generateDetailVisitor');
-    var str = '';
-    
-    //str += '<div class="ui-panel-inner user_infox both_shadowx">';
-    //str += '<h3>'+i18n.t('label.details')+'</h3>';
-    str += '<p>';
-    //str += '<strong>User Info:</strong>&nbsp;&nbsp;';
-    
-    var browser = pictureBrowser(data.visitor);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+data.visitor.browser+'" width="16">';    	
- 
-    var lg = '';
-    lg = pictureCountry(data.visitor.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+data.visitor.country+'" border="0" width="16">';    
-            
-    if (data.visitor.email != '' || data.visitor.email != '0') str += '<br><b>'+i18n.t('label.email')+':</b> '+data.visitor.email;
-    if (data.visitor.phone != '' || data.visitor.phone != '0') str += '<br><b>'+i18n.t('label.phone')+':</b> '+data.visitor.phone;
-    if (data.visitor.ip != '') str += '<br><b>'+i18n.t('label.ip')+':</b> '+data.visitor.ip;
-    if (data.visitor.country != '') str += '<br><b>'+i18n.t('label.country')+':</b> '+data.visitor.country+' '+lg;   
-    if (data.visitor.city != '') str += '<br><b>'+i18n.t('label.city')+':</b> '+data.visitor.city;
-    if (data.visitor.region != '') str += '<br><b>'+i18n.t('label.region')+':</b> '+data.visitor.region;
-    if (data.visitor.platform != '') str += '<br><b>'+i18n.t('label.platform')+':</b> '+data.visitor.platform;
-    if (data.visitor.browser != '') str += '<br><b>'+i18n.t('label.browser')+':</b> '+data.visitor.browser+' '+browser;
-    if (data.visitor.referrer != '') str += '<br><b>'+i18n.t('label.url')+':</b> '+data.visitor.referrer;   
-    else str += '<br><b>'+i18n.t('label.url')+':</b> '+i18n.t('label.unknowreferrer');   
-    if (data.visitor.visit != '') str += '<br><b>'+i18n.t('label.visittime')+':</b> '+data.visitor.visit;
-        
-    str += '</p>';
-    //str += '<a href="#" data-rel="close" data-theme="d" class="ui-btn ui-btn-d ui-mini ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-left ui-btn-inline theme">'+i18n.t('label.closepanel')+'</a>';    
-    //str += '</div>';
-          
-    $('#panelvisitor').html(str);
-    
-    return str;
-}
-
-function generatePageSession(data) {
-    console.log('generatePageSession');
-    var displayChatClose = false;
-    var str = '';
-    
-    current_session_id = data.session_id;
-      
-    // shortcuts
-    /*
-	var browser = pictureBrowser(data.visitor);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+data.visitor.browser+'" width="32">';    	
-   
-    var lg = '';
-    lg = pictureCountry(data.visitor.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+data.visitor.country+'" border="0" width="32" style="margin-left:2px;">';          
-    */
-    
-    generateDetailVisitor(data);
-            
-    str += '<div class="navbar">' +
-            '<div class="navbar-inner">' +
-            '<div class="left"><a href="#" class="back link"><i class="icon icon-back-blue"></i><span>Back</span></a></div>' +
-            '<div class="center sliding">'+data.name+'</div>' +
-            '<div class="right"><a href="#" class="link open-panel icon-only"><i class="icon icon-bars-blue"></i></a></div>' +
-            '</div>'+
-            '</div>'+        
-'<div class="pages navbar-through">'+
-  '<div data-page="messages" class="page no-toolbar toolbar-fixed">'+
-    '<div class="toolbar">'+
-     '<form class="ks-messages-form">'+
-        '<div class="toolbar-inner">'+
-         '<input type="hidden" name="current_session_id" id="current_session_id" value="'+data.session_id+'" />'+    
-          '<input type="text" data-session="'+data.session_id+'" name="chatText" id="chatInput" placeholder="'+i18n.t('label.pressenter')+'" class="ks-messages-input"/><a href="#" class="link ks-send-message btnChatSendReply" data-i18n="label.send">'+i18n.t('label.send')+'</a>'+
-        '</div>'+
-      '</form>'+
-    '</div>'+
-    '<div class="page-content messages-content">'+    
-    
-    // '<div class="col-20">'+browser+' '+lg+'</div>'+
-       '<div class="content-block">'+
-          '<div class="row no-gutter">'+         
-            '<div class="col-50"><a href="#" data-session="'+data.session_id+'" class="button button-round button-cancel closeChat" data-i18n="label.closechat">'+i18n.t('label.closechat')+'</a></div>'+
-            '<div class="col-50"><a href="#" data-panel="right" class="button button-round active open-panel" data-i18n="label.details">'+i18n.t('label.details')+'</a></div>'+           
-          '</div>'+         
-        '</div>';
-// <a href="#" data-popover=".popover-menu" class="button button-round active open-popover">Info</a>   
-     
-     /*
-     '<div class="list-block">'+
-        '<ul>'+
-          '<li class="swipeout demo-remove-callback transitioning">'+
-            '<div class="item-content swipeout-content" style="-webkit-transform: translate3d(0px, 0px, 0px);">'+
-              '<div class="item-media">'+browser+' '+lg+'</div>'+
-              '<div class="item-inner">'+
-                '<div class="item-title">'+data.name+'</div>'+
-              '</div>'+
-            '</div>'+
-            '<div class="swipeout-actions">'+
-              '<div class="swipeout-actions-inner"><a href="#" data-confirm="Are you sure you want to delete this session?" class="swipeout-delete closeChat">'+i18n.t('label.closechat')+'</a></div>'+
-            '</div>'+
-          '</li>'+       
-        '</ul>'+
-      '</div>'+
-          */
-     
-      str += '<div class="messages messageWrapper">';
-      
-  
-    if (data.conversation != null) {
-        var conversationStarted = false;
-            
-        $.each(data.conversation, function(k, v) {                    	
-            var day = !conversationStarted ? 'Today' : false;
-            //var time = !conversationStarted ? (new Date()).getHours() + ':' + (new Date()).getMinutes() : false;
-            var time = !conversationStarted ? formatDateLight(v.message.post_date) : false;
-          
-            if (day) {
-                str += '<div class="messages-date">' + day + (time ? ',' : '') + (time ? ' <span>' + time + '</span>' : '') + '</div>';
-            }
-            str += updateSessionMessage(v.message, false, true);	
-            //str += '<div class="message message-received" mid="'+v.message.id+'">'+v.message.message+' <time datetime="'+v.message.post_date+'">'+formatDateLight(v.message.post_date)+'</time></div>';    
-            conversationStarted = true;
-             
-            if (v.reply != null) {
-                $.each(v.reply, function(i, r) {    
-                    str += updateSessionReply(r, false, true);
-                    //str += '<div class="message message-sent reply" rid="'+r.id+'">'+r.reply+' <time datetime="'+r.post_date+'">'+formatDateLight(r.post_date)+'</time></div>';   
-                }); 
-            }
-        });
-    }
-    /*
-        <div class="messages-date">Sunday, Feb 9, <span>12:58</span></div>
-        <div class="message message-sent">Hello</div>
-        <div class="message message-sent">How are you?</div>
-        <div class="message message-received">Hi</div>
-        <div class="message message-received">I am fine, thanks! And how are you?</div>
-        <div class="message message-sent">I am great!</div>
-        <div class="message message-sent">What do you think about my new logo?</div>
-        <div class="messages-date">Wednesday, Feb 12, <span>19:33</span></div>
-        <div class="message message-sent">Hey? Any thoughts about my new logo?</div>
-        <div class="messages-date">Thursday, Feb 13, <span>11:20</span></div>
-        <div class="message message-sent">Alo...</div>
-        <div class="message message-sent">Are you there?</div>
-        <div class="message message-received">Hi, i am here</div>
-        <div class="message message-received">Your logo is great</div>
-        <div class="message message-received">Leave me alone!</div>
-        <div class="message message-sent">:(</div>
-        <div class="message message-sent">Hey, look, cutest kitten ever!</div>
-        <div class="message message-sent message-pic"><img src="http://placekitten.com/g/300/400"/></div>
-        <div class="message message-received">Yep</div>
-        */
-        
-      str += '</div>'+
-    '</div>'+
-  '</div>'+
-'</div>';
-
-     
- //popup
- /*
-    var popover = '<ul>'+
-            '<li><a href="modals.html" class="list-button item-link">Modals</a></li>'+
-            '<li><a href="popover.html" class="list-button item-link">Popover</a></li>'+
-          '</ul>';
-    
-
-    $('#popovervisitor').html(popover);    
-*/   
-    
-    return str;
-}
-
-function updateDataUserList(v) {
-	console.log('updateDataUserList');
-    var str = generateLineUser(v,true);    
-    //$('#chat_userlist > li:first').after(str);
-    //$('#chat_userlist li:first').html(i18n.t('description.currentlyactivechats')); 
-	
-    $('#activechat_title').html(i18n.t('description.currentlyactivechats'));
-    $('#chat_userlist').append(str);
-    
-    $('#panel_userlist').append(str);
- 
-    // play incoming chat
-    if (firstAudioChat) {
-        play_audio(objChat.chat_sound_path_local_incomingchat);      
-        firstAudioChat = false;
-    }
-}     
-
-// move active user to offline
-function removeDataUserList(v) {
-    var find = $('#chat_userlist').find('a[sid="' + v.session_id + '"]');   
-    if (find.length > 0) { 
-       console.log('removeDataUserList '+v.session_id);         
-       find.parent().remove();
-       $('#panel_userlist').find('a[sid="' + v.session_id + '"]').parent().remove();
-        
-        // check if last user active
-        var count = $("#chat_userlist > li").length;
-        if (count == 0) {
-            $('#activechat_title').html(i18n.t('description.nochatsinprogress'));
-        }
-       
-        // clean unread 
-        checkUnread(v.session_id);
-       
-        // generate close chats
-        refreshArchives();
-        
-        /*
-        var findclose = $('#chat_userlist').find('a[sid="' + v.session_id + '"]');   
-        if (findclose.length == 0) {    
-            var str = generateLineUser(v,true);    
-        }
-        */
-        
-        // play close chat
-        /*
-        if (firstAudioChat) {
-            play_audio(objChat.chat_sound_path_local_incomingchat);      
-            firstAudioChat = false;
-        }
-        */
-    }
-}  
-
-function updateSessionMessage(v, toAppend, markTime) {
-    //var str = '<li class="message right" mid="'+v.id+'"><div class="message_text">'+v.message+'<time datetime="'+v.post_date+'">'+formatDateLight(v.post_date)+'</time></div></li>';         				
-    var str = '<div class="message message-received" mid="'+v.id+'">'+v.message.linkify();
-    if (markTime === true) str += ' <time datetime="'+v.post_date+'">'+formatDateLight(v.post_date)+'</time>';
-    str += '</div>';
-    
-    if (toAppend) {
-        $(".messageWrapper").append(str);	 
-        
-        var messagesContent = $('.messages-content');
-        var messages = messagesContent.find('.messages');
-        myApp.updateMessagesAngles(messages);
-        myApp.scrollMessagesContainer(messagesContent);
-    } else return str;
-}  
-
-function updateSessionReply(v, toAppend, markTime) {
-    //var str = '<p class="reply treply" rid="'+v.id+'"><b>'+objChat.support_display_name+'</b>: '+v.reply+' <span class="time">'+formatDate(v.post_date)+'</span></p>';
-    //var str = '<li class="reply" rid="'+v.id+'"><div class="message_text">'+v.reply+'<time datetime="'+v.post_date+'">'+formatDateLight(v.post_date)+'</time></div></li>';         		     
-	var str = '<div class="message message-sent reply" rid="'+v.id+'">'+v.reply.linkify();
-    if (markTime === true) str += ' <time datetime="'+v.post_date+'">'+formatDateLight(v.post_date)+'</time>';
-    str += '</div>';
-    
-    if (toAppend) {
-        $(".messageWrapper").append(str);	   
-        
-        var messagesContent = $('.messages-content');
-        var messages = messagesContent.find('.messages');
-        myApp.updateMessagesAngles(messages);
-        myApp.scrollMessagesContainer(messagesContent);
-    } else return str;    
-}      
-
-
-function completeSessionReply(v) {
-    console.log('complete '+v.processing_id);
-    var newfind = $(".messageWrapper .reply[rid='"+v.processing_id+"']"); 
-    if (newfind.length > 0) {
-        console.log('complete '+v.processing_id+' changed');
-        newfind.attr('rid', v.id);	
-        newfind.append(' <time datetime="'+v.post_date+'">'+formatDateLight(v.post_date)+'</time>');
-        //newfind.child('time').html(formatDateLight(v.post_date));
-    }
-    // put a loader
-}      
 
 function generateProcessingId() {
     var d = new Date();
@@ -1105,65 +679,17 @@ function generateProcessingPostDate() {
 
 function loadChatInit() {
       console.log('loadChatInit');
-      
-      if (Object.keys(objChat).length == 0 ){
-            console.log('Chat init & start');
-            // save the online chat status
-                           
-            //{"X-Requested-With":"XMLHttpRequest"}
-            $.getJSON(API+"/chat/init?user_id="+objUser.user_id, function(res) {			
-                objChat = res;
-                //window.sessionStorage.setItem('objChat', JSON.stringify(objChat));
-                console.log(objChat);
-                        
-                handleRefreshOnlineUser(false);
-                
-                chat_start();
-                
-            });
-                  
-        } else {
-			console.log('Chat restart');
-			console.log(objChat);
-		    handleRefreshOnlineUser(true);
-		}
-		
-		// visitors
-        refreshVisitors();	
-        
-        // no current session
-        isChatSession = false; 
-        current_session_id = '';
-        
-        // settings
-        $.getJSON(API+"/account/onlinestatus?user_id="+objUser.user_id, function(res) {
-                console.log(res);
-                 var valeur = 'Off';
-                 if (res.status == '1') {
-                    valeur = 'On';
-                    $('#toggleswitchremotechat').attr( "checked", "checked");
-                 }
-                 //console.log(valeur);
-                 //$('#toggleswitchremotechat option[value=Off]').removeAttr("selected");
-                // $('#toggleswitchremotechat option[value=On]').removeAttr("selected");
-                // $('#toggleswitchremotechat option[value='+valeur+']').attr("selected", "selected");
-                //$('select').selectmenu('refresh', true);
-      
-        });
-            
+
+        /*    
         $.getJSON(API+"/account/notificationstatus?user_id="+objUser.user_id+"&operator_id="+objUser.operator_id, function(res) {
                 console.log(res);
                 var valeur = 'Off';
                 if (res.status == '1') {
                     valeur = 'On';
                     $('#toggleswitchnotification').attr( "checked", "checked");
-                }		
-                //$('#toggleswitchnotification').val(valeur).slider("refresh");
-      
+                }		    
         });
-		     
-        // archives
-        refreshArchives();
+		*/     
         
         //language
         $('#selectlanguage').val(ln.language.code);
@@ -1172,319 +698,32 @@ function loadChatInit() {
        
 }
 
-function pictureCountry(country) {
-    var str = ''; 
-    if (country != undefined && country != 'Reserved' && country != '') {
-        if (country == 'United States') {
-            str = 'United-states-flag.png';
-        } else {
-            country = country.replace(" ", "-");
-            str = country+'-flag.png'; 
-        }
-    } else {
-        str = 'United-states-flag.png';
-    }
-/*    
-    if (country == 'United States') str = 'us.png';
-    else if (country == 'France') str = 'fr.png';
-    else if (country == 'Canada') str = 'ca.png';
-    else if (country == 'Mexico') str = 'mx.png';
-    else if (country == 'England') str = 'en.png';
-    else if (country == 'Germany') str = 'de.png';
-    else str = 'us.png';
-    */
-    return str;
-}
-
-function generateLineVisitor(v) {
-    var browser = '';
-	browser = pictureBrowser(v);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+v.browser+'" width="32">';
-    	
-    var lg = '';
-    lg = pictureCountry(v.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+v.country+'" border="0" width="16">';
-
-    var info = lg;
-    if (v.city && v.city != '') info += ' '+v.city+',';
-    //if (v.region && v.region != '') info += v.region+',';
-    if (v.country && v.country != '' && v.country != 'Reserved' ) info += ' '+v.country;
-    
-    var referrer = i18n.t('label.unknowreferrer');
-    if (v.referrer != '') referrer = v.referrer;
-    //  data-i18n="label.details">'+i18n.t('label.details')+'
-    
-    var day = '';
-    //2014-04-15 06:54:48 18
-    var myDate = new Date();
-    var myDate_string = myDate.toISOString();
-    var myDate_string = myDate_string.substr(0,10);
-
-    var visit = v.visit_time;
-    var currentday = visit.substr(0,10);
-    //console.log(currentday);
-    if (currentday !== myDate_string) day = i18n.t('label.yesterday')+' - '; // @todo change this to more accurate
-    var currenttime = day + visit.substr(11,5);   
-    //time_on_site
-    
-    var str = '<li><div class="item-content">'+
-              '<div class="item-media">'+browser+'</div>'+
-              '<div class="item-inner"><div class="item-title">'+v.ip+'<br>'+info+'<br>'+referrer+'<br>'+currenttime+'</div></div>'+
-              '</div></li>';                            
-              
-    return str;
-}
-
-
-function refreshVisitors() {
-      console.log('refreshVisitors');
-      if (doRefresh) {
-          var limit = 25;	
-          $.getJSON(API+"/account/visitors?limit="+limit+"&user_id="+objUser.user_id, function(res) {			
-            //console.log(res);
-            
-            // update total            
-            var oldTotal = totalVisitors;
-            totalVisitors = res.total;
-            $('.totalvisitors').html(totalVisitors);            
-            var diff = totalVisitors - oldTotal;
-            console.log('visitors diff='+diff);
-			/*
-            $('#badgetotalvisitors').html('');
-            if (oldTotal > 0) {
-                if (diff > 0) {
-                    $('#badgetotalvisitors').html('<span class="badge badge-green">+'+diff+'</span>');    
-                } else if (diff < 0) {
-                    $('#badgetotalvisitors').html('<span class="badge badge-red">'+diff+'</span>');          
-                }          
-            }    
-			*/			
-          
-            // update visitors list
-            var htmlVisitorList = '';
-            //if (totalVisitors > limit) htmlVisitorList += '<div class="content-block-title">'+i18n.t('label.browsing')+' ('+totalVisitors+'), '+limit+' displayed</div>';
-            //else htmlVisitorList += '<div class="content-block-title">'+i18n.t('label.browsing')+' ('+totalVisitors+')</div>';
-            htmlVisitorList += '<div class="content-block-title">'+i18n.t('label.browsing')+'</div>';
-			
-            htmlVisitorList += '<div class="list-block"><ul>';                           
-            $.each(res.visitors, function(k, v) {
-                var line = generateLineVisitor(v);     
-                htmlVisitorList += line;                             
-            });
-            htmlVisitorList += '</ul></div>';
-    
-            $('#container_visitor_list').html(htmlVisitorList);
-            
-         });
-     }
-}
 
 /* ---------------------- */
-// ARCHIVES 
+// FRAMEWORK 7 
 /* ---------------------- */
-function loadArchiveSession(sessionid) {
-        console.log('loadArchiveSession '+sessionid);
-        
-        // show loading icon
-        mofLoading(true);
-
-        $.ajax({
-              url: API+"/chat/get_conversation_by_session",
-              datatype: 'json',      
-              type: "post",
-              data: {replyname: objChat.support_display_name, session_id: sessionid, user_id: objUser.user_id},   
-              success:function(res){                    
-                 console.log(res);
-     
-                 var str = generatePageArchive(res);
-               
-                 mofLoading(false);               
-
-                 mainView.loadContent(str);
-           
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-				 mofLoading(false);  
-                 alert('Error loading session, try again!');
-				 alert(textStatus);
-				 alert(errorThrown);
-              }
-           });
-           
-        return true;
-}
-    
-function generatePageArchive(data) {
-    console.log('generatePageArchive');
-    var str = '';
-    
-    // shortcuts
-	var browser = pictureBrowser(data.visitor);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+data.visitor.browser+'" width="32">';    	
- 
-    var lg = '';
-    lg = pictureCountry(data.visitor.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+data.visitor.country+'" border="0" width="32" style="margin-left:2px;">';    
-            
-    generateDetailVisitor(data);
-            
-    str += '<div class="navbar">' +
-            '<div class="navbar-inner">' +
-            '<div class="left"><a href="#" class="back link"><i class="icon icon-back-blue"></i><span>Back</span></a></div>' +
-            '<div class="center sliding">'+data.name+'</div>' +
-            '<div class="right"><a href="#" class="link open-panel icon-only"><i class="icon icon-bars-blue"></i></a></div>' +
-            '</div>'+
-            '</div>'+        
-'<div class="pages navbar-through">'+
-  '<div data-page="messages" class="page no-toolbar toolbar-fixed">'+
-    '<div class="toolbar">'+
-        '<div class="toolbar-inner">'+         
-        '</div>'+
-    '</div>'+
-    '<div class="page-content messages-content">'+    
-    
-       '<div class="content-block">'+
-          '<div class="row no-gutter">'+
-            '<div class="col-50">'+browser+' '+lg+'</div>'+
-            '<div class="col-50"><a href="#" data-panel="right" class="button button-round active open-panel" data-i18n="label.details">'+i18n.t('label.details')+'</a></div>'+
-          '</div>'+         
-        '</div>';
-      
-    str += '<div class="messages messageWrapper">';      
-  
-    if (data.conversation != null) {
-         var conversationStarted = false;
-            
-         $.each(data.conversation, function(k, v) {    
-            var day = !conversationStarted ? v.message.post_date : false;      
-            if (day) {            
-                str += '<div class="messages-date">'+day+'</div>';
-            }
-            /*
-            var day = !conversationStarted ? 'Today' : false;            
-            //var time = !conversationStarted ? (new Date()).getHours() + ':' + (new Date()).getMinutes() : false;
-            var time = !conversationStarted ? formatDateLight(v.message.post_date) : false;
-            
-            if (day) {
-                str += '<div class="messages-date">' + day + (time ? ',' : '') + (time ? ' <span>' + time + '</span>' : '') + '</div>';                
-            }
-            */
-            
-            str += updateSessionMessage(v.message, false, true);
-            conversationStarted = true;
-             
-            if (v.reply != null) {
-                $.each(v.reply, function(i, r) {
-                    str += updateSessionReply(r, false, true);                    
-                }); 
-            }
-        });
-    }
-    /*
-        <div class="messages-date">Sunday, Feb 9, <span>12:58</span></div>       
-        */
-        
-      str += '</div>'+
-    '</div>'+
-  '</div>'+
-'</div>';
-    
-    return str;
-}
-
-function generateLineArchive(v) {
-    var browser = '';
-	browser = pictureBrowser(v);        
-    if (browser != '') browser = '<img src="img/browser/64/'+browser+'" border="0" alt="'+v.browser+'" width="32">';
-    	
-    var lg = '';
-    lg = pictureCountry(v.country);
-    if (lg != '') lg = '<img src="img/country/32/'+lg+'" alt="'+v.country+'" border="0" width="16">';    
-      
-    var info = lg;
-    if (v.city && v.city != '') info += ' '+v.city;
-    if (v.region && v.region != '') info += ', '+v.region;
-    //if (v.country && v.country != '' && v.country != 'Reserved' ) info += ' '+v.country;
-      
-    var referrer = i18n.t('label.unknowreferrer');
-    if (v.referrer != '') referrer = v.referrer;
-    //  data-i18n="label.details">'+i18n.t('label.details')+'
-    
-    /*
-    var day = '';
-    //2014-04-15 06:54:48 18
-    var myDate = new Date();
-    var myDate_string = myDate.toISOString();
-    var myDate_string = myDate_string.substr(0,10);
-
-    var visit = v.visit_time;
-    var currentday = visit.substr(0,10);
-    //console.log(currentday);
-    if (currentday !== myDate_string) day = i18n.t('label.yesterday')+' - '; // @todo change this to more accurate
-    var currenttime = day + visit.substr(11,5);   
-    */
-    var currenttime = v.end_date; 
-    
-    var str = '<li><a href="#" sid="'+v.session_id+'" onclick="return loadArchiveSession(\''+v.session_id+'\');" class="item-link"><div class="item-content">'+
-              '<div class="item-media">'+browser+'</div>'+
-              '<div class="item-inner">'+
-              '<div class="item-title">'+v.name+'<br>'+info+'<br>'+referrer+'<br>'+currenttime+'</div>'+
-              '<div class="item-after"><span class="badge">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></div>'+
-              '</div>'+
-              '</div></a></li>';   
-              
-              /*
-    var str = '<li><a href="#" sid="'+v.session_id+'" onclick="return loadChatSession(\''+v.session_id+'\');" class="item-link">'+
-                      '<div class="item-content">'+
-                        '<div class="item-media">'+browser+' '+lg+'</div>'+
-                        '<div class="item-inner">'+
-                          '<div class="item-title">'+v.name+'</div>'+
-						  '<div class="item-after"><span class="badge">'+(parseInt(v.totalmsg) + parseInt(v.totalreply))+'</span></div>'+
-                        '</div>'+
-                      '</div></a></li>';
-                      */
-                      
-    return str;
-}
-
-function refreshArchives() {
-      console.log('refreshArchives');
-      //if (doRefresh) {
-          var limit = 20;     
-          $.getJSON(API+"/chat/offline_user?limit="+limit+"&user_id="+objUser.user_id, function(data) {			
-            console.log(data);
-                             
-            var htmlUserList = '';
-            htmlUserList += '<div class="content-block-title">'+i18n.t('label.archives')+' ('+limit+')</div>';
-            htmlUserList += '<div class="list-block"><ul>';                                  
-            $.each(data.offline_user, function(k, v) {
-                htmlUserList += generateLineArchive(v);         
-            });
-            htmlUserList += '</ul></div>';
-
-            $('#container_archives_list').html(htmlUserList);            
-         });
-     //}
-}
 
 function goRegister() {
 	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
 }
 
-var myApp;
+var fw7;
 var $$;
 var mainView;
 function initFramework() {
-    myApp = new Framework7({
+    fw7 = new Framework7({
         fastClicks : false,
         cache: false,
-		modalTitle: 'eBox Smart'
+        cacheDuration: 1000,
+        swipePanel: 'left',
+		modalTitle: 'eureKa Care',
+        animateNavBackIcon: true
     });
     
     // Expose Internal DOM library
-    $$ = Framework7.$;
+    $$ = Dom7; //Framework7.$;
     
-    mainView = myApp.addView('.view-main', {
+    mainView = fw7.addView('.view-main', {
         // Because we use fixed-through navbar we can enable dynamic navbar
         dynamicNavbar: true
     });
@@ -1557,7 +796,7 @@ function initFramework() {
                
         if (page.name === 'messages') {        
              $$('.demo-remove-callback').on('deleted', function () {
-                myApp.alert('Thanks, item removed!', 'eBox Smart');
+                fw7.alert('Thanks, item removed!', 'eBox Smart');
             });
 
             console.log('message to load');
@@ -1571,7 +810,7 @@ function initFramework() {
 
     // Required for demo popover
     $$('.popover a').on('click', function () {
-        myApp.closeModal('.popover');
+        fw7.closeModal('.popover');
     });
 
     // Change statusbar bg when panel opened/closed
@@ -1603,7 +842,7 @@ function goMainTab(link) {
                         var viewContainer;
                         if (newTab.hasClass('view')) viewContainer = newTab[0];
                         else viewContainer = newTab.parents('.view')[0];
-                        myApp.sizeNavbars(viewContainer);
+                        fw7.sizeNavbars(viewContainer);
                     }
                     
 }
@@ -1695,8 +934,9 @@ function localNotificationGetScheduledIds() {
         }); 
 }
 
+// add new local notification for upcoming days 
 function processLocalNotification(data) {
-   // add new local notification for upcoming days 
+   
    var now = new Date().getTime();
         //_30_seconds_from_now = new Date(now + 30*1000);
         var _60_seconds_from_now = new Date(now + 60*1000);
@@ -1735,7 +975,7 @@ function processLocalNotification(data) {
                                     json: {'message': 'alert', 'delivery_dt': v_delivery.delivery_dt },
                                     autoCancel: true,
                                     ongoing: false,
-                                    repeat: 5, // 2 minutes
+                                    //repeat: 5, // 2 minutes
                                     //icon: 'file:///android_asset/www/img/flower128.png',                               
                                     date: notification_date
                                 });
