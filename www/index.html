@@ -10,6 +10,7 @@
     <title>eureKa Care</title>
     <!-- Path to Framework7 Library CSS-->
     <link rel="stylesheet" href="css/framework7.min.css">
+    <link rel="stylesheet" href="css/framework7.themes.min.css">
     <link rel="stylesheet" href="css/ionicons.min.css">
     <!-- Path to your custom app styles-->
     <link rel="stylesheet" href="css/my-app.css">    
@@ -34,7 +35,7 @@
                 </div>
               </div></a></li> 
               
-              <li><a href="modals.html" class="close-panel item-link">
+              <li><a href="frames/ebox_treatments.html?nocache=1" class="close-panel item-link">
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-clock"></i></div>
                 <div class="item-inner">
@@ -107,7 +108,7 @@
       <!-- Your main view, should have "view-main" class-->
       <div class="view view-main">
         <!-- Top Navbar-->
-       <div class="navbar">
+       <div class="navbar homex layout-dark theme-red">
           <div class="navbar-inner">
             <div class="left">
                 <img src="img/eurekacare-small.png" width="100"/>    
@@ -144,42 +145,17 @@
                </div>        
           </div>
           -->
-          <br>
-          <center>
-          <div id="pill" style="position:relative;"></div>
-          </center>
-          
-          <script>
- 
-       //<img onmouseup="this.src='img/ebox/pillbox_quart_empty_tl.png';" onmousedown="this.src='img/ebox/pillbox_quart_empty_tl_pressed.png';" src="img/ebox/pillbox_quart_empty_tl.png"><img src="img/ebox/pillbox_quart_empty_tr.png">
-       </script>
-       <br>
-         <!-- <canvas id="myCanvas" width="500" height="500" style="background-color:red;"></canvas> -->
-    <script>
-    /*
-      var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
-      
-      make_base();
 
-function make_base()
-{
-  base_image = new Image();
-  base_image.src = 'img/ebox/pillbox_quart_empty_tl.png';
-  base_image.onload = function(){
-    context.drawImage(base_image, 0, 0);
-  }
-}
-*/
-    </script>
-          
+         
           
           <!--<div class="content-block-title">Navigation</div> -->
           <div class="content-block">
               <div class="row no-gutter" style="text-align:center;font-weight:bold;font-size:18px;">
                 <div class="col-50">
+                    <a href="frames/ebox_treatments.html?nocache=1">
                     <img src="img/clock.png" alt=""  width="100" />
                     <br> <img src="img/logo.png" width="60"/>&nbsp;<span style="color:#0295D3">Smart</span>
+                    </a>
                 </div>
                 <div class="col-50">
                     <img src="img/chart.png" alt=""  width="100" />
@@ -208,13 +184,13 @@ function make_base()
             
              <div class="row no-gutter" style="text-align:center;font-weight:bold;font-size:18px;">                
                 <div class="col-50" style="text-align:center">
-                <a href="video.html" >
+                <a href="frames/video.html" >
                     <img src="img/photo.png" alt="" width="100" />
                     <br>Video Chat
                     </a>
                 </div>       
                 <div class="col-50">
-                 <a href="video_feature.html" style="color:gray">
+                 <a href="frames/video_feature.html" style="color:gray">
                     <img src="img/webcam2.png" alt=""  width="100" />
                      <br>Video Chat
                      </a>
@@ -223,7 +199,7 @@ function make_base()
             
             <div class="row no-gutter" style="text-align:center;font-weight:bold;font-size:18px;">                
                 <div class="col-50" style="text-align:center">
-                <a href="video.html">
+                <a href="frames/video.html">
                     <img src="img/photo.png" alt="" width="100" />
                     <br>Video Chat
                     </a>
@@ -243,10 +219,7 @@ function make_base()
         </div>
         <div id="tab-2" class="tab">
           <div class="content-block">
-            <!--<p>Active Visitors: <span class="totalvisitors">0</span></p>           -->
-            <!--<a href="#" class="open-panel">Left panel</a>-->
-            
-     
+      
       
             <div id="container_visitor_list"></div>
      

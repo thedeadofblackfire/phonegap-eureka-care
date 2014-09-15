@@ -131,44 +131,7 @@ html.with-statusbar-overlay .statusbar-overlay.with-popup-opened {
   width: 42px;
   height: 42px;
 }
-.page[data-page="messages"] .page-content {
-  padding-bottom: 44px;
-}
-.page[data-page="messages"] .toolbar {
-  -webkit-transform: none;
-  -moz-transform: none;
-  -ms-transform: none;
-  -o-transform: none;
-  transform: none;
-}
-.page[data-page="messages"] .ks-messages-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  appearance: none;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #c8c8cd;
-  background: #fff;
-  border-radius: 5px;
-  box-shadow: none;
-  display: block;
-  padding: 0px 8px 0px;
-  margin: 0;
-  width: 100%;
-  height: 28px;
-  color: #000;
-  font-size: 17px;
-  margin-right: 15px;
-  font-family: inherit;
-}
-.page[data-page="messages"] .ks-send-message {
-  -webkit-flex-shrink: 0;
-  -moz-flex-shrink: 0;
-  -ms-flex-shrink: 0;
-  flex-shrink: 0;
-}
+
 .statusbar-overlay {
   background: #ffffff;
 }
@@ -252,27 +215,26 @@ i.ks-tabbar-icon-4 {
 } 
 
 /* ionic icon */
-    .size-12 { font-size: 12px; }
-    .size-14 { font-size: 14px; }
-    .size-16 { font-size: 16px; }
-    .size-18 { font-size: 18px; }
-    .size-21 { font-size: 21px; }
-    .size-24 { font-size: 24px; }
-    .size-32 { font-size: 32px; }
-    .size-48 { font-size: 48px; }
-    .size-64 { font-size: 64px; }
-    .size-96 { font-size: 96px; }
+.size-12 { font-size: 12px; }
+.size-14 { font-size: 14px; }
+.size-16 { font-size: 16px; }
+.size-18 { font-size: 18px; }
+.size-21 { font-size: 21px; }
+.size-24 { font-size: 24px; }
+.size-32 { font-size: 32px; }
+.size-48 { font-size: 48px; }
+.size-64 { font-size: 64px; }
+.size-96 { font-size: 96px; }    
     
-    
-    
-.navbar {
+ /* homepage */
+.navbar.home {
   height: 46px;
   left: 0;
   top: 0;
   background: #3B3B3B;
   border-bottom: 1px solid #c4c4c4;
 }
-.navbar .right {
+.navbar.home .right {
   margin-left: 10px;
     background: #3B3B3B;
 }

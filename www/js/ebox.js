@@ -14,8 +14,6 @@ var isChatSession = false;
 var current_session_id = '';
 var totalVisitors = 0;
 var doRefresh = true;
-var firstAudioMessage = true;
-var firstAudioChat = true;
 
 var current_treatment_page = 0;
 var package_name = "com.cordova.eboxsmart";
@@ -36,7 +34,7 @@ var app = {
    
         
         if (ENV == 'dev') {
-            
+            /*
             jQuery(document).ready(function($){	
                
                 // Adjust canvas size when browser resizes
@@ -45,6 +43,7 @@ var app = {
                 // Adjust the canvas size when the document has loaded.
                 respondPill();
             });
+            */
         
             initFramework();
                
@@ -88,6 +87,7 @@ var app = {
         //checkConnection();	
 		console.log('onDeviceReady');
         
+        /*
         jQuery(document).ready(function($){	
                
             // Adjust canvas size when browser resizes
@@ -96,6 +96,7 @@ var app = {
             // Adjust the canvas size when the document has loaded.
             respondPill();
         });
+        */
         
         
         localNotificationInit();
@@ -698,24 +699,50 @@ function loadChatInit() {
        
 }
 
+function goRegister() {
+	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
+}
+
 
 /* ---------------------- */
 // FRAMEWORK 7 
 /* ---------------------- */
 
-function goRegister() {
-	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
-}
-
 var fw7;
 var $$;
 var mainView;
+var router = {};
+
+/**
+ * Init router, that handle page events
+ */
+router.init = function() {
+		$(document).on('pageBeforeInit', function (e) {
+			var page = e.detail.page;
+			load(page.name, page.query);
+		});
+    }
+
+/**
+ * Load (or reload) controller from js code (another controller) - call it's init function
+ * @param controllerName
+ * @param query
+ */
+ /*
+router.load = function(controllerName, query) {
+		require(['js/' + controllerName + '/'+ controllerName + 'Controller'], function(controller) {
+			controller.init(query);
+		});
+	}
+*/
+    
 function initFramework() {
     fw7 = new Framework7({
-        fastClicks : false,
+        fastClicks : true,
         cache: false,
         cacheDuration: 1000,
         swipePanel: 'left',
+        swipePanelActiveArea: 30,
 		modalTitle: 'eureKa Care',
         animateNavBackIcon: true
     });
@@ -729,9 +756,10 @@ function initFramework() {
     });
     
     // Events for specific pages when it initialized
-    $$(document).on('pageInit', function (e) {
+    //$$(document).on('pageInit', function (e) {
+    $$(document).on('pageBeforeInit', function (e) {
         var page = e.detail.page;
-        // console.log(page.name);
+        console.log('PAGE '+page.name);
         // handle index loader
         if (page.name === 'index' || page.name === 'index.html') {
             // to prevent back url on login
@@ -752,6 +780,27 @@ function initFramework() {
                 doRefresh = false;
             }
   
+        }
+        
+        if (page.name === 'device' || page.name === 'device.html' ) {
+           console.log('query address='+page.query.address);
+        
+           // $('.device-page').html('<p>address:'+page.query.address+'</p>');
+          // app.ui.displayDevicePage(page);          
+        }
+        
+        if (page.name === 'ebox_treatments') {
+        
+             console.log('query address='+page.query.address);
+        
+            // jQuery(document).ready(function($){	
+               
+                // Adjust canvas size when browser resizes
+                $(window).resize( respondPill );
+
+                // Adjust the canvas size when the document has loaded.
+                respondPill();
+            //});
         }
         
         //alert(page.name);
@@ -1138,14 +1187,24 @@ function renderPill(width) {
                 config.width_pillbox_center_logo = (width / 100) * 14;
                 config.width_pillbox_time = (width / 100) * 8;
             }
+            
+            var height_vertical = width;
+            var width_horiz = width;
+            // smartphone adjustments
+            if (width < 400) {
+                height_vertical = width - 1;
+            }
+            if (width < 300) {
+                width_horiz = width - 1;
+            }
           
             var str = '';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
-            str += '<img width="'+config.width_pillbox_base_vert+'" height="'+width+'px" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
+            str += '<img width="'+config.width_pillbox_base_vert+'" height="'+height_vertical+'px" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             //str += '<img width="'+config.width_pillbox_base_vert+'" border="0" "style="position:absolute;top:0;left:49%;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:51%;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
-            str += '<img width="'+width+'px" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
+            str += '<img width="'+width_horiz+'px" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             //str += '<img height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:49%;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:51%;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';            
@@ -1155,6 +1214,6 @@ function renderPill(width) {
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.morning+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.morning+'.png\';" src="img/ebox/'+config.morning+'.png">';
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.evening+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.evening+'.png\';" src="img/ebox/'+config.evening+'.png">';
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.noon+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.noon+'.png\';" src="img/ebox/'+config.noon+'.png">';
-            str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:43%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
+            str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:44%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
             document.getElementById("pill").innerHTML = str;
 }
