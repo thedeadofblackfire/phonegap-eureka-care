@@ -18,7 +18,51 @@ var doRefresh = true;
 var current_treatment_page = 0;
 var package_name = "com.cordova.eboxsmart";
 //var package_name = "com.mls.eboxsmart";
-        
+
+var baseLanguage = 'fr';        
+var info_date = {}; 
+
+
+// custom native log
+window.console=(function(origConsole){
+
+    if(!window.console)
+      console = {};
+    var isDebug=true,
+    logArray = {
+      logs: [],
+      errors: [],
+      warns: [],
+      infos: []
+    }
+    return {
+        log: function(){
+          logArray.logs.push(arguments);
+		  $('.log').prepend('<li>'+new Date().toISOString() + ' > '+arguments[0]+'</li>');
+          //$("#app-status-ul").prepend('<li>'+message+'</li>');
+          isDebug && origConsole.log && origConsole.log.apply(origConsole,arguments);
+        },
+        warn: function(){
+          logArray.warns.push(arguments)
+          isDebug && origConsole.warn && origConsole.warn.apply(origConsole,arguments);
+        },
+        error: function(){
+          logArray.errors.push(arguments)
+          isDebug && origConsole.error && origConsole.error.apply(origConsole,arguments);
+        },
+        info: function(v){
+          logArray.infos.push(arguments)
+          isDebug && origConsole.info && origConsole.info.apply(origConsole,arguments);
+        },
+        debug: function(bool){
+          isDebug = bool;
+        },
+        logArray: function(){
+          return logArray;
+        }
+    };
+
+}(window.console));
 
 var app = {
     // Application Constructor
@@ -48,7 +92,7 @@ var app = {
             initFramework();
                
             //var a = formatDateToTimestamp('2014-05-07 09:40:00');
-            //traceHandler(a);
+            //console.log(a);
         
             // get automatically user from session
             objUser = window.sessionStorage.getItem('user');
@@ -106,7 +150,7 @@ var app = {
         var _60_seconds_from_now = new Date(now + 60*1000);
 
         _30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
-        traceHandler(_30_seconds_from_now);
+        console.log(_30_seconds_from_now);
         /*
         window.plugin.notification.local.add({
             id:      1,
@@ -140,7 +184,7 @@ var app = {
         var url_sound = 'sounds/fr_alarm01.mp3';
     	if (device.platform == 'Android') {
             url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
-            traceHandler(url_sound);
+            console.log(url_sound);
         }
         url_sound = 'android.resource://' + package_name + '/raw/beep';
     
@@ -166,7 +210,7 @@ var app = {
         });
         
           //  var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        //traceHandler(resourceaudio);
+        //console.log(resourceaudio);
         
         
         var _30_seconds_from_now = new Date(now + 30*1000);   
@@ -242,7 +286,91 @@ var app = {
         // Handle the offline event
     }
 };
+
+
+
+app.displayTreatmentPage = function(page)
+{        
+        var delivery = page.query.delivery;
+        if (delivery === undefined) {
+                d = new Date();
+                delivery = formatyyyymmdd(d);
+        }
+        console.log('query id='+delivery);
+             
+        info_date = formatDateToObject(delivery);
+                  
+        // show loading icon
+        //mofLoading(true);
+        
+        var data = {};
+        data.info_date = info_date;
+        data.width = calculeWidth();
+        data.pill = renderPill(data.width);
+        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
+
+        // And insert generated list to page content
+        var content = $$(page.container).find('.page-content').html();       
+        content = fwk.render(content, data, false);      
+        $$(page.container).find('.page-content').html(content);
+        
+        var navcontent = $$(page.navbarInnerContainer).html();          
+        navcontent = fwk.render(navcontent, data, false);      
+        //alert(navcontent);
+        $$(page.navbarInnerContainer).html(navcontent);
+        
+                
+            // jQuery(document).ready(function($){	
+               
+                // Adjust canvas size when browser resizes
+                $(window).resize( respondPill );
+
+
+                
+              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+              //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
+              $('.current_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+              //$('.prev_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_prev+'&nocache=1');
+              // $('.next_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_next+'&nocache=1');
+              $('.prev_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_next+'\')');
   
+              //mainView.showNavbar();
+        //mofLoading(false);     
+        // mainView.loadContent(str);
+        //$('.device-page').html(str);
+            
+             /*
+           var contacts = JSON.parse(localStorage.getItem("fw7.ontacts"));
+            if (query && query.id) {
+                contact = new Contact(_.find(contacts, { id: query.id }));
+            }
+            */
+        
+            //$('.device-page').html(viewTemplate({ model: params.model }))
+            //bindEvents(params.bindings);
+            
+        return true;
+};
+  
+function navigatePageTreatment(delivery) {
+    console.log('page update id='+delivery);
+    
+    info_date = formatDateToObject(delivery);
+
+    respondPill();  
+                   
+              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+              //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
+              $('.current_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+
+              $('.prev_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_next+'\')');
+  
+
+}  
 
 
 function initAfterLogin() {
@@ -269,7 +397,7 @@ function formatDateToTimestamp(d) {
     //(year, month, day, hours, minutes, seconds, milliseconds)    
     //console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
     
-    //traceHandler(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
+    //console.log(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
                 
     var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
     //console.log(current.getTime());
@@ -287,6 +415,183 @@ function formatDate(d) {
 function formatDateLight(d) {
 	return d.substr(11,5);
 }
+
+/*
+Date.prototype.yyyymmdd = function() {         
+                                
+        var yyyy = this.getFullYear().toString();                                    
+        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based         
+        var dd  = this.getDate().toString();             
+                            
+        return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
+        //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+};  
+*/
+
+function formatyyyymmdd(d) {         
+                           
+        var yyyy = d.getFullYear().toString();                                    
+        var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based         
+        var dd  = d.getDate().toString();             
+                            
+        return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
+        //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+}
+
+var month, calendarTranslate;
+
+function initTranslate() {
+
+        month=new Array();
+        month[0]="January";
+        month[1]="February";
+        month[2]="March";
+        month[3]="April";
+        month[4]="May";
+        month[5]="June";
+        month[6]="July";
+        month[7]="August";
+        month[8]="September";
+        month[9]="October";
+        month[10]="November";
+        month[11]="December"; 
+        
+        calendarTranslate = {
+            monthNames:	["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            today: 'today',
+            day: 'day',
+            week: 'week',
+            month: 'month',
+            requiredPatient: 'A patient is required',
+            requiredSubject: 'A subject is required',
+            requiredContributor: 'At least one contributor is required',
+            status: 'Status',
+            location: 'Location',
+            detail: 'Detail',
+            contributors: 'Contributors',
+            timestart: 'Start Time',
+            timeend: 'End Time',
+            statusforbidden: 'Status figé - impossible de déplacer',
+            
+            treatments: 'Treatments',
+            night: 'Night',
+            morning: 'Morning',
+            noon: 'Noon',
+            evening: 'Evening'
+        };    
+        if (baseLanguage === 'fr') {
+      
+        	calendarTranslate.monthNames =	['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+			calendarTranslate.monthNamesShort = ['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+			calendarTranslate.dayNames = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+			calendarTranslate.dayNamesShort = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+       
+            calendarTranslate.today = 'aujourd\'hui';
+		    calendarTranslate.day = 'jour';
+		    calendarTranslate.week = 'semaine';
+		    calendarTranslate.month = 'mois';
+            
+            calendarTranslate.requiredPatient = 'Un patient est requis';
+            calendarTranslate.requiredSubject = 'Un sujet est requis';
+            calendarTranslate.requiredContributor = 'Au moins un intervenant est requis';
+            
+            calendarTranslate.status = 'Statut';
+            calendarTranslate.location = 'Lieu';
+            calendarTranslate.detail = 'Détail';
+            calendarTranslate.contributors = 'Intervenants';
+            calendarTranslate.timestart = 'Horaire Début';
+            calendarTranslate.timeend = 'Horaire Fin';
+            calendarTranslate.statusforbidden = 'Status figé - impossible de déplacer';
+            
+            calendarTranslate.treatments = 'Traitements';
+            calendarTranslate.night = 'Nuit';
+            calendarTranslate.morning = 'Matin';
+            calendarTranslate.noon = 'Midi';
+            calendarTranslate.evening = 'Soir';
+            
+            month[0]="Janvier";
+            month[1]="Février";
+            month[2]="Mars";
+            month[3]="Avril";
+            month[4]="Mai";
+            month[5]="Juin";
+            month[6]="Juillet";
+            month[7]="Août";
+            month[8]="Septembre";
+            month[9]="Octobre";
+            month[10]="Novembre";
+            month[11]="Décembre";                                 
+        }
+}
+
+// convert 20140526 to a prev next object string
+function formatDateToObject(d) {
+    var info = {};      
+    var today = new Date();
+    info.str_today = formatyyyymmdd(today);
+    
+    var hh  = today.getHours().toString();  
+    var mm  = today.getMinutes().toString();           
+                            
+    info.str_time = '' + (hh[1]?hh:"0"+hh[0]) + (mm[1]?mm:"0"+mm[0]);
+    
+    var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(4,2)) - 1), parseInt(d.substr(6,2)) );
+    info.current = current.getTime();
+    info.str_current = d; 
+    //var next = current;
+    var next = new Date(current.getTime());
+    next = new Date(next.setDate(next.getDate() + 1));
+    info.next = next.getTime();
+    info.str_next = formatyyyymmdd(next);
+
+    // var prev = current;
+    var prev = new Date(current.getTime());
+    prev = new Date(prev.setDate(prev.getDate() - 1));
+    info.prev = prev.getTime();
+    info.str_prev = formatyyyymmdd(prev);
+           
+    // label
+    var dd = current.getDate().toString();
+    info.label_night_day = (next.getDate().toString()[1]?next.getDate().toString():"0"+next.getDate().toString()[0]);
+    info.label_current_day = calendarTranslate.dayNamesShort[current.getDay()];
+  
+    info.current_section = 'archive';
+    if (d === info.str_today) {        
+        info.label_current_day = calendarTranslate.today.toUpperCase()+', '+ info.label_current_day;
+        
+        // morning: 0600 - 1200, noon (12 - 18), evening (18 - 00), night (00 - 06)
+        var time = parseInt(info.str_time, 10);
+        console.log(time);
+        if (time >= 0 && time < 600) info.current_section = 'night';
+        else if (time >= 600 && time < 1200) info.current_section = 'morning';
+        else if (time >= 1200 && time < 1800) info.current_section = 'noon';
+        else if (time >= 1800 && time < 2400) info.current_section = 'evening';
+    }
+    if (baseLanguage === 'fr') {
+        
+        info.label_current = (dd[1]?dd:"0"+dd[0])+' '+calendarTranslate.monthNamesShort[current.getMonth()];
+       
+        info.label_current_full = calendarTranslate.dayNamesShort[current.getDay()] + ' ' + info.label_current;
+        info.label_next_full = calendarTranslate.dayNamesShort[next.getDay()] + ' ' + (next.getDate().toString()[1]?next.getDate().toString():"0"+next.getDate().toString()[0]) + ' ' + calendarTranslate.monthNamesShort[next.getMonth()];
+        info.label_prev_full = calendarTranslate.dayNamesShort[prev.getDay()] + ' ' + (prev.getDate().toString()[1]?prev.getDate().toString():"0"+prev.getDate().toString()[0]) + ' ' + calendarTranslate.monthNamesShort[prev.getMonth()];
+       // info.label_next_day = (dd[1]?dd:"0"+dd[0])+' '+calendarTranslate.monthNamesShort[next.getMonth()];
+        //info.label_next_day = next.getDate().toString()+' '+calendarTranslate.monthNamesShort[next.getMonth()];
+    } else {
+        info.label_current = calendarTranslate.monthNamesShort[current.getMonth()]+', '+(dd[1]?dd:"0"+dd[0]);
+        //info.label_next_day = calendarTranslate.monthNamesShort[next.getMonth()]+', '+next.getDate().toString();
+        info.label_current_full = calendarTranslate.dayNamesShort[current.getDay()] + ' ' + info.label_current;
+        info.label_next_full = calendarTranslate.dayNamesShort[next.getDay()] + ' ' + calendarTranslate.monthNamesShort[next.getMonth()] + ', '+(next.getDate().toString()[1]?next.getDate().toString():"0"+next.getDate().toString()[0]);
+        info.label_prev_full = calendarTranslate.dayNamesShort[prev.getDay()] + ' ' + calendarTranslate.monthNamesShort[prev.getMonth()] + ', '+(prev.getDate().toString()[1]?prev.getDate().toString():"0"+prev.getDate().toString()[0]);
+      
+    }    
+  
+    console.log(info);
+	return info;    
+}
+
 
 // linkify
 if(!String.linkify) {
@@ -737,6 +1042,9 @@ router.load = function(controllerName, query) {
 */
     
 function initFramework() {
+
+    initTranslate();
+
     fw7 = new Framework7({
         fastClicks : true,
         cache: false,
@@ -789,18 +1097,10 @@ function initFramework() {
           // app.ui.displayDevicePage(page);          
         }
         
-        if (page.name === 'ebox_treatments') {
-        
-             console.log('query address='+page.query.address);
-        
-            // jQuery(document).ready(function($){	
-               
-                // Adjust canvas size when browser resizes
-                $(window).resize( respondPill );
-
-                // Adjust the canvas size when the document has loaded.
-                respondPill();
-            //});
+        if (page.name === 'ebox_treatments') {                  
+       
+             app.displayTreatmentPage(page);
+ 
         }
         
         //alert(page.name);
@@ -1011,7 +1311,7 @@ function processLocalNotification(data) {
                             var url_sound = 'sounds/fr_alarm01.mp3';
                             if (device.platform == 'Android') {
                                 url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
-                                //traceHandler(url_sound);
+                               
                             }
                             url_sound = 'android.resource://' + package_name + '/raw/beep';
         
@@ -1037,7 +1337,7 @@ function processLocalNotification(data) {
               
                   
         //_30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
-        //traceHandler(_30_seconds_from_now.getTime());
+        //console.log(_30_seconds_from_now.getTime());
         
  
         /*
@@ -1073,7 +1373,7 @@ function processLocalNotification(data) {
         var url_sound = 'sounds/fr_alarm01.mp3';
     	if (device.platform == 'Android') {
             url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
-            traceHandler(url_sound);
+            console.log(url_sound);
         }
         url_sound = 'android.resource://' + package_name + '/raw/beep';
     
@@ -1099,7 +1399,7 @@ function processLocalNotification(data) {
         });
         
           //  var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        //traceHandler(resourceaudio);
+        //console.log(resourceaudio);
         
         
         var _30_seconds_from_now = new Date(now + 30*1000);   
@@ -1133,40 +1433,54 @@ function processLocalNotification(data) {
         
 }
     
-function respondPill() {
-                var canvas = $('#pill')
-                //var container = $(canvas).parent()
+function calculeWidth() {
                 var width = $(document).width(); //$(window).width();
                 var height = $(document).height();
-                traceHandler(width +' x '+ height);
+                console.log(width +' x '+ height);
                 if (width >= 900) width = 900;
                 else width = width * 90 / 100;
                 //if (width > 1150) width = 720;
                 //else if (width > 700 && width <=1150) width = 450; 
                 
+                var canvas = $('.pill');
+                //var container = $(canvas).parent()
                 canvas.css('width', width ); // Max width
                 canvas.css('height', width );
                 //canvas.attr('height', $(container).height() ) // Max height
-                renderPill(width);
+                
+               return width;
+}
+
+function respondPill() { 
+                var width = calculeWidth();                
+                var str = renderPill(width);
+                $('.pill').html(str);
 };
             
 function renderPill(width) {   
-            traceHandler('renderPill width='+width);
+            console.log('renderPill width='+width);
             var config = {
                 'tl': 'pillbox_quart_full_tl', //'pillbox_quart_empty_tl',
                 'tr': 'pillbox_quart_full_tr', //'pillbox_quart_empty_tr',
                 'bl': 'pillbox_quart_full_bl', //'pillbox_quart_empty_bl',
-                'br': 'pillbox_quart_empty_br', 
+                'br': 'pillbox_quart_full_br', 
                 'pillbox_quart_width': 441, // 900 = 441 * 2 + 18
                 'width_pillbox_base_vert': 18,
                 'width_pillbox_base_horiz': 18,
                 'width_pillbox_center_logo': 111,
-                'width_pillbox_time': 120,                
+                'width_pillbox_time': 120,   
+                'left_position_center_logo': 44,
                 'night': 'finaliconnight',
                 'morning': 'finaliconmorning',
                 'evening': 'finaliconevening',
                 'noon': 'finaliconnoon'
             };
+                       
+            if (info_date.current_section === 'morning') config.tr = 'pillbox_quart_empty_tr';
+            else if (info_date.current_section === 'noon') config.br = 'pillbox_quart_empty_br';
+            else if (info_date.current_section === 'evening') config.bl = 'pillbox_quart_empty_bl';
+            else if (info_date.current_section === 'night') config.tl = 'pillbox_quart_empty_tl';
+            
             /*
             if (width == 450) {
                 config.pillbox_quart_width = 220;
@@ -1185,7 +1499,8 @@ function renderPill(width) {
                 config.width_pillbox_base_vert = (width / 100) * 2; // + 0.01;
                 config.width_pillbox_base_horiz = (width / 100) * 2; // + 0.01;
                 config.width_pillbox_center_logo = (width / 100) * 14;
-                config.width_pillbox_time = (width / 100) * 8;
+                config.left_position_center_logo = 43;
+                config.width_pillbox_time = (width / 100) * 10; //8
             }
             
             var height_vertical = width;
@@ -1198,22 +1513,56 @@ function renderPill(width) {
                 width_horiz = width - 1;
             }
           
+            var colorText = '#11C2BB';
+          
             var str = '';
-            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'night\');" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
             str += '<img width="'+config.width_pillbox_base_vert+'" height="'+height_vertical+'px" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             //str += '<img width="'+config.width_pillbox_base_vert+'" border="0" "style="position:absolute;top:0;left:49%;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
-            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'morning\');" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:51%;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             str += '<img width="'+width_horiz+'px" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             //str += '<img height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:49%;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
-            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'evening\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:51%;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';            
-            str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'noon\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
             
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.night+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.night+'.png\';" src="img/ebox/'+config.night+'.png">';
-            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.morning+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.morning+'.png\';" src="img/ebox/'+config.morning+'.png">';
-            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.evening+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.evening+'.png\';" src="img/ebox/'+config.evening+'.png">';
-            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:90%;left:95%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.noon+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.noon+'.png\';" src="img/ebox/'+config.noon+'.png">';
-            str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:44%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
-            document.getElementById("pill").innerHTML = str;
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;left:-10px;z-index:10;">'+calendarTranslate.night+' ('+info_date.label_night_day+')</span>';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:93%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.morning+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.morning+'.png\';" src="img/ebox/'+config.morning+'.png">';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;right:-10px;z-index:10;">'+calendarTranslate.morning+'</span>';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:95%;left:0px;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.evening+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.evening+'.png\';" src="img/ebox/'+config.evening+'.png">';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;left:-10px;z-index:10;">'+calendarTranslate.evening+'</span>';
+            str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:95%;left:93%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.noon+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.noon+'.png\';" src="img/ebox/'+config.noon+'.png">';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;right:-10px;z-index:10;">'+calendarTranslate.noon+'</span>';
+            str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:'+config.left_position_center_logo+'%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
+            //document.getElementById("pill").innerHTML = str;
+                    
+            return str;
+            //$('.pill').html(str);
+}
+
+function viewPill(type) {
+    var title;
+    if (type === 'night') {
+        title = info_date.label_next_full + ', 00:00 - 06:00';
+    } else if (type === 'noon') {
+        title = info_date.label_current_full + ', 12:00 - 18:00';
+    } else if (type === 'evening') {
+        title = info_date.label_current_full + ', 18:00 - 00:00';
+    } else if (type === 'morning') {
+        title = info_date.label_current_full + ', 06:00 - 12:00';
+    }
+    
+    var message = 'Aucune prise de médicament prévu';
+    window.plugins && window.plugins.toast.show(message, 'long', 'bottom', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
+    
+    fw7.addNotification({
+                    title: title,
+                    message: message, //'Aucun médicament prévu'
+                    hold: 2500,
+                    additionalClass: 'pill',
+                    closeIcon: false,
+                    media: '<img width="44" height="44" style="border-radius:100%" src="img/ebox/finaliconnight.png">'
+                });
 }

@@ -141,6 +141,7 @@ html.with-statusbar-overlay .statusbar-overlay.with-popup-opened {
 .statusbar-overlay.with-panel-right {
   background: #2693FF;
 }
+
 .page[data-page="tabbar"] .toolbar,
 .page[data-page="tabbar-labels"] .toolbar,
 .page[data-page="index"] .toolbar {
@@ -150,6 +151,7 @@ html.with-statusbar-overlay .statusbar-overlay.with-popup-opened {
   -o-transform: none;
   transform: none;
 }
+
 .page[data-page="tabbar"] .page-content,
 .page[data-page="tabbar-labels"] .page-content,
 .page[data-page="index"] .page-content {
@@ -237,4 +239,31 @@ i.ks-tabbar-icon-4 {
 .navbar.home .right {
   margin-left: 10px;
     background: #3B3B3B;
+}
+
+/* pill */
+.pill_time_title {color: #11C2BB;font-size:14px;}
+
+.notifications {
+  position: absolute;
+  left: 0;
+  top: 42px;
+  width: 100%;
+  z-index: 20000;
+  color: #fff;
+  font-size: 14px;
+  margin: 0;
+  border: none;
+  display: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  max-height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transition-duration: 450ms;
+  transition-duration: 450ms;
+  background: rgba(0,0,0, 0.70);  
+  -webkit-perspective: 1200px;
+  perspective: 1200px;  
 }

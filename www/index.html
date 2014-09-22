@@ -15,14 +15,14 @@
     <!-- Path to your custom app styles-->
     <link rel="stylesheet" href="css/my-app.css">    
   </head>
-  <body>
+  <body class="theme-lightblue">
     <div class="statusbar-overlay"></div>
     <!-- Panels overlay-->
     <div class="panel-overlay"></div>
     <!-- Left panel with reveal effect-->
     <div class="panel panel-left panel-reveal">
       <div class="content-block">
-        <p><center><a href="#" class="button button-cancel close-panel" data-i18n="label.closepanel">label.closepanel</a></center></p>
+        <p><center><a href="#" class="button button-cancel close-panel active" data-i18n="label.closepanel">label.closepanel</a></center></p>
       </div> 
       <!--<div class="content-block-title title_bluexxx">Active</div>-->
       <div class="list-block">
@@ -107,8 +107,10 @@
     <div class="views">
       <!-- Your main view, should have "view-main" class-->
       <div class="view view-main">
-        <!-- Top Navbar-->
-       <div class="navbar homex layout-dark theme-red">
+    
+       <!-- Top Navbar-->
+       
+       <div class="navbar homex layout-dark">
           <div class="navbar-inner">
             <div class="left">
                 <img src="img/eurekacare-small.png" width="100"/>    
@@ -118,20 +120,23 @@
             <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a></div>
           </div>
         </div>
+        
 		
         <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
         <div class="pages navbar-through toolbar-through">
           <!-- Page, data-page contains page name-->
-          <div data-page="index" class="page no-toolbar toolbar-fixed">
+          <div data-page="index" class="page toolbar-fixed">
+
+            <!--
             <div class="toolbar tabbar tabbar-labels" style="display:none">
               <div class="toolbar-inner">
                 <a href="#tab-1" class="tab-link active"><i id="badge-chat" class="icon size-32 ion-ios7-chatbubble-outline"></i><span class="tabbar-label" data-i18n="label.chats">label.chats</span></a>
                 <a href="#tab-2" class="tab-link"><i id="badgetotalvisitors" class="icon ks-tabbar-icon-1"></i><span class="tabbar-label" data-i18n="label.visitors">label.visitors</span></a>
                 <a href="#tab-archives" class="tab-link"><i class="icon ks-tabbar-icon-2"></i> <span class="tabbar-label" data-i18n="label.archives">label.archives</span></a>
                 <a href="#tab-3" class="tab-link"><i class="icon ks-tabbar-icon-3"></i><span class="tabbar-label" data-i18n="label.settings">label.settings</span></a>
-                 <!--<a href="#tab-3" class="tab-link"><i class="iconx size-32 ion-ios7-chatbubble-outline"></i> <span class="tabbar-label" data-i18n="label.chats">label.chats</span></a>--->
               </div>
             </div>     
+            -->
             <!-- Scrollable page content-->
             <div class="page-content" style="/*background: url('img/homebgxxx.png') repeat; background:#99CCCC;*/"> 
        
@@ -144,9 +149,7 @@
                  <center><span class="preloader ks-preloader-big"></span></center>
                </div>        
           </div>
-          -->
-
-         
+          -->         
           
           <!--<div class="content-block-title">Navigation</div> -->
           <div class="content-block">
@@ -181,7 +184,7 @@
             
             <br>
         
-            
+            <!--
              <div class="row no-gutter" style="text-align:center;font-weight:bold;font-size:18px;">                
                 <div class="col-50" style="text-align:center">
                 <a href="frames/video.html" >
@@ -196,11 +199,14 @@
                      </a>
                 </div>
             </div>
+            -->
             
             <div class="row no-gutter" style="text-align:center;font-weight:bold;font-size:18px;">                
                 <div class="col-50" style="text-align:center">
-                <a href="frames/video.html">
-                    <img src="img/photo.png" alt="" width="100" />
+                <!--<a href="frames/video.html">-->
+                <a href="frames/video_feature.html" style="color:gray">
+                    <img src="img/webcam2.png" alt=""  width="100" />
+                   <!-- <img src="img/photo.png" alt="" width="100" />-->
                     <br>Video Chat
                     </a>
                 </div>       
@@ -212,7 +218,7 @@
                 </div>
             </div>
             
-            <ul id="app-status-ul"></ul>
+            <ul class="log"></ul>
             
          </div>
 
@@ -221,11 +227,8 @@
           <div class="content-block">
       
       
-            <div id="container_visitor_list"></div>
      
-    
-            
-            <ul id="app-status-ul"></ul>
+          
           </div>
         </div>
         <div id="tab-archives" class="tab">
@@ -329,7 +332,7 @@
     <script type="text/javascript" charset="utf-8" src="js/ln.js"></script>   
     
     <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script> 
-    <!--<script type="text/javascript" charset="utf-8" src="telephonenumber.js"></script>-->
+    
     <script type="text/javascript" charset="utf-8" src="js/fwk.js"></script>	
     <script type="text/javascript" charset="utf-8" src="js/ebox.js"></script>		             
     <!--

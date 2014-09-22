@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eboxsmart"
-        version   = "0.2.92">
+        version   = "0.2.93">
 
     <name>Eureka Care</name>
 
@@ -62,8 +62,9 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
 	<gap:plugin name="org.li8.inappbrowser" version="0.1" />
     -->    
-    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
+    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.3.1" />
     <gap:plugin name="de.appplant.cordova.plugin.local-notification" version="0.7.4" />
+    <gap:plugin name="nl.x-services.plugins.toast" version="2.0" />
     <!-- <gap:plugin name="com.simonmacdonald.telephonenumber" version="1.0.0" /> -->
     
     <!--<gap:plugin name="com.randdusing.bluetoothle" version="1.0.2" /> -->
