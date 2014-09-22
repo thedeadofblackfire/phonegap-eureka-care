@@ -288,8 +288,9 @@ var app = {
 };
 
 
+app.treatments = {};
 
-app.displayTreatmentPage = function(page)
+app.treatments.displayTreatmentPage = function(page)
 {        
         var delivery = page.query.delivery;
         if (delivery === undefined) {
@@ -303,7 +304,7 @@ app.displayTreatmentPage = function(page)
         // show loading icon
         //mofLoading(true);
         
-        var data = {};
+        var data = {};        
         data.info_date = info_date;
         data.width = calculeWidth();
         data.pill = renderPill(data.width);
@@ -329,12 +330,12 @@ app.displayTreatmentPage = function(page)
                 
               $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
               //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
-              $('.current_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_today+'\')');
+              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
               
               //$('.prev_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_prev+'&nocache=1');
               // $('.next_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_next+'&nocache=1');
-              $('.prev_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_prev+'\')');
-               $('.next_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_next+'\')');
+              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
   
               //mainView.showNavbar();
         //mofLoading(false);     
@@ -354,24 +355,62 @@ app.displayTreatmentPage = function(page)
         return true;
 };
   
-function navigatePageTreatment(delivery) {
+app.treatments.navigatePageTreatment = function(delivery) {
     console.log('page update id='+delivery);
     
     info_date = formatDateToObject(delivery);
 
     respondPill();  
                    
-              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
-              //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
-              $('.current_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_today+'\')');
+    $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+    //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
+    $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
               
-
-              $('.prev_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_prev+'\')');
-               $('.next_date').attr('onclick', 'navigatePageTreatment(\''+info_date.str_next+'\')');
+    $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+    $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
   
+}; 
 
-}  
 
+app.treatments.displayPageTreatmentReport = function(page)
+{        
+        var delivery = page.query.delivery;
+        if (delivery === undefined) {
+                d = new Date();
+                delivery = formatyyyymmdd(d);
+        }
+        console.log('query id='+delivery);
+             
+        info_date = formatDateToObject(delivery);
+                  
+        // show loading icon
+        //mofLoading(true);
+        
+        var data = {};        
+        data.info_date = info_date;
+        data.width = calculeWidth();
+        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
+
+        // And insert generated list to page content
+        var content = $$(page.container).find('.page-content').html();          
+        content = fwk.render(content, data, false);      
+        $$(page.container).find('.page-content').html(content);
+        
+        var navcontent = $$(page.navbarInnerContainer).html();          
+        navcontent = fwk.render(navcontent, data, false);      
+        //alert(navcontent);
+        $$(page.navbarInnerContainer).html(navcontent);
+        
+                
+                
+              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
+
+        return true;
+};
 
 function initAfterLogin() {
   doRefresh = true;
@@ -693,7 +732,7 @@ jQuery(document).ready(function($){
      * show: true/false
      */
     function mofAlert(message, title) {
-        if (title == undefined) title = 'e-Box Smart';
+        if (title == undefined) title = 'eureKa Care';
         fw7.alert(message, title);               
     }
     
@@ -1060,7 +1099,7 @@ function initFramework() {
     
     mainView = fw7.addView('.view-main', {
         // Because we use fixed-through navbar we can enable dynamic navbar
-        dynamicNavbar: true
+        dynamicNavbar: false
     });
     
     // Events for specific pages when it initialized
@@ -1097,9 +1136,15 @@ function initFramework() {
           // app.ui.displayDevicePage(page);          
         }
         
-        if (page.name === 'ebox_treatments') {                  
+        if (page.name === 'treatments') {                  
        
-             app.displayTreatmentPage(page);
+             app.treatments.displayTreatmentPage(page);
+ 
+        }
+        
+         if (page.name === 'treatments_report') {                  
+       
+             app.treatments.displayPageTreatmentReport(page);
  
         }
         
