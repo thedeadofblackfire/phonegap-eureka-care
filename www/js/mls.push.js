@@ -155,7 +155,7 @@
                             // On Amazon FireOS all custom attributes are contained within payload
                             var soundfile = e.soundname || e.payload.sound;
                             // if the notification contains a soundname, play it.
-                            var my_media = new Media("file:///android_asset/www/"+ soundfile); //new Media("file:///android_asset/www/audio/"+e.soundname); 
+                            var my_media = new Media("file:///android_asset/www/audio/"+ soundfile); //new Media("file:///android_asset/www/audio/"+e.soundname); 
                             my_media.play();
                              					
 						}
