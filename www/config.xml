@@ -58,6 +58,7 @@
     <gap:plugin name="org.apache.cordova.vibration" version="0.3.7" />
     <gap:plugin name="org.apache.cordova.globalization" version="0.2.6" />
 
+
     <!--
     <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
 	<gap:plugin name="org.li8.inappbrowser" version="0.1" />

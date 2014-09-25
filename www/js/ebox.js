@@ -23,6 +23,21 @@ var baseLanguage = 'fr';
 var info_date = {}; 
 
 
+var objConfig = {
+   'version': '1.0.0',
+   'build': "1832",
+   'release_time': '2014.09.13 11:00',
+   'platform': 'Android'
+   };
+
+// INIT SETTING: config
+var dbAppUserSettings = dbAppUserSettings || fwkStore.DB("user_settings");
+var objUserSettings = {}; 
+
+// INIT TREATMENTS
+var dbAppUserTreatments = dbAppUserTreatments || fwkStore.DB("user_treatments");
+var objUserTreatments = {};
+
 // custom native log
 window.console=(function(origConsole){
 
@@ -67,6 +82,9 @@ window.console=(function(origConsole){
 var app = {
     // Application Constructor
     initialize: function() {
+        
+        app.treatments.init();
+        
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -75,23 +93,22 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-   
-        
+           
         if (ENV == 'dev') {
             /*
             jQuery(document).ready(function($){	
                
                 // Adjust canvas size when browser resizes
-                $(window).resize( respondPill );
+                $(window).resize( app.treatments.respondPill );
 
                 // Adjust the canvas size when the document has loaded.
-                respondPill();
+                app.treatments.respondPill();
             });
             */
         
             initFramework();
                
-            //var a = formatDateToTimestamp('2014-05-07 09:40:00');
+            //var a = app.date.formatDateToTimestamp('2014-05-07 09:40:00');
             //console.log(a);
         
             // get automatically user from session
@@ -130,124 +147,17 @@ var app = {
     onDeviceReady: function() {
         //checkConnection();	
 		console.log('onDeviceReady');
+                
+        app.treatments.localNotificationInit();
         
-        /*
-        jQuery(document).ready(function($){	
-               
-            // Adjust canvas size when browser resizes
-            $(window).resize( respondPill );
-
-            // Adjust the canvas size when the document has loaded.
-            respondPill();
-        });
-        */
-        
-        
-        localNotificationInit();
-        
-        var now                  = new Date().getTime();
-        //_30_seconds_from_now = new Date(now + 30*1000);
-        var _60_seconds_from_now = new Date(now + 60*1000);
-
-        _30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
-        console.log(_30_seconds_from_now);
-        /*
-        window.plugin.notification.local.add({
-            id:      1,
-            title:   'Reminder drug 0h',
-            message: 'Dont forget your drug',
-            //repeat:  'daily',
-            //sound:   '/www/res/raw/beep.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
-            sound:   'TYPE_ALARM',
-            //sound: 'TYPE_NOTIFICATION',
-            badge: 0,
-            json: {'message': 'alert'},
-            autoCancel: true,
-            //smallIcon: 'ic_dialog_email',
-            date:    _30_seconds_from_now
-        });
-
-        window.plugin.notification.local.onadd = function (id, state, json) {
-            alert('onadd '+id+' state='+state+' '+JSON.stringify(json));
-        };
-        
-        window.plugin.notification.local.ontrigger  = function (id, state, json) {
-            alert('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
-        };
-        
-        window.plugin.notification.local.onclick   = function (id, state, json) {
-            alert('onclick  '+id+' state='+state+' '+JSON.stringify(json));
-        };
-        */
-    /*
-        var url_sound = 'sounds/fr_alarm01.mp3';
-    	if (device.platform == 'Android') {
-            url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
-            console.log(url_sound);
-        }
-        url_sound = 'android.resource://' + package_name + '/raw/beep';
-    
-        window.plugin.notification.local.add({
-            id:      2,
-            title:   'Reminder sound 1',
-            message: 'Allo 1',
-            sound: url_sound,
-            //sound:  'android.resource://' + package_name + '/raw/beep',
-            //sound: 'beep.wav',
-            //sound: 'https://office.eureka-platform.com/assets/media/en_alarm01.mp3',
-            //repeat:  'daily',
-            //sound:   '/www/res/raw/beep',
-           // sound:   '/www/sounds/fr_alarm01.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
-            //sound:   'TYPE_ALARM',
-            badge: 1,
-            autoCancel: true,
-            //repeat: 2, // 2 minutes
-            //icon: 'file:///android_asset/www/img/flower128.png',
-            led: 'FFFFFF',
-            date:    _60_seconds_from_now
-        });
-        
-          //  var resourceaudio = this.getPhoneGapPath() + 'beep.wav'; //'audio/audio.mp3';
-        //console.log(resourceaudio);
-        
-        
-        var _30_seconds_from_now = new Date(now + 30*1000);   
-        
-        window.plugin.notification.local.add({
-            id:      3,
-            title:   'Reminder sound 2',
-            message: 'Allo 2',
-            sound: url_sound,
-            //sound:   '/www/audio/beep.mp3',
-            //sound: 'https://office.eureka-platform.com/assets/media/en_taking02.mp3',
-            //sound: this.getPhoneGapPath() + 'res/raw/beep.mp3',
-            //repeat:  'daily',
-            //sound:   '/www/res/raw/beep',
-           // sound:   '/www/sounds/fr_alarm01.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
-            //sound:   'TYPE_NOTIFICATION',
-            badge: 1,
-            autoCancel: true,
-            led: 'A0FF05',
-            date:    _30_seconds_from_now
-        });
-       // window.plugin.notification.local.add({ message: 'Great app!' });
-       
-       */
-        /*     
-        window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
-             alert('Scheduled IDs: ' + scheduledIds.join(' ,'));
-        });
-        */
-
         ln.init();
 				
         if (ENV == 'production') {
             // hide the status bar using the StatusBar plugin
             //StatusBar.hide();
         
+            objConfig.platform = device.platform;
+            
             /*
             var iOS7 = window.device && window.device.platform && window.device.platform.toLowerCase() == "ios" && parseFloat(window.device.version) >= 7.0;
             if (iOS7) {
@@ -288,129 +198,10 @@ var app = {
 };
 
 
-app.treatments = {};
 
-app.treatments.displayTreatmentPage = function(page)
-{        
-        var delivery = page.query.delivery;
-        if (delivery === undefined) {
-                d = new Date();
-                delivery = formatyyyymmdd(d);
-        }
-        console.log('query id='+delivery);
-             
-        info_date = formatDateToObject(delivery);
-                  
-        // show loading icon
-        //mofLoading(true);
-        
-        var data = {};        
-        data.info_date = info_date;
-        data.width = calculeWidth();
-        data.pill = renderPill(data.width);
-        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
-
-        // And insert generated list to page content
-        var content = $$(page.container).find('.page-content').html();       
-        content = fwk.render(content, data, false);      
-        $$(page.container).find('.page-content').html(content);
-        
-        var navcontent = $$(page.navbarInnerContainer).html();          
-        navcontent = fwk.render(navcontent, data, false);      
-        //alert(navcontent);
-        $$(page.navbarInnerContainer).html(navcontent);
-        
-                
-            // jQuery(document).ready(function($){	
-               
-                // Adjust canvas size when browser resizes
-                $(window).resize( respondPill );
-
-
-                
-              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
-              //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
-              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
-              
-              //$('.prev_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_prev+'&nocache=1');
-              // $('.next_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_next+'&nocache=1');
-              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
-               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
-  
-              //mainView.showNavbar();
-        //mofLoading(false);     
-        // mainView.loadContent(str);
-        //$('.device-page').html(str);
-            
-             /*
-           var contacts = JSON.parse(localStorage.getItem("fw7.ontacts"));
-            if (query && query.id) {
-                contact = new Contact(_.find(contacts, { id: query.id }));
-            }
-            */
-        
-            //$('.device-page').html(viewTemplate({ model: params.model }))
-            //bindEvents(params.bindings);
-            
-        return true;
-};
-  
-app.treatments.navigatePageTreatment = function(delivery) {
-    console.log('page update id='+delivery);
-    
-    info_date = formatDateToObject(delivery);
-
-    respondPill();  
-                   
-    $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
-    //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
-    $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
-              
-    $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
-    $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
-  
-}; 
-
-
-app.treatments.displayPageTreatmentReport = function(page)
-{        
-        var delivery = page.query.delivery;
-        if (delivery === undefined) {
-                d = new Date();
-                delivery = formatyyyymmdd(d);
-        }
-        console.log('query id='+delivery);
-             
-        info_date = formatDateToObject(delivery);
-                  
-        // show loading icon
-        //mofLoading(true);
-        
-        var data = {};        
-        data.info_date = info_date;
-        data.width = calculeWidth();
-        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
-
-        // And insert generated list to page content
-        var content = $$(page.container).find('.page-content').html();          
-        content = fwk.render(content, data, false);      
-        $$(page.container).find('.page-content').html(content);
-        
-        var navcontent = $$(page.navbarInnerContainer).html();          
-        navcontent = fwk.render(navcontent, data, false);      
-        //alert(navcontent);
-        $$(page.navbarInnerContainer).html(navcontent);
-        
-                
-                
-              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
-              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
-              
-              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
-               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
-
-        return true;
-};
+// --
+// functions
+// --
 
 function initAfterLogin() {
   doRefresh = true;
@@ -420,63 +211,9 @@ function initAfterLogin() {
   //loadChatInit();		
 }
 
-
-// --
-// functions
-// --
-
-function traceHandler(message) {
-    console.log(message);                
-    $("#app-status-ul").append('<li>'+message+'</li>');
-}
-            
-//2013-06-03 08:00:00
-function formatDateToTimestamp(d) {
-    //new Date().getTime()
-    //(year, month, day, hours, minutes, seconds, milliseconds)    
-    //console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
-    
-    //console.log(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
-                
-    var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
-    //console.log(current.getTime());
-    //console.log(current);
-	return current;    
-}
-
-function formatDate(d) {
-	var str = d.substr(11,8);
-	if (parseInt(d.substr(11,2)) < 12) str += ' am';
-	else str += ' pm';
-	return str;
-}
-
-function formatDateLight(d) {
-	return d.substr(11,5);
-}
-
-/*
-Date.prototype.yyyymmdd = function() {         
-                                
-        var yyyy = this.getFullYear().toString();                                    
-        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based         
-        var dd  = this.getDate().toString();             
-                            
-        return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
-        //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-};  
-*/
-
-function formatyyyymmdd(d) {         
-                           
-        var yyyy = d.getFullYear().toString();                                    
-        var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based         
-        var dd  = d.getDate().toString();             
-                            
-        return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
-        //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-}
-
+// ---------------------
+// TRANSLATE
+// ---------------------
 var month, calendarTranslate;
 
 function initTranslate() {
@@ -566,11 +303,39 @@ function initTranslate() {
         }
 }
 
+// ---------------------
+// DATE
+// ---------------------
+app.date = {};
+
+//2013-06-03 08:00:00
+app.date.formatDateToTimestamp = function(d) {
+    //new Date().getTime()
+    //(year, month, day, hours, minutes, seconds, milliseconds)    
+    //console.log(parseInt(d.substr(0,4)) + ' '+(parseInt(d.substr(5,2)) - 1) + ' '+parseInt(d.substr(8,2))  );
+    
+    //console.log(d + ' ' + parseInt(d.substr(11,2)) + ' ' + parseInt(d.substr(17,2)));
+                
+    var current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), parseInt(d.substr(11,2)), parseInt(d.substr(14,2)), parseInt(d.substr(17,2)) );
+    //console.log(current.getTime());   
+	return current;    
+};
+
+app.date.formatyyyymmdd = function(d) {         
+                           
+        var yyyy = d.getFullYear().toString();                                    
+        var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based         
+        var dd  = d.getDate().toString();             
+                            
+        return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
+        //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+};
+
 // convert 20140526 to a prev next object string
-function formatDateToObject(d) {
+app.date.formatDateToObject = function(d) {
     var info = {};      
     var today = new Date();
-    info.str_today = formatyyyymmdd(today);
+    info.str_today = app.date.formatyyyymmdd(today);
     
     var hh  = today.getHours().toString();  
     var mm  = today.getMinutes().toString();           
@@ -584,13 +349,13 @@ function formatDateToObject(d) {
     var next = new Date(current.getTime());
     next = new Date(next.setDate(next.getDate() + 1));
     info.next = next.getTime();
-    info.str_next = formatyyyymmdd(next);
+    info.str_next = app.date.formatyyyymmdd(next);
 
     // var prev = current;
     var prev = new Date(current.getTime());
     prev = new Date(prev.setDate(prev.getDate() - 1));
     info.prev = prev.getTime();
-    info.str_prev = formatyyyymmdd(prev);
+    info.str_prev = app.date.formatyyyymmdd(prev);
            
     // label
     var dd = current.getDate().toString();
@@ -629,44 +394,22 @@ function formatDateToObject(d) {
   
     console.log(info);
 	return info;    
-}
+};
 
+app.date.generateProcessingId = function() {
+    var d = new Date();
+    return d.getMinutes()+''+d.getSeconds()+''+d.getMilliseconds();
+};
 
-// linkify
-if(!String.linkify) {
-    String.prototype.linkify = function() {
-
-        // http://, https://, ftp://
-        var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-
-        // www. sans http:// or https://
-        var pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-
-        // Email addresses
-		var emailAddressPattern = /(([a-zA-Z0-9_\-\.]+)@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6}))+/gim;
-
-        return this
-            .replace(urlPattern, '<a target="_blank" href="$&" class="external">$&</a>')
-            .replace(pseudoUrlPattern, '$1<a target="_blank" href="http://$2" class="external">$2</a>')
-            .replace(emailAddressPattern, '<a target="_blank" href="mailto:$&" class="external">$&</a>');
-    };
-}
-            
+// ---------------------
+// AUTH
+// ---------------------          
 jQuery(document).ready(function($){
 		        
 	$(document).on('click', '.btn-logout', handleLogout);
 
 	$(document).on('click', "#btnLogin", handleLoginForm);
-	
-	$(document).on('change', '#toggleswitchremotechat', function(e) {	
-        //alert($(this).is(':checked') +' '+$(this).val());
-       var current_status = 'Off'; //$(this).val();
-       if ($(this).is(':checked') === true) current_status = 'On';
-      
-       handleUpdateAvailability(current_status);
-     		
-	});
-    
+	    
     $(document).on('change', '#toggleswitchnotification', function(e) {		      
        var current_status = 'Off'; //$(this).val();
        if ($(this).is(':checked') === true) current_status = 'On';
@@ -691,21 +434,6 @@ jQuery(document).ready(function($){
 			
 });
 
-    
-    // parse params in hash
-	function hashParams(hash) {
-		var ret = {};
-	    var match;
-	    var plus   = /\+/g;
-	    var search = /([^\?&=]+)=([^&]*)/g;
-	    var decode = function(s) { 
-	    	return decodeURIComponent(s.replace(plus, " ")); 
-	    };
-	    while( match = search.exec(hash) ) ret[decode(match[1])] = decode(match[2]);
-	    
-	    return ret
-	};
-    
     
     /* 
      * mobile framework - Change Page
@@ -1012,16 +740,6 @@ function loadDataUserList(data) {
 }
 
 
-function generateProcessingId() {
-    var d = new Date();
-    return d.getMinutes()+''+d.getSeconds()+''+d.getMilliseconds();
-}
-// iso
-function generateProcessingPostDate() {
-    var d = new Date();
-    return d.toISOString();
-}
-
 function loadChatInit() {
       console.log('loadChatInit');
 
@@ -1201,7 +919,7 @@ function initFramework() {
         }
 
     });
-
+    
     // Required for demo popover
     $$('.popover a').on('click', function () {
         fw7.closeModal('.popover');
@@ -1241,11 +959,64 @@ function goMainTab(link) {
                     
 }
 
+
+// -----------
+// SETTINGS
+// -----------
+app.settings = {};
+
+app.settings.init = function()
+{
+    objUserSettings = dbAppUserSettings.get();
+    if (Object.keys(objUserSettings).length == 0) {
+       objUserSettings = {  
+        'autoconnect': true, 
+        'last_update': new Date().toISOString(),     
+        };            
+       dbAppUserSettings.set(objUserSettings);
+    }      
+};
+
+app.settings.set = function(key, value)
+{
+    objUserSettings[key] = value;
+    objUserSettings['last_update'] = new Date().toISOString();
+    dbAppUserSettings.set(objUserSettings);       
+};
+
+app.settings.get = function(key)
+{
+    return objUserSettings[key];            
+};
+
 // ---------------------
-// TREATMENT
+// TREATMENTS
 // ---------------------
+app.treatments = {};
+
+app.treatments.constant = {};
+app.treatments.constant.STATUS_TODAY_BEFORE           = app.treatments.constant.STATUS_TODAY_BEFORE         || 0;
+app.treatments.constant.STATUS_TODAY                  = app.treatments.constant.STATUS_TODAY                || 1;
+app.treatments.constant.STATUS_TODAY_AFTER            = app.treatments.constant.STATUS_TODAY_AFTER          || 2;
+
+app.treatments.constant.STATUS_PENDING                = app.treatments.constant.STATUS_PENDING              || 0;
+app.treatments.constant.STATUS_COMPLETED              = app.treatments.constant.STATUS_COMPLETED            || 1;
+app.treatments.constant.STATUS_INPROGRESS             = app.treatments.constant.STATUS_INPROGRESS           || 2;
+app.treatments.constant.STATUS_COMPLETEDWITHERRORS    = app.treatments.constant.STATUS_COMPLETEDWITHERRORS  || 3;
+
+
+app.treatments.init = function()
+{
+    objUserTreatments = dbAppUserTreatments.get();   
+    // @todo should be clean the old treatments to archives
+    
+    // @todo check on server if connected new production file or treatment to parse
+    
+    dbAppUserTreatments.set(objUserTreatments);
+};
+
 // load 7 last days
-function loadTreatment() {
+app.treatments.load = function() {
         console.log('loadTreatment');
         
         // show loading icon
@@ -1271,8 +1042,13 @@ function loadTreatment() {
                 $.each(res.items, function(k, v) { 
                     console.log(k+' | '+v.delivery_day);
                 });        
-*/                
-                processLocalNotification(res.items);
+                */                
+                
+                // save local storage
+                
+
+
+                app.treatments.processLocalNotification(res.items);
                  //mainView.loadContent(str);
            
               },
@@ -1287,18 +1063,267 @@ function loadTreatment() {
         return true;
 }
 
- var _constant = {};
-_constant.STATUS_TODAY_BEFORE           = _constant.STATUS_TODAY_BEFORE         || 0;
-_constant.STATUS_TODAY                  = _constant.STATUS_TODAY                || 1;
-_constant.STATUS_TODAY_AFTER            = _constant.STATUS_TODAY_AFTER          || 2;
+app.treatments.displayTreatmentPage = function(page)
+{        
+        var delivery = page.query.delivery;
+        if (delivery === undefined) {
+                d = new Date();
+                delivery = app.date.formatyyyymmdd(d);
+        }
+        console.log('query id='+delivery);
+             
+        info_date = app.date.formatDateToObject(delivery);
+                  
+        // show loading icon
+        //mofLoading(true);
+        
+        var data = {};        
+        data.info_date = info_date;
+        data.width = app.treatments.calculeWidth();
+        data.pill = app.treatments.renderPill(data.width);
+        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
 
-_constant.STATUS_PENDING                = _constant.STATUS_PENDING              || 0;
-_constant.STATUS_COMPLETED              = _constant.STATUS_COMPLETED            || 1;
-_constant.STATUS_INPROGRESS             = _constant.STATUS_INPROGRESS           || 2;
-_constant.STATUS_COMPLETEDWITHERRORS    = _constant.STATUS_COMPLETEDWITHERRORS  || 3;
+        // And insert generated list to page content
+        var content = $$(page.container).find('.page-content').html();       
+        content = fwk.render(content, data, false);      
+        $$(page.container).find('.page-content').html(content);
+        
+        var navcontent = $$(page.navbarInnerContainer).html();          
+        navcontent = fwk.render(navcontent, data, false);      
+        //alert(navcontent);
+        $$(page.navbarInnerContainer).html(navcontent);
+        
+                
+            // jQuery(document).ready(function($){	
+               
+                // Adjust canvas size when browser resizes
+                $(window).resize( app.treatments.respondPill );
 
 
-function localNotificationInit() {
+                
+              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+              //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
+              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+              //$('.prev_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_prev+'&nocache=1');
+              // $('.next_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_next+'&nocache=1');
+              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
+  
+              //mainView.showNavbar();
+        //mofLoading(false);     
+        // mainView.loadContent(str);
+        //$('.device-page').html(str);
+            
+             /*
+           var contacts = JSON.parse(localStorage.getItem("fw7.ontacts"));
+            if (query && query.id) {
+                contact = new Contact(_.find(contacts, { id: query.id }));
+            }
+            */
+        
+            //$('.device-page').html(viewTemplate({ model: params.model }))
+            //bindEvents(params.bindings);
+            
+        return true;
+};
+  
+app.treatments.navigatePageTreatment = function(delivery) {
+    console.log('page update id='+delivery);
+    
+    info_date = app.date.formatDateToObject(delivery);
+
+    app.treatments.respondPill();  
+                   
+    $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+    //$('.current_date').attr('href', 'frames/ebox_treatments.html?delivery='+info_date.str_today+'&nocache=1');
+    $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+    $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+    $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
+  
+}; 
+
+app.treatments.displayPageTreatmentReport = function(page)
+{        
+        var delivery = page.query.delivery;
+        if (delivery === undefined) {
+                d = new Date();
+                delivery = app.date.formatyyyymmdd(d);
+        }
+        console.log('query id='+delivery);
+             
+        info_date = app.date.formatDateToObject(delivery);
+                  
+        // show loading icon
+        //mofLoading(true);
+        
+        //objUserTreatments
+        
+        var data = {};        
+        data.info_date = info_date;
+        data.width = app.treatments.calculeWidth();
+        //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
+
+        // And insert generated list to page content
+        var content = $$(page.container).find('.page-content').html();          
+        content = fwk.render(content, data, false);      
+        $$(page.container).find('.page-content').html(content);
+        
+        var navcontent = $$(page.navbarInnerContainer).html();          
+        navcontent = fwk.render(navcontent, data, false);      
+        //alert(navcontent);
+        $$(page.navbarInnerContainer).html(navcontent);
+ 
+              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
+              
+              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
+
+               /*
+       // Generate new items HTML
+            var html = '';
+            for (var i = 1; i <= 20; i++) {
+              html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
+            }
+         
+            // Append new items
+            $$('.page-archives > .list-block ul').append(html);
+            */
+               
+        var last_days = 14;       
+        current_treatment_page = 0;
+        current_treatment_page++;
+        $.ajax({
+              url: API+"/gettreatment",
+              datatype: 'json',      
+              type: "post",
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
+              success:function(res){                    
+                 console.log(res);
+                
+                 app.treatments.displayReportItems(res.items);                                 
+           
+              },
+              error: function(jqXHR, textStatus, errorThrown) {				  
+                 console.log('Error loading datas, try again!');
+				 console.log(textStatus);
+				 console.log(errorThrown);
+              }
+         });     
+    
+               
+        // infinite scroll                      
+               
+        // Loading flag
+        var loading = false;
+         
+        // Last loaded index
+        var lastIndex = $$('.page-archives > .list-block li').length;
+        console.log('lastIndex: '+lastIndex);
+         
+        // Max items to load
+        var maxItems = 100;
+         
+        // Append items per load
+        var itemsPerLoad = 20;
+         
+        // Attach 'infinite' event handler
+        $$('.page-archives.infinite-scroll').on('infinite', function () {
+         
+          // Exit, if loading in progress
+          if (loading) return;
+         
+          // Set loading flag
+          loading = true;
+          
+          current_treatment_page++;           
+         
+          $.ajax({
+              url: API+"/gettreatment",
+              datatype: 'json',      
+              type: "post",
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
+              success:function(res){                    
+                 console.log(res);
+                 
+                 // Reset loading flag
+                 loading = false;
+                 
+                 if (Object.keys(res.items).length == 0) { 
+                      // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
+                      fw7.detachInfiniteScroll($$('.page-archives.infinite-scroll'));
+                      // Remove preloader
+                      $$('.page-archives > .infinite-scroll-preloader').remove();
+                      return;
+                 }
+                
+                 app.treatments.displayReportItems(res.items);  
+
+                // Update last loaded index
+                //lastIndex = $$('.page-archives > .list-block li').length;                 
+           
+              },
+              error: function(jqXHR, textStatus, errorThrown) {				  
+                 console.log('Error loading datas, try again!');
+				 console.log(textStatus);
+				 console.log(errorThrown);
+              }
+          });  
+         
+         /*
+          // Emulate 1s loading
+          setTimeout(function () {
+            // Reset loading flag
+            loading = false;
+            
+            if (lastIndex >= maxItems) {
+              // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
+              fw7.detachInfiniteScroll($$('.page-archives.infinite-scroll'));
+              // Remove preloader
+              $$('.page-archives > .infinite-scroll-preloader').remove();
+              return;
+            }
+         
+            // Generate new items HTML
+            var html = '';
+            for (var i = lastIndex + 1; i <= lastIndex + itemsPerLoad; i++) {
+              html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
+            }
+         
+            // Append new items
+            $$('.page-archives > .list-block ul').append(html);
+         
+            // Update last loaded index
+            lastIndex = $$('.page-archives > .list-block li').length;
+          }, 1000);
+          */
+        });    
+
+      
+        return true;
+};
+
+
+app.treatments.displayReportItems = function(items) {
+        console.log('displayReportItems ' + Object.keys(items).length);               
+        
+        // Generate new items HTML
+        var html = '';                
+        $.each(items, function(k, v) { 
+                  html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + k + '</div></div></li>';
+        });
+         
+        // Append new items
+        $$('.page-archives > .list-block ul').append(html);
+                
+        return true;
+}
+
+
+
+app.treatments.localNotificationInit = function() {
     console.log('localNotificationInit');
         /*
         window.plugin.notification.local.onadd = function (id, state, json) {
@@ -1314,24 +1339,24 @@ function localNotificationInit() {
             console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
         };
         
-}
+};
 
-function localNotificationCancelAll() {
+app.treatments.localNotificationCancelAll = function() {
   window.plugin.notification.local.cancelAll(function() {
              console.log('All notifications have been canceled');
         }); 
-}
+};
 
-function localNotificationGetScheduledIds() {
+app.treatments.localNotificationGetScheduledIds = function() {
   window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              console.log('Scheduled IDs: ' + scheduledIds.join(' ,'));
         }); 
-}
+};
 
 // add new local notification for upcoming days 
-function processLocalNotification(data) {
+app.treatments.processLocalNotification = function(data) {
    
-   var now = new Date().getTime();
+        var now = new Date().getTime();
         //_30_seconds_from_now = new Date(now + 30*1000);
         var _60_seconds_from_now = new Date(now + 60*1000);
 
@@ -1340,27 +1365,37 @@ function processLocalNotification(data) {
         // ios limits to first 64 scheduled local notifications.
         $.each(data, function(k_day, v_day) { 
             console.log(k_day+' | '+v_day.delivery_day);
-            if (v_day.status_today === _constant.STATUS_TODAY_AFTER || v_day.status_today === _constant.STATUS_TODAY) {
-                if (v_day.status === _constant.STATUS_PENDING || v_day.status === _constant.STATUS_INPROGRESS) {
+            
+            // force update in storage
+            objUserTreatments[k_day] = v_day;
+                      
+            if (v_day.status_today === app.treatments.constant.STATUS_TODAY_AFTER || v_day.status_today === app.treatments.constant.STATUS_TODAY) {
+                if (v_day.status === app.treatments.constant.STATUS_PENDING || v_day.status === app.treatments.constant.STATUS_INPROGRESS) {
                      $.each(v_day.children, function(k_delivery, v_delivery) { 
                         console.log(k_delivery+' | '+v_delivery.delivery_dt+ ' | '+v_delivery.status);
                         
-                        if (v_delivery.status === _constant.STATUS_PENDING) {
+                        //if (v_delivery.status === app.treatments.constant.STATUS_PENDING) {
+                   
                             var notification_id = '' + v_delivery.delivery_day + v_delivery.delivery_time; //uniq, for android it must be convert to integer
-                            var notification_date = formatDateToTimestamp(v_delivery.delivery_dt);                       
+                            var notification_date = app.date.formatDateToTimestamp(v_delivery.delivery_dt);                       
                             var notification_title = 'Rappel Prise '+v_delivery.display_delivery_time; //Reminder
                             var notification_message = 'Il est temps de prendre vos médicaments!';
-                            
+                   
+                            if (v_delivery.status === app.treatments.constant.STATUS_INPROGRESS && now > notification_date.getTime()) {
+                                console.log('Exclude '+notification_id + ' | ' + notification_title);
+                                return true;
+                            }
+                        
                             console.log(notification_id + ' | ' + notification_title);
                             
                             var url_sound = 'sounds/fr_alarm01.mp3';
-                            if (device.platform == 'Android') {
+                            if (objConfig.platform == 'Android') {
                                 url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
                                
                             }
                             url_sound = 'android.resource://' + package_name + '/raw/beep';
         
-                            window.plugin.notification.local.add({
+                            window.plugin && window.plugin.notification.local.add({
                                     id: notification_id,
                                     title: notification_title,
                                     message: notification_message,
@@ -1373,18 +1408,18 @@ function processLocalNotification(data) {
                                     //icon: 'file:///android_asset/www/img/flower128.png',                               
                                     date: notification_date
                                 });
-                        }
+                        //}
     
                      });           
                 }       
             }
         });    
-              
-                  
-        //_30_seconds_from_now = formatDateToTimestamp('2014-08-26 10:00:00');
+                          
+        dbAppUserTreatments.set(objUserTreatments);         
+  
+        //_30_seconds_from_now = app.date.formatDateToTimestamp('2014-08-26 10:00:00');
         //console.log(_30_seconds_from_now.getTime());
-        
- 
+         
         /*
         window.plugin.notification.local.add({
             id:      1,
@@ -1476,9 +1511,38 @@ function processLocalNotification(data) {
         });
         */
         
-}
+};
+
+// taking dialog: createPopup('2014-09-23 10:00:00');
+app.treatments.createPopup = function(delivery_dt) {
+    fw7.modal({
+        title:  'Modal with 3 buttons',
+        text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non.<br><br> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+        buttons: [
+          {
+            text: 'RAPPEL',
+            onClick: function() {
+              fw7.alert('You clicked first button!')
+            }
+          },
+          {
+            text: '<i class="icon ion-checkmark-round" style="color:green;font-size:10px;"></i>PRENDRE',
+            onClick: function() {
+              fw7.alert('You clicked second button!')
+            }
+          },
+          {
+            text: '<i class="icon ion-close-round" style="color:red"></i>\nREFUSER',
+            bold: true,
+            onClick: function() {
+              fw7.alert('You clicked third button!')
+            }
+          },
+        ]
+      });
+};
     
-function calculeWidth() {
+app.treatments.calculeWidth = function() {
                 var width = $(document).width(); //$(window).width();
                 var height = $(document).height();
                 console.log(width +' x '+ height);
@@ -1494,15 +1558,15 @@ function calculeWidth() {
                 //canvas.attr('height', $(container).height() ) // Max height
                 
                return width;
-}
+};
 
-function respondPill() { 
-                var width = calculeWidth();                
-                var str = renderPill(width);
+app.treatments.respondPill = function() { 
+                var width = app.treatments.calculeWidth();                
+                var str = app.treatments.renderPill(width);
                 $('.pill').html(str);
 };
             
-function renderPill(width) {   
+app.treatments.renderPill = function(width) {   
             console.log('renderPill width='+width);
             var config = {
                 'tl': 'pillbox_quart_full_tl', //'pillbox_quart_empty_tl',
@@ -1561,16 +1625,16 @@ function renderPill(width) {
             var colorText = '#11C2BB';
           
             var str = '';
-            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'night\');" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="app.treatments.viewPill(\'night\');" border="0" style="position:absolute;top:0;left:0;" ontouchstart="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tl+'_pressed.png\';" src="img/ebox/'+config.tl+'.png">';
             str += '<img width="'+config.width_pillbox_base_vert+'" height="'+height_vertical+'px" border="0" style="position:absolute;top:0;left:'+config.pillbox_quart_width+'px;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
             //str += '<img width="'+config.width_pillbox_base_vert+'" border="0" "style="position:absolute;top:0;left:49%;z-index:2;" src="img/ebox/pillbox_base_vert.png">';
-            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'morning\');" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="app.treatments.viewPill(\'morning\');" border="0" style="position:absolute;top:0;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:0;left:51%;" ontouchstart="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.tr+'.png\';" onmouseup="this.src=\'img/ebox/'+config.tr+'.png\';" onmousedown="this.src=\'img/ebox/'+config.tr+'_pressed.png\';" src="img/ebox/'+config.tr+'.png">';
             str += '<img width="'+width_horiz+'px" height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:'+config.pillbox_quart_width+'px;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
             //str += '<img height="'+config.width_pillbox_base_horiz+'" border="0" style="position:absolute;top:49%;left:0;z-index:2;" src="img/ebox/pillbox_base_horiz.png">';
-            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'evening\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="app.treatments.viewPill(\'evening\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';
             //str += '<img width="'+config.pillbox_quart_width+'" border="0" style="position:absolute;top:51%;left:0;" ontouchstart="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.bl+'.png\';" onmouseup="this.src=\'img/ebox/'+config.bl+'.png\';" onmousedown="this.src=\'img/ebox/'+config.bl+'_pressed.png\';" src="img/ebox/'+config.bl+'.png">';            
-            str += '<img width="'+config.pillbox_quart_width+'" onclick="viewPill(\'noon\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
+            str += '<img width="'+config.pillbox_quart_width+'" onclick="app.treatments.viewPill(\'noon\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
             
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.night+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.night+'.png\';" src="img/ebox/'+config.night+'.png">';
             str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;left:-10px;z-index:10;">'+calendarTranslate.night+' ('+info_date.label_night_day+')</span>';
@@ -1585,9 +1649,9 @@ function renderPill(width) {
                     
             return str;
             //$('.pill').html(str);
-}
+};
 
-function viewPill(type) {
+app.treatments.viewPill = function(type) {
     var title;
     if (type === 'night') {
         title = info_date.label_next_full + ', 00:00 - 06:00';
@@ -1610,4 +1674,4 @@ function viewPill(type) {
                     closeIcon: false,
                     media: '<img width="44" height="44" style="border-radius:100%" src="img/ebox/finaliconnight.png">'
                 });
-}
+};

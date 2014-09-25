@@ -18,25 +18,49 @@
      </div> 
     
     
-    <div class="page-content">  
+    <div class="page-content page-archives infinite-scroll xxxpull-to-refresh-content" data-distance="50">  
   
-     
+     <!--
    <div class="toolbar">    
         <div class="toolbar-inner">
                     <a href="#" class="link"><i class="icon size-32 ion-ios7-search-strong"></i></a>
                     <a href="#" class="link no-animation prev_date"><i class="icon size-24 ion-arrow-left-b"></i></a>
-                    <a href="#" class="link no-animation current_date" style="font-size:14px;line-height:16px;text-align:center"><!--May, 14<br>TODAY, Wed--></a>
+                    <a href="#" class="link no-animation current_date" style="font-size:14px;line-height:16px;text-align:center"></a>
                     <a href="#" class="link no-animation next_date"><i class="icon size-24 ion-arrow-right-b"></i></i></a>
-                    <!--<a href="#" class="link"><i class="icon size-24 ion-arrow-left-b"></i>&nbsp; May, 14 <i class="icon size-24 ion-arrow-right-b"></i> </a>-->
                     <a href="#" class="link"><i class="icon size-32 ion-ios7-gear-outline"></i></a>
                 </div>
                 </div>
 
-            <br><br>
-          <div style="text-align:center; width:auto;margin:10px;background-color: #DADFE4;font-size:16px;color:#37C3BD; font-weight:bold;">
-          Prochain sachet : 
-          <br><i class="icon size-24 ion-clock"></i> 11:30 (5)
-          </div>          
+             -->   
+             
+             <!--
+          <div class="pull-to-refresh-layer">
+            <div class="preloader"></div>
+            <div class="pull-to-refresh-arrow"></div>
+          </div>
+          -->
+
+       
+          <div class="list-block">
+            <ul>             
+            </ul>
+          </div>
+          <!-- Preloader -->
+          <div class="infinite-scroll-preloader">
+            <div class="preloader"></div>
+          </div>
+        
+          <style>
+          .infinite-scroll-preloader {
+  margin-top:-20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.infinite-scroll-preloader .preloader {
+  width:34px;
+  height:34px;
+}   
+          </style>
   
     </div>
     
