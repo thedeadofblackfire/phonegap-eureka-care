@@ -53,7 +53,8 @@ window.console=(function(origConsole){
     return {
         log: function(){
           logArray.logs.push(arguments);
-		  $('.log').prepend('<li>'+new Date().toISOString() + ' > '+arguments[0]+'</li>');
+          if (typeof(arguments[0]) == "object") $('.log').prepend('<li>'+new Date().toISOString() + ' > '+JSON.stringify(arguments[0])+'</li>');
+          else $('.log').prepend('<li>'+new Date().toISOString() + ' > '+arguments[0]+'</li>');  
           //$("#app-status-ul").prepend('<li>'+message+'</li>');
           isDebug && origConsole.log && origConsole.log.apply(origConsole,arguments);
         },
@@ -321,6 +322,17 @@ app.date.formatDateToTimestamp = function(d) {
 	return current;    
 };
 
+//2013-06-03 or 2013-06-03 08:00:00 or 20140929 to label
+app.date.formatDateToLabel = function(d) {
+    var current;
+    if (d.length == 8) current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(4,2)) - 1), parseInt(d.substr(6,2)), 0, 0, 0); 
+    else if (d.length == 10) current = new Date(parseInt(d.substr(0,4)), (parseInt(d.substr(5,2)) - 1), parseInt(d.substr(8,2)), 0, 0, 0 );
+    else current = app.date.formatDateToTimestamp(d);
+    var dd = current.getDate().toString();
+    var str = calendarTranslate.dayNames[current.getDay()]+' '+(dd[1]?dd:"0"+dd[0])+' '+calendarTranslate.monthNames[current.getMonth()];
+    return str;
+};
+
 app.date.formatyyyymmdd = function(d) {         
                            
         var yyyy = d.getFullYear().toString();                                    
@@ -329,6 +341,17 @@ app.date.formatyyyymmdd = function(d) {
                             
         return '' + yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]);
         //return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+};
+
+app.date.getTodayTime = function() {
+  // get today current time
+    var d = new Date();
+    var ho = ''+d.getHours();
+    if (ho.length == 1) ho = '0'+ho;   
+    var mi = ''+d.getMinutes();
+    if (mi.length == 1) mi = '0'+mi;  
+    var currentTodayTime = parseInt(ho + mi,10);    
+    return currentTodayTime;
 };
 
 // convert 20140526 to a prev next object string
@@ -368,7 +391,7 @@ app.date.formatDateToObject = function(d) {
         
         // morning: 0600 - 1200, noon (12 - 18), evening (18 - 00), night (00 - 06)
         var time = parseInt(info.str_time, 10);
-        console.log(time);
+        info.time = time;
         if (time >= 0 && time < 600) info.current_section = 'night';
         else if (time >= 600 && time < 1200) info.current_section = 'morning';
         else if (time >= 1200 && time < 1800) info.current_section = 'noon';
@@ -1305,19 +1328,143 @@ app.treatments.displayPageTreatmentReport = function(page)
         return true;
 };
 
+app.treatments.stats = {
+    totalDrugProcessed: 0,
+    totalSuccess: 0,
+    totalError: 0,
+    currentPercent: 100,
+};
+
+app.treatments.updateReportPercent = function() {
+    var percent = (app.treatments.stats.totalSuccess / (app.treatments.stats.totalSuccess + app.treatments.stats.totalError)) * 100;
+    percent = percent.toFixed(2);
+    //console.log(app.treatments.stats.totalSuccess + ' ' + app.treatments.stats.totalError);
+    $$('.percent').html(percent+'%');
+                
+};
 
 app.treatments.displayReportItems = function(items) {
         console.log('displayReportItems ' + Object.keys(items).length);               
         
+        var currentTodayTime = app.date.getTodayTime();
+        console.log('currentTodayTime='+currentTodayTime);
+        
         // Generate new items HTML
-        var html = '';                
+        var html = '';   
         $.each(items, function(k, v) { 
-                  html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + k + '</div></div></li>';
+           if (v.status_today != app.treatments.constant.STATUS_TODAY_AFTER) {        
+                  html += '<li class="item-content" style="background-color:#B9CBCE;color:#4B6968;border-top:0px solid #9797A6;border-bottom:0px solid #646473;box-shadow: 0px 3px 10px #646473;"><div class="item-inner"><div class="item-title"><i class="icon ion-calendar" style="color:#4B6968"></i> ' +  app.date.formatDateToLabel(k) + '</div></div></li>';
+               
+                  app.treatments.stats.totalSuccess += v.stats.totalSuccess;
+                  app.treatments.stats.totalError += v.stats.totalError;
+                  
+                  $.each(v.children, function(delivery_key, delivery_item) { 
+                    //html += '<li class="item-content" ><div class="item-inner"><div class="item-title">Item ' + delivery_key + '</div></div></li>';
+                   
+                    // get today current time                      
+                    var deliveryT = parseInt(delivery_item.delivery_time,10);  
+                    
+                    var background = 'transparent';
+                    
+                    var delivery_icon = 'ion-ios7-circle-filled';   // ion-ios7-circle-outline         
+                    var delivery_color = '#6DC4EF'; // app.treatments.constant.STATUS_PENDING
+                    if (delivery_item.status == app.treatments.constant.STATUS_COMPLETED) {
+                        delivery_color = '#9FDDB3';
+                        delivery_icon = 'ion-ios7-checkmark';
+                    } else if (delivery_item.status == app.treatments.constant.STATUS_INPROGRESS) {
+                        // today
+                        if (delivery_item.stats.totalPending == 0 && delivery_item.stats.totalError == 0) {
+                            delivery_color = '#FFA64C';
+                            delivery_icon = 'ion-ios7-checkmark';
+                        } else if (delivery_item.stats.totalPending == 0 && delivery_item.stats.totalError > 0) {
+                            delivery_color = '#FC8A70';
+                            delivery_icon = 'ion-ios7-close';
+                        } else if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY) {
+                                if (currentTodayTime > (deliveryT + 30)) {
+                                    // error
+                                   delivery_color = '#FC8A70';
+                                   delivery_icon = 'ion-ios7-close';
+                                } else if (currentTodayTime >= deliveryT) {
+                                    // current in progress
+                                   delivery_color = '#FFA64C';
+                                   background = '#FFDFBF';
+                                   delivery_icon = 'ion-ios7-alarm';
+                                }        
+                        }
+                        
+                    } else if (delivery_item.status == app.treatments.constant.STATUS_COMPLETEDWITHERRORS) {
+                        delivery_color = '#FC8A70';
+                        delivery_icon = 'ion-ios7-close';
+                    }
+                    
+                    var html_detail = '';
+                    $.each(delivery_item.children, function(bag_key, bag_item) { 
+                        $.each(bag_item.children, function(drug_key, drug_item) {   
+                            var mark;
+                            if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY_AFTER) mark = '<i class="icon ion-minus" style="color:#6DC4EF"></i>';
+                            else if (drug_item.validate_taking == '1') mark = '<i class="icon ion-checkmark" style="color:#9FDDB3"></i>';
+                            else if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY_BEFORE && drug_item.validate_taking == '0') mark = '<i class="icon ion-close" style="color:#FC8A70"></i>';
+                            else if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY && drug_item.validate_taking == '0') {
+                                                                                  
+                                //console.log(currentTodayTime + ' ' + deliveryT);
+                                if (currentTodayTime < deliveryT) {
+                                    // is pending
+                                    mark = '<i class="icon ion-flag" style="color:#6DC4EF"></i>';
+                                } else if (currentTodayTime > (deliveryT + 30)) {
+                                    // error
+                                    mark = '<i class="icon ion-close" style="color:#FC8A70"></i>';
+                                } else if (currentTodayTime >= deliveryT) {
+                                    // in progress
+                                    mark = '&nbsp;<i class="icon ion-alert-circled" style="color:#FFA64C"></i>';
+                                }                                
+                                                          
+                            }                            
+                            
+                            html_detail += mark+' '+drug_item.drug_name+'<br>';
+                        });
+                    });
+                    
+                     //<span class="badge" style="background-color:'+delivery_color+';">'+delivery_item.stats.totalDrug+'</span>
+                     html += '<li style="width:100%;background-color:'+background+';border-bottom:1px solid #DBDBEA;border-right:10px solid '+delivery_color+';">'+
+                            //'<a href="#" class="item-link item-content">'+
+                            '<div class="item-inner" style="border:none;">'+
+                            '<div class="item-title-row">'+
+                            '<div class="item-title" style="margin-left:15px;"><i class="icon ion-clock" style="color:#000"></i> '+ delivery_item.display_delivery_time+'</div>'+
+                            '<div class="item-after"><i class="icon size-24 '+delivery_icon+'" style="color:'+delivery_color+';"></i></div>'+
+                            '</div>'+
+                            '</div>'+
+                            //'<div class="item-subtitle">New messages from John Doe</div>'+
+                            '<div class="item-text" style="margin-left:13px;font-size:10px;/*font-family:arial sans-serif;*/color:#4B6968;line-height:110%;">'+
+                            html_detail+                            
+                            '</div>'+                          
+                            //'</a>'+
+                            '</li>';
+                            
+                     /*       
+                    html += '<li class="accordion-item" style="background-color:'+background+';border-bottom:1px solid #DBDBEA;border-right:6px solid '+delivery_color+';"><a href="#" class="item-content item-link">'+
+                            '<div class="item-inner" style="border:none;">'+
+                            '<div class="item-title"><i class="icon ion-clock" style="color:#000"></i> '+ delivery_item.display_delivery_time+' </div>'+
+                            '<div class="item-after"><span class="badge" style="background-color:'+delivery_color+';">'+delivery_item.stats.totalDrug+'</span></div>'+
+                            '</div></a>'+
+                            '<div class="accordion-item-content">'+
+                            '<div class="content-block" style="font-size:10px;color: #4B6968;line-height:90%;">'+
+                            html_detail+                            
+                            '</div>'+
+                            '</div>'+
+                            '</li>';
+                     */       
+                  
+                  });
+                  
+             }
         });
          
         // Append new items
         $$('.page-archives > .list-block ul').append(html);
-                
+        
+        // update percent
+        app.treatments.updateReportPercent();
+        
         return true;
 }
 

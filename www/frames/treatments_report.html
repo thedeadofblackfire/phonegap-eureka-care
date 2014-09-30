@@ -3,35 +3,129 @@
   <!-- Page, data-page contains page name-->
   <div data-page="treatments_report" class="page navbar-fixed toolbar-fixed">
              
-    <div class="navbar layout-dark">
+    <div class="navbar layout-dark" style="z-index:1000">
         <div class="navbar-inner">
             <div class="left">
-            <a href="#" class="back"><i class="icon size-24 ion-ios7-arrow-thin-left"></i></a>
+            <a href="#" class="back"><i class="icon size-24 ion-ios7-arrow-thin-leftxxx ion-ios7-arrow-backxxx ion-ios7-arrow-left"></i></a>
             <a href="#" class="link icon-only open-panel "><i class="icon size-24 ion-navicon-round icon-barsxxx"></i></a>
             </div>
-            <div class="center sliding contacts-list-header">Report</div>
+            <div class="center sliding contacts-list-header">Rapport</div>
             <div class="right" >
-            <a href="#" class="link icon-only "><i class="icon size-24 ion-clock"></i></a>
-            <a href="#" class="link icon-only "><i class="icon size-24 ion-stats-bars"></i></a>
+            <a href="frames/treatments.html?nocache=1" class="link icon-only no-animation"><i class="icon size-24 ion-clock"></i></a>
             </div>
         </div>
      </div> 
     
-    
-    <div class="page-content page-archives infinite-scroll xxxpull-to-refresh-content" data-distance="50">  
-  
-     <!--
-   <div class="toolbar">    
-        <div class="toolbar-inner">
-                    <a href="#" class="link"><i class="icon size-32 ion-ios7-search-strong"></i></a>
-                    <a href="#" class="link no-animation prev_date"><i class="icon size-24 ion-arrow-left-b"></i></a>
-                    <a href="#" class="link no-animation current_date" style="font-size:14px;line-height:16px;text-align:center"></a>
-                    <a href="#" class="link no-animation next_date"><i class="icon size-24 ion-arrow-right-b"></i></i></a>
-                    <a href="#" class="link"><i class="icon size-32 ion-ios7-gear-outline"></i></a>
-                </div>
-                </div>
+   <style>
+.page > .subbar,
+.view > .subbar,
+.views > .subbar {
+  position: absolute;
+}
 
-             -->   
+.subbar .page-content {
+  padding-top: 44px;
+  
+}
+
+
+.subbar ~ .page-content {
+  padding-top: 88px; /* 88 */
+}
+
+.subbar-inner {
+  position: absolute;
+  left: 0;
+  top: 44px;
+  width: 100%;
+  height: 100%;
+  padding: 0 8px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  background-color: #5FCFCA;
+}
+.subbar {
+  height: 44px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 17px;
+  position: relative;
+  margin: 0;
+  z-index: 500;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  
+  /*background-color: #5FCFCA;*/
+  border-top:0px;
+  box-shadow: 0px 2px 2px #A8A8B7;
+  margin-bottom:10px;
+  color:white;
+}
+.subbar b {
+  font-weight: 500;
+}
+.subbar a.link {
+  line-height: 44px;
+  height: 44px;
+  text-decoration: none;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-transition-duration: 300ms;
+  transition-duration: 300ms;
+}
+html:not(.watch-active-state) .subbar a.link:active,
+.subbar a.link.active-state {
+  opacity: 0.3;
+  -webkit-transition-duration: 0ms;
+  transition-duration: 0ms;
+}
+.subbar a.link i + span,
+.subbar a.link i + i,
+.subbar a.link span + i,
+.subbar a.link span + span {
+  margin-left: 7px;
+}
+
+</style>
+   <div class="subbar">    
+        <div class="subbar-inner">
+                    <a href="#" class="link" style="color:white"><i class="icon size-32 ion-ios7-checkmark-outlinexxx ion-ios7-pie-outline" style="color:white"></i>  <span class="percent">percent</span></a>
+              
+                    <a href="#" class="link"><i class="icon size-32 ion-ios7-help-outline" style="color:white"></i></a>
+                </div>
+     </div>  
+  
+    <div class="page-content page-archives infinite-scroll xxxpull-to-refresh-content" data-distance="50">  
+         
+  
+
+              
              
              <!--
           <div class="pull-to-refresh-layer">
@@ -41,7 +135,7 @@
           -->
 
        
-          <div class="list-block">
+          <div class="list-block media-list" style="margin-top:0;">
             <ul>             
             </ul>
           </div>
@@ -64,16 +158,16 @@
   
     </div>
     
+    <!--
        <div class="toolbar">    
         <div class="toolbar-inner">
                     <a href="#" class="link"><i class="icon size-32 ion-ios7-search-strong"></i></a>
                     <a href="#" class="link no-animation prev_date"><i class="icon size-24 ion-arrow-left-b"></i></a>
-                    <a href="#" class="link no-animation current_date" style="font-size:14px;line-height:16px;text-align:center"><!--May, 14<br>TODAY, Wed--></a>
+                    <a href="#" class="link no-animation current_date" style="font-size:14px;line-height:16px;text-align:center"></a>
                     <a href="#" class="link no-animation next_date"><i class="icon size-24 ion-arrow-right-b"></i></i></a>
-                    <!--<a href="#" class="link"><i class="icon size-24 ion-arrow-left-b"></i>&nbsp; May, 14 <i class="icon size-24 ion-arrow-right-b"></i> </a>-->
                     <a href="#" class="link"><i class="icon size-32 ion-ios7-gear-outline"></i></a>
                 </div>
                 </div>
-                
+          -->      
   </div>
 <!--</div> -->
