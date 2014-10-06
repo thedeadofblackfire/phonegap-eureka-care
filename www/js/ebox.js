@@ -8,7 +8,6 @@ if (window.location.hostname == 'eboxsmart.phonegap.local') {
 var API = BASE_URL+'/api/mobile';
 
 var objUser = {};
-var objChat = {};
 var audioEnable = true;
 var isChatSession = false;
 var current_session_id = '';
@@ -16,10 +15,13 @@ var totalVisitors = 0;
 var doRefresh = true;
 
 var current_treatment_page = 0;
+var current_treatment_report_page = 0;
+var objSessionTreatments = {};
+
 var package_name = "com.cordova.eboxsmart";
 //var package_name = "com.mls.eboxsmart";
 
-var baseLanguage = 'fr';        
+var baseLanguage = 'en';        
 var info_date = {}; 
 
 
@@ -94,7 +96,7 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-           
+                  
         if (ENV == 'dev') {
             /*
             jQuery(document).ready(function($){	
@@ -107,6 +109,9 @@ var app = {
             });
             */
         
+            ln.init();        
+            baseLanguage = ln.language.code;
+                
             initFramework();
                
             //var a = app.date.formatDateToTimestamp('2014-05-07 09:40:00');
@@ -151,7 +156,9 @@ var app = {
                 
         app.treatments.localNotificationInit();
         
-        ln.init();
+        // translation init
+        ln.init();        
+        baseLanguage = ln.language.code;
 				
         if (ENV == 'production') {
             // hide the status bar using the StatusBar plugin
@@ -189,16 +196,36 @@ var app = {
         }
         
         // document.addEventListener("offline", this.onOffline, false);
+        // document.addEventListener("online", this.onOnline, false);
         
         // save device info the first time for mobile's ower (device uuid)
         // http://docs.phonegap.com/en/3.2.0/cordova_device_device.md.html#Device
     },
     onOffline: function() {
         // Handle the offline event
+    },
+    onOnline: function() {
+        // Handle the online event
     }
 };
 
+app.checkConnection = function() {
+    var networkState = navigator.connection.type;
 
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    console.log('Connection type: ' + states[networkState]);
+    if (networkState !== Connection.NONE) return true;
+    else return false;
+};
 
 // --
 // functions
@@ -209,7 +236,7 @@ function initAfterLogin() {
              
   $('#nickname').html(objUser.first_name);
             
-  //loadChatInit();		
+  loadChatInit();		
 }
 
 // ---------------------
@@ -448,8 +475,9 @@ jQuery(document).ready(function($){
        //displayLanguage();
        
        i18n.setLng(current_status, function(t)
-                {
-                    //handleRefreshOnlineUser(true);
+                {      
+                    baseLanguage = current_status;
+                    initTranslate();
                     $('body').i18n();
                 });
        //lang.set(current_status);
@@ -666,101 +694,7 @@ jQuery(document).ready(function($){
         });
        
     }
-    
-    function loadChatSession(sessionid) {
-        console.log('loadChatSession '+sessionid);
-        
-        // show loading icon
-        mofLoading(true);
-
-        $.ajax({
-              url: API+"/chat/get_conversation_by_session",
-              datatype: 'json',      
-              type: "post",
-              data: {replyname: objChat.support_display_name, session_id: sessionid, user_id: objUser.user_id},   
-              success:function(res){                    
-                 //console.log(res);
-     
-                 var str = generatePageSession(res);
-                                          
-                 isChatSession = true;
-                 
-       
-                 mofLoading(false);               
-
-                 mainView.loadContent(str);
-           
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-				 mofLoading(false); 
-                 alert('Error loading session, try again!');				 
-				 alert(textStatus);
-				 alert(errorThrown);
-              }
-           });
-           
-        return true;
-    }
-
-    
-    function handleRefreshOnlineUser(loading) {
-        console.log('handleRefreshOnlineUser');
-        
-        if (loading && doRefresh) {            
-            $.getJSON(API+"/chat/online_user?user_id="+objUser.user_id, function(res) {			
-                console.log(res);
-                
-                objChat.online_user = res.online_user;
-      
-                // loop online users to display list of active chats
-                loadDataUserList(objChat);
-                
-            });
-        } else {  			
-            // loop online users to display list of active chats
-            loadDataUserList(objChat);
-        }
-    }
-    
-function loadDataUserList(data) {	
-    var htmlUserList = '';
-    var panelUser = '';
-    var title = 'description.nochatsinprogress'; //'You have no active chats'; //There are currently no chats in progress.
-    if (data.online_user.length > 0) title = 'description.currentlyactivechats';
-    //if (data.online_user.length > 0) title = '<img src="img/infoico.png" style="position:relative">'+i18n.t('description.currentlyactivechats');
-    
-    var focusChatStillAvailable = false;
-                    
-    //htmlUserList += '<div class="content-block-title" id="activechat_title" data-i18n="'+title+'">'+i18n.t(title)+'</div>';
-    htmlUserList += '<p id="activechat_title" data-i18n="'+title+'">'+i18n.t(title)+'</p>';
-    htmlUserList += '<div class="list-block"><ul id="chat_userlist">';
-                           
-    $.each(data.online_user, function(k, v) {
-        var line = generateLineUser(v,false);     
-        htmlUserList += line;
-        panelUser += line;
-        
-        if (current_session_id != '' && v.session_id == current_session_id) {
-            focusChatStillAvailable = true;
-        } 
             
-    });
-    htmlUserList += '</ul></div>';
-
-	$('#container_chat_userlist').html(htmlUserList);
-    $('#panel_userlist').html(panelUser);
-    
-    // check if current chat session need to be close (visitor has closed the chat)
-    if (isChatSession && !focusChatStillAvailable) {
-        // we close chat
-        console.log('force close chat by user #'+current_session_id);
-        current_session_id = '';
-        mofAlert('User has closed this session');   
-        // should be removed the unreadmessage
-        //mofChangePage('index.html');
-    }    
-                      
-}
 
 
 function loadChatInit() {
@@ -778,7 +712,7 @@ function loadChatInit() {
 		*/     
         
         //language
-        $('#selectlanguage').val(ln.language.code);
+        $('#selectlanguage').val(baseLanguage);
                         
         $('body').i18n();
        
@@ -940,6 +874,26 @@ function initFramework() {
                 $$('.ks-messages-form').trigger('submit');
             });
         }
+        
+        if (page.name === 'settings') {        
+            $$('.reset-local-storage').on("click", function() {
+                app.resetLocalStorage();
+            });
+                
+            $$('#selectlanguage').val(baseLanguage);             
+            /*
+            $('.page[data-page="settings"] .page-content').html($('.page[data-page="settings"] .page-content').html().replace(/{{version}}/g, objConfig.version).replace(/{{build}}/g, objConfig.build).replace(/{{release_time}}/g, objConfig.release_time));
+        
+            if (objUserSettings.flashlight) $$('#switch-flashlight').attr( "checked", "checked");       
+            if (objUserSettings.vibration) $$('#switch-vibration').attr( "checked", "checked");
+            if (objUserSettings.sound) $$('#switch-sound').attr( "checked", "checked"); 
+            $$('#audio_volume').val(objUserSettings.audio_volume);            
+            */
+        }
+        
+    
+        // update translation
+        $('.pages').i18n();
 
     });
     
@@ -1104,6 +1058,7 @@ app.treatments.displayTreatmentPage = function(page)
         data.info_date = info_date;
         data.width = app.treatments.calculeWidth();
         data.pill = app.treatments.renderPill(data.width);
+        //$('body').i18n();
         //data.url_edit = 'frames/edit.html?address='+app.convertAddressToId(address)+'&nocache=1&rand='+new Date().getTime();
 
         // And insert generated list to page content
@@ -1115,8 +1070,7 @@ app.treatments.displayTreatmentPage = function(page)
         navcontent = fwk.render(navcontent, data, false);      
         //alert(navcontent);
         $$(page.navbarInnerContainer).html(navcontent);
-        
-                
+                       
             // jQuery(document).ready(function($){	
                
                 // Adjust canvas size when browser resizes
@@ -1148,6 +1102,7 @@ app.treatments.displayTreatmentPage = function(page)
             //$('.device-page').html(viewTemplate({ model: params.model }))
             //bindEvents(params.bindings);
             
+ 
         return true;
 };
   
@@ -1167,6 +1122,8 @@ app.treatments.navigatePageTreatment = function(delivery) {
   
 }; 
 
+
+
 app.treatments.displayPageTreatmentReport = function(page)
 {        
         var delivery = page.query.delivery;
@@ -1182,6 +1139,8 @@ app.treatments.displayPageTreatmentReport = function(page)
         //mofLoading(true);
         
         //objUserTreatments
+        
+        //i18n.t('description.currentlyactivechats')
         
         var data = {};        
         data.info_date = info_date;
@@ -1215,43 +1174,40 @@ app.treatments.displayPageTreatmentReport = function(page)
             $$('.page-archives > .list-block ul').append(html);
             */
                
-        var last_days = 14;       
-        current_treatment_page = 0;
-        current_treatment_page++;
-        $.ajax({
-              url: API+"/gettreatment",
-              datatype: 'json',      
-              type: "post",
-              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
-              success:function(res){                    
-                 console.log(res);
-                
-                 app.treatments.displayReportItems(res.items);                                 
-           
-              },
-              error: function(jqXHR, textStatus, errorThrown) {				  
-                 console.log('Error loading datas, try again!');
-				 console.log(textStatus);
-				 console.log(errorThrown);
-              }
-         });     
-    
+        var last_days = 14; 
+
+        if (Object.keys(objSessionTreatments).length == 0) {
+            console.log('init objSessionTreatments');
+            current_treatment_report_page++;
+            $.ajax({
+                  url: API+"/gettreatment",
+                  datatype: 'json',      
+                  type: "post",
+                  data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_report_page},   
+                  success:function(res){                    
+                     console.log(res);
+                    
+                     objSessionTreatments = fwk.collectionMerge(objSessionTreatments, res.items);                     
+                     
+                     app.treatments.displayReportItems(res.items);                                 
+               
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {				  
+                     console.log('Error loading datas, try again!');
+                     console.log(textStatus);
+                     console.log(errorThrown);
+                  }
+             });     
+        } else {
+            console.log('preload objSessionTreatments');
+            app.treatments.displayReportItems(objSessionTreatments);                 
+        }
                
         // infinite scroll                      
                
         // Loading flag
         var loading = false;
-         
-        // Last loaded index
-        var lastIndex = $$('.page-archives > .list-block li').length;
-        console.log('lastIndex: '+lastIndex);
-         
-        // Max items to load
-        var maxItems = 100;
-         
-        // Append items per load
-        var itemsPerLoad = 20;
-         
+                 
         // Attach 'infinite' event handler
         $$('.page-archives.infinite-scroll').on('infinite', function () {
          
@@ -1261,13 +1217,13 @@ app.treatments.displayPageTreatmentReport = function(page)
           // Set loading flag
           loading = true;
           
-          current_treatment_page++;           
+          current_treatment_report_page++;           
          
           $.ajax({
               url: API+"/gettreatment",
               datatype: 'json',      
               type: "post",
-              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_report_page},   
               success:function(res){                    
                  console.log(res);
                  
@@ -1282,10 +1238,9 @@ app.treatments.displayPageTreatmentReport = function(page)
                       return;
                  }
                 
-                 app.treatments.displayReportItems(res.items);  
-
-                // Update last loaded index
-                //lastIndex = $$('.page-archives > .list-block li').length;                 
+                 objSessionTreatments = fwk.collectionMerge(objSessionTreatments, res.items);
+                     
+                 app.treatments.displayReportItems(res.items);                
            
               },
               error: function(jqXHR, textStatus, errorThrown) {				  
@@ -1295,40 +1250,13 @@ app.treatments.displayPageTreatmentReport = function(page)
               }
           });  
          
-         /*
-          // Emulate 1s loading
-          setTimeout(function () {
-            // Reset loading flag
-            loading = false;
-            
-            if (lastIndex >= maxItems) {
-              // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
-              fw7.detachInfiniteScroll($$('.page-archives.infinite-scroll'));
-              // Remove preloader
-              $$('.page-archives > .infinite-scroll-preloader').remove();
-              return;
-            }
-         
-            // Generate new items HTML
-            var html = '';
-            for (var i = lastIndex + 1; i <= lastIndex + itemsPerLoad; i++) {
-              html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
-            }
-         
-            // Append new items
-            $$('.page-archives > .list-block ul').append(html);
-         
-            // Update last loaded index
-            lastIndex = $$('.page-archives > .list-block li').length;
-          }, 1000);
-          */
-        });    
-
+        });      
       
         return true;
 };
 
 app.treatments.stats = {
+    totalDays: 0,
     totalDrugProcessed: 0,
     totalSuccess: 0,
     totalError: 0,
@@ -1339,7 +1267,8 @@ app.treatments.updateReportPercent = function() {
     var percent = (app.treatments.stats.totalSuccess / (app.treatments.stats.totalSuccess + app.treatments.stats.totalError)) * 100;
     percent = percent.toFixed(2);
     //console.log(app.treatments.stats.totalSuccess + ' ' + app.treatments.stats.totalError);
-    $$('.percent').html(percent+'%');
+    var str_day = calendarTranslate.day+(app.treatments.stats.totalDays > 1?'s':'')
+    $('.percent').html(percent+'%, '+app.treatments.stats.totalDays+' '+str_day);
                 
 };
 
@@ -1353,10 +1282,12 @@ app.treatments.displayReportItems = function(items) {
         var html = '';   
         $.each(items, function(k, v) { 
            if (v.status_today != app.treatments.constant.STATUS_TODAY_AFTER) {        
-                  html += '<li class="item-content" style="background-color:#B9CBCE;color:#4B6968;border-top:0px solid #9797A6;border-bottom:0px solid #646473;box-shadow: 0px 3px 10px #646473;"><div class="item-inner"><div class="item-title"><i class="icon ion-calendar" style="color:#4B6968"></i> ' +  app.date.formatDateToLabel(k) + '</div></div></li>';
+                  html += '<li class="item-content" style="z-index:10;background-color:#B9CBCE;color:#4B6968;border-top:0px solid #9797A6;border-bottom:0px solid #646473;box-shadow: 0px 3px 10px #646473;"><div class="item-inner"><div class="item-title"><i class="icon ion-calendar" style="color:#4B6968"></i> ' +  app.date.formatDateToLabel(k) + '</div></div></li>';
                
                   app.treatments.stats.totalSuccess += v.stats.totalSuccess;
                   app.treatments.stats.totalError += v.stats.totalError;
+                  app.treatments.stats.totalDrugProcessed += (v.stats.totalSuccess + v.stats.totalError);
+                  app.treatments.stats.totalDays++;
                   
                   $.each(v.children, function(delivery_key, delivery_item) { 
                     //html += '<li class="item-content" ><div class="item-inner"><div class="item-title">Item ' + delivery_key + '</div></div></li>';
@@ -1397,8 +1328,9 @@ app.treatments.displayReportItems = function(items) {
                         delivery_icon = 'ion-ios7-close';
                     }
                     
-                    var html_detail = '';
-                    $.each(delivery_item.children, function(bag_key, bag_item) { 
+                    var html_detail = '<div class="row no-gutter"><div class="col-50">';
+                    var total_drug = 0;
+                    $.each(delivery_item.children, function(bag_key, bag_item) {                         
                         $.each(bag_item.children, function(drug_key, drug_item) {   
                             var mark;
                             if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY_AFTER) mark = '<i class="icon ion-minus" style="color:#6DC4EF"></i>';
@@ -1420,9 +1352,14 @@ app.treatments.displayReportItems = function(items) {
                                                           
                             }                            
                             
+                            //if (total_drug == 0) html_detail += '<div class="col-50">';
+                            if (total_drug == 3)  html_detail += '</div><div class="col-50">';
                             html_detail += mark+' '+drug_item.drug_name+'<br>';
+                            
+                            total_drug++;
                         });
                     });
+                    html_detail += '</div></div>';
                     
                      //<span class="badge" style="background-color:'+delivery_color+';">'+delivery_item.stats.totalDrug+'</span>
                      html += '<li style="width:100%;background-color:'+background+';border-bottom:1px solid #DBDBEA;border-right:10px solid '+delivery_color+';">'+
@@ -1434,7 +1371,7 @@ app.treatments.displayReportItems = function(items) {
                             '</div>'+
                             '</div>'+
                             //'<div class="item-subtitle">New messages from John Doe</div>'+
-                            '<div class="item-text" style="margin-left:13px;font-size:10px;/*font-family:arial sans-serif;*/color:#4B6968;line-height:110%;">'+
+                            '<div class="item-text" style="margin-left:13px;font-size:9px;/*font-family:arial sans-serif;*/color:#4B6968;line-height:110%;">'+
                             html_detail+                            
                             '</div>'+                          
                             //'</a>'+
@@ -1732,7 +1669,7 @@ app.treatments.renderPill = function(width) {
                 'noon': 'finaliconnoon'
             };
                        
-            if (info_date.current_section === 'morning') config.tr = 'pillbox_quart_empty_tr';
+            if (info_date.current_section === 'morning') config.tr = 'pillbox_quart_current_tr'; //'pillbox_quart_empty_tr';
             else if (info_date.current_section === 'noon') config.br = 'pillbox_quart_empty_br';
             else if (info_date.current_section === 'evening') config.bl = 'pillbox_quart_empty_bl';
             else if (info_date.current_section === 'night') config.tl = 'pillbox_quart_empty_tl';
@@ -1810,7 +1747,7 @@ app.treatments.viewPill = function(type) {
         title = info_date.label_current_full + ', 06:00 - 12:00';
     }
     
-    var message = 'Aucune prise de médicament prévu';
+    var message = i18n.t('treatments.notakingmedication');
     window.plugins && window.plugins.toast.show(message, 'long', 'bottom', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
     
     fw7.addNotification({

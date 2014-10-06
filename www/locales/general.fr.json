@@ -1,7 +1,9 @@
 {
     "label":
     {
-        "chats": "Chats",
+        "home": "Accueil",
+        "treatments": "Traitements",
+        "report": "Rapport",
         "settings": "Préférences",
         "visitors": "Visiteurs",
         "list": "Liste",
@@ -35,6 +37,13 @@
         "unknowreferrer": "Source inconnue",
         "yesterday": "Hier",
         "archives": "Archives"
+    },
+    "treatments":
+    {
+        "treatments": "Traitements",
+        "report": "Rapport",
+        "nextdelivery": "Prochain sachet",
+        "notakingmedication": "Aucune prise de médicament prévu"
     },
     "description":
     {

@@ -1,0 +1,156 @@
+
+	<div data-page="settings" class="page navbar-fixed toolbar-fixed">
+    
+        <div class="navbar layout-dark">
+            <div class="navbar-inner">
+                <div class="left sliding"><a href="#" class="back link"><i class="icon icon-back-blue icon-back"></i></a></div>
+                <div class="center sliding" data-i18n="label.settings">label.settings</div>
+            </div>
+        </div>
+    
+		<div class="page-content">
+			<div class="content-block-title">General</div>
+			<div class="list-block tablet-inset">
+				<ul> 
+					<li>
+						<div class="item-content">
+							<div class="item-inner">
+								<div class="item-title label" style="width: auto">Version</div>
+								<div class="item-after">{{version}} ({{build}})</div>
+							</div>
+						</div>
+					</li>			
+					<li>
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title label" style="width: 48%;" data-i18n="label.language">label.language</div>
+                            <div class="item-input">
+                              <select name="selectlanguage" id="selectlanguage">
+                                 <option value="en">English</option>
+                                 <option value="fr">Français</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                    </li>  
+                    <!--
+					<li>
+						<a href="frames/settings/about/userguide.html?nocache=1" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">User Guide</div>
+								</div>
+							</div>
+						</a>
+					</li>  
+                     -->
+				</ul>
+			</div>
+            <!--
+			<div class="content-block-title">Design</div>
+			<div class="list-block tablet-inset">
+				<ul>  
+					<li>
+						<a href="frames/settings/design/tint.html?nocache=1" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">Tint</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+            -->
+            <div class="content-block-title">Notification</div>
+            <div class="list-block tablet-inset">
+				<!--<form id="switch-ios8" class="store-data">-->
+					<ul>
+                        <!--
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Flash Light</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" id="switch-flashlight" name="switch-flashlight" onchange="if($(this).is(':checked')){app.settings.set('flashlight', true);}else{app.settings.set('flashlight', false);}" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+                        -->
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Vibration</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" id="switch-vibration" name="switch-vibration" onchange="if($(this).is(':checked')){app.settings.set('vibration', true);}else{app.settings.set('vibration', false);}" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+                        <li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Sound</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" id="switch-sound" name="switch-sound" onchange="if($(this).is(':checked')){app.settings.set('sound', true);}else{app.settings.set('sound', false);}" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+                        <li>
+                              <div class="item-content">                            
+                                <div class="item-inner">
+                                  <div class="item-title label" style="width: auto;">Sound Level</div>
+                                  <div class="item-input" style="width: auto;">
+                                    <div class="range-slider">
+                                      <input type="range" id="audio_volume" name="audio_volume" min="0" max="1" value="1" step="0.05" onchange="app.settings.set('audio_volume', $(this).val());">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </li>    
+					</ul>
+				<!--</form>-->
+			</div>
+    
+			<div class="list-block tablet-inset">
+				<ul class="center ">
+					<li>
+						<a href="#" class="reset-local-storage">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title" style="width: 100%; text-align:center; padding:10px; background-color:#FE504F; color: #fff;">Remove All App Data</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+            
+            <div class="list-block tablet-inset">
+				<ul class="center ">
+					<li>
+						<a href="#" class="reset-local-storage">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title btn-logout" style="width: 100%; text-align:center; padding:10px; background-color:#FE504F; color: #fff;" data-i18n="label.signout">label.signout</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+            
+    
+		</div>
+	</div>

@@ -49,7 +49,7 @@ var fwk = {
     },
     
     /* ------------- */   
-    /* ARRAY functions
+    /* ARRAY [] functions
     /* ------------- */ 
 	// http://www.bennadel.com/blog/1796-javascript-array-methods-unshift-shift-push-and-pop.htm
     arrayFindElement: function(array, callback) {        
@@ -84,4 +84,17 @@ var fwk = {
 		// if (array.length > total) array = array.slice(-total);
 	},
 
+   /* ------------- */   
+   /* COLLECTIONS {} functions
+   /* ------------- */ 
+   // Merge second object into first
+   collectionMerge: function (set1, set2){
+      for (var key in set2){
+        if (set2.hasOwnProperty(key))
+          set1[key] = set2[key];
+      }
+      return set1;
+   },
+   
+        
 };

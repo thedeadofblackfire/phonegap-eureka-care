@@ -20,10 +20,7 @@
     <!-- Panels overlay-->
     <div class="panel-overlay"></div>
     <!-- Left panel with reveal effect-->
-    <div class="panel panel-left panel-reveal">
-      <div class="content-block">
-        <p><center><a href="#" class="button button-cancel close-panel active" data-i18n="label.closepanel">label.closepanel</a></center></p>
-      </div> 
+    <div class="panel panel-left panel-reveal">   
       <!--<div class="content-block-title title_bluexxx">Active</div>-->
       <div class="list-block">
         <ul id="panel_userlist">
@@ -31,7 +28,7 @@
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-home"></i></div>
                 <div class="item-inner">
-                  <div class="item-title">Home</div>
+                  <div class="item-title" data-i18n="label.home">Home</div>
                 </div>
               </div></a></li> 
               
@@ -39,11 +36,11 @@
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-clock"></i></div>
                 <div class="item-inner">
-                  <div class="item-title">Treatments</div>
+                  <div class="item-title" data-i18n="label.treatments">Treatments</div>
                 </div>
               </div></a></li> 
               
-                     <li><a href="modals.html" class="close-panel item-link">
+              <li><a href="modals.html" class="close-panel item-link">
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-pie-graph"></i></div>
                 <div class="item-inner">
@@ -51,7 +48,7 @@
                 </div>
               </div></a></li> 
               
-        <li><a href="modals.html" class="close-panel item-link">
+           <li><a href="modals.html" class="close-panel item-link">
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-monitor"></i></div>
                 <div class="item-inner">
@@ -59,7 +56,7 @@
                 </div>
               </div></a></li> 
               
-          <li><a href="modals.html" class="close-panel item-link">
+          <li><a href="frames/settings.html?nocache=1" class="close-panel item-link">
               <div class="item-content">
                 <div class="item-media"><i class="icon size-24 ion-gear-a"></i></div>
                 <div class="item-inner">
@@ -89,6 +86,10 @@
                       
         </ul>
       </div>
+      
+      <div class="content-block">
+        <p><center><a href="#" class="button button-cancel close-panel active" data-i18n="label.closepanel">label.closepanel</a></center></p>
+      </div> 
     
     </div>
     <!-- Right panel with cover effect-->
@@ -126,7 +127,10 @@
                     <!--<img src="img/logo.png" width="60"/>&nbsp; <span style="color:#0295D3">Smart</span>-->
                 </div>
                 <!--<div class="center sliding" id="nickname" style="color:#007AFF;">e-Box Smart</div>-->
-                <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a></div>
+                <div class="right">
+                <!--<a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>-->
+                <a href="#" class="link icon-only open-panel "><i class="icon size-24 ion-navicon-round icon-barsxxx"></i></a>
+                </div>
               </div>
             </div>
         
@@ -160,7 +164,7 @@
                 <div class="col-50">
                     <a href="frames/treatments.html?nocache=1">
                     <img src="img/clock.png" alt=""  width="100" />
-                    <br> <img src="img/logo.png" width="60"/>&nbsp;<span style="color:#0295D3">Smart</span>
+                    <br><span data-i18n="treatments.treatments">Treatments</span> <!--<img src="img/logo.png" width="60"/>&nbsp;<span style="color:#0295D3">Smart</span> -->
                     </a>
                 </div>
                 <div class="col-50">
@@ -214,7 +218,7 @@
                     </a>
                 </div>       
                 <div class="col-50">
-                 <a href="#">
+                 <a href="frames/settings.html?nocache=1">
                     <img src="img/process.png" alt=""  width="100" />
                      <br>Settings
                      </a>

@@ -1,7 +1,9 @@
 {
     "label":
     {
-        "chats": "Chats",
+        "home": "Home",
+        "treatments": "Treatments",
+        "report": "Report",
         "settings": "Settings",
         "visitors": "Visitors",
         "list": "List",
@@ -35,6 +37,13 @@
         "unknowreferrer": "Unknow referrer",
         "yesterday": "Yesterday",
         "archives": "Archives"
+    },
+    "treatments":
+    {
+        "treatments": "Treatments",
+        "report": "Report",
+        "nextdelivery": "Next delivery",
+        "notakingmedication": "No taking medication provided"
     },
     "description":
     {
