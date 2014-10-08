@@ -153,12 +153,12 @@ var app = {
     onDeviceReady: function() {
         //checkConnection();	
 		console.log('onDeviceReady');
-                
-        app.treatments.localNotificationInit();
-        
+                 
         // translation init
         ln.init();        
         baseLanguage = ln.language.code;
+        
+        app.treatments.localNotificationInit();
 				
         if (ENV == 'production') {
             // hide the status bar using the StatusBar plugin
@@ -194,6 +194,7 @@ var app = {
             initAfterLogin();	
             
         }
+                        
         
         // document.addEventListener("offline", this.onOffline, false);
         // document.addEventListener("online", this.onOnline, false);
@@ -988,6 +989,7 @@ app.treatments.init = function()
     // @todo should be clean the old treatments to archives
     
     // @todo check on server if connected new production file or treatment to parse
+    // if online, check if new treatment on server or wait a push notification ???
     
     dbAppUserTreatments.set(objUserTreatments);
 };
@@ -998,8 +1000,7 @@ app.treatments.load = function() {
         
         // show loading icon
         mofLoading(true);
-        
-        //if (!current_treatment_page) current_treatment_page = 0;
+   
         current_treatment_page++;
         var last_days = 7;
 
@@ -1023,10 +1024,8 @@ app.treatments.load = function() {
                 
                 // save local storage
                 
-
-
                 app.treatments.processLocalNotification(res.items);
-                 //mainView.loadContent(str);
+                //mainView.loadContent(str);
            
               },
               error: function(jqXHR, textStatus, errorThrown) {
@@ -1121,7 +1120,6 @@ app.treatments.navigatePageTreatment = function(delivery) {
     $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
   
 }; 
-
 
 
 app.treatments.displayPageTreatmentReport = function(page)
@@ -1421,6 +1419,8 @@ app.treatments.localNotificationInit = function() {
         
         window.plugin.notification.local.onclick   = function (id, state, json) {
             console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
+            json = JSON.parse(json);
+            app.treatments.createPopupDelivery(json.delivery_dt);
         };
         
 };
@@ -1597,33 +1597,81 @@ app.treatments.processLocalNotification = function(data) {
         
 };
 
-// taking dialog: createPopup('2014-09-23 10:00:00');
-app.treatments.createPopup = function(delivery_dt) {
-    fw7.modal({
-        title:  'Modal with 3 buttons',
-        text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non.<br><br> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
-        buttons: [
-          {
-            text: 'RAPPEL',
-            onClick: function() {
-              fw7.alert('You clicked first button!')
-            }
-          },
-          {
-            text: '<i class="icon ion-checkmark-round" style="color:green;font-size:10px;"></i>PRENDRE',
-            onClick: function() {
-              fw7.alert('You clicked second button!')
-            }
-          },
-          {
-            text: '<i class="icon ion-close-round" style="color:red"></i>\nREFUSER',
-            bold: true,
-            onClick: function() {
-              fw7.alert('You clicked third button!')
-            }
-          },
-        ]
-      });
+// taking dialog: app.treatments.createPopupDelivery('2014-10-06 10:00:00');
+app.treatments.createPopupDelivery = function(delivery_dt) {
+    console.log('createPopupDelivery '+delivery_dt);
+    //console.log(objUserTreatments);
+    var day = delivery_dt.substr(0,10);
+    if (objUserTreatments[day]) {
+        var delivery_item = objUserTreatments[day].children[delivery_dt];
+        console.log(delivery_item);
+
+        var html_detail = '';
+        
+        var currentTodayTime = app.date.getTodayTime();
+        console.log('currentTodayTime='+currentTodayTime);
+        // get today current time                      
+        var deliveryT = parseInt(delivery_item.delivery_time,10);  
+        
+        $.each(delivery_item.children, function(bag_key, bag_item) {                         
+                        $.each(bag_item.children, function(drug_key, drug_item) {   
+                            var mark;
+                            if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY_AFTER) mark = '<i class="icon ion-minus" style="color:#6DC4EF"></i>';
+                            else if (drug_item.validate_taking == '1') mark = '<i class="icon ion-checkmark" style="color:#9FDDB3"></i>';
+                            else if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY_BEFORE && drug_item.validate_taking == '0') mark = '<i class="icon ion-close" style="color:#FC8A70"></i>';
+                            else if (delivery_item.status_today == app.treatments.constant.STATUS_TODAY && drug_item.validate_taking == '0') {
+                                                                                                         
+                                if (currentTodayTime < deliveryT) {
+                                    // is pending
+                                    mark = '<i class="icon ion-flag" style="color:#6DC4EF"></i>';
+                                } else if (currentTodayTime > (deliveryT + 30)) {
+                                    // error
+                                    mark = '<i class="icon ion-close" style="color:#FC8A70"></i>';
+                                } else if (currentTodayTime >= deliveryT) {
+                                    // in progress
+                                    mark = '&nbsp;<i class="icon ion-alert-circled" style="color:#FFA64C"></i>';
+                                }                                                                                          
+                            }                            
+                                                      
+                            html_detail += mark+' '+drug_item.drug_name+'<br>';
+                      
+                        });
+        });
+        html_detail += '';
+                    
+        fw7.modal({
+            title:  'Prise '+delivery_dt,
+            text: i18n.t('treatments.notakingmedication')+'<br><br><small>'+html_detail+"</small>",
+            buttons: [
+            /*
+              {
+                text: 'RAPPEL',
+                onClick: function() {
+                  fw7.alert('You clicked first button!')
+                }
+              },
+              */
+              {
+                text: '<i class="icon icon-size24 ion-checkmark-round" style="color:green;"></i> PRENDRE',
+                onClick: function() {
+                  fw7.alert('You clicked second button!')
+                }
+              },
+              {
+                text: '<i class="icon icon-size24 ion-close-round" style="color:red"></i>\nREFUSER',
+                bold: true,
+                onClick: function() {
+                  fw7.alert('You clicked third button!')
+                }
+              },
+            ]
+          });
+          
+         return true; 
+    } else {
+        // no object, call the server to raise error ?
+        return false;
+    }
 };
     
 app.treatments.calculeWidth = function() {
