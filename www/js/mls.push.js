@@ -210,11 +210,11 @@
             }
 			
             function successHandler(result) {
-                console.log('success:'+ result);
+                console.log('PUSH - success:'+ result);
             }
             
             function errorHandler(error) {
-                console.log('error:'+ error);
+                console.log('PUSH - error:'+ error);
             }
             
             /*

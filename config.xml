@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cordova.eboxsmart" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.cordova.eboxsmart" version="0.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Eureka Cordova</name>
     <description>
         Eureka Care for patient
@@ -9,9 +9,10 @@
     </author>
     <content src="index.html" />
     <icon src="www/res/icon.png" />
+    <preference name="AndroidLaunchMode" value="singleInstance"/>
     <platform name="android">
         <preference name="Fullscreen" value="true" />
-        <preference name="AndroidLaunchMode" value="singleTop"/>
+        <preference name="AndroidLaunchMode" value="singleInstance"/>
         <icon src="www/res/icon/android/36.png" density="ldpi" />
         <icon src="www/res/icon/android/48.png" density="mdpi" />
         <icon src="www/res/icon/android/72.png" density="hdpi" />

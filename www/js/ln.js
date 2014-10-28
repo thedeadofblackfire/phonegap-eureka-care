@@ -212,4 +212,4 @@ function displayLanguage() {
             alert(message);
 }
 
-ln.init();
+//ln.init();

@@ -40,6 +40,7 @@ var objUserSettings = {};
 var dbAppUserTreatments = dbAppUserTreatments || fwkStore.DB("user_treatments");
 var objUserTreatments = {};
 
+/*
 // custom native log
 window.console=(function(origConsole){
 
@@ -81,6 +82,7 @@ window.console=(function(origConsole){
     };
 
 }(window.console));
+*/
 
 var app = {
     // Application Constructor
@@ -134,7 +136,6 @@ var app = {
             } 
             
             initAfterLogin();			
-
         }
 		        
 		//document.addEventListener('load', this.onDeviceReady, true);		
@@ -191,8 +192,7 @@ var app = {
                 if (!result) return;
             } 
             
-            initAfterLogin();	
-            
+            initAfterLogin();	            
         }
                         
         
@@ -234,10 +234,15 @@ app.checkConnection = function() {
 
 function initAfterLogin() {
   doRefresh = true;
+  
+  //app.treatments.localNotificationInit();
              
   $('#nickname').html(objUser.first_name);
-            
-  loadChatInit();		
+            		
+  //language
+  $('#selectlanguage').val(baseLanguage);                        
+  $('body').i18n();
+        
 }
 
 // ---------------------
@@ -564,7 +569,7 @@ jQuery(document).ready(function($){
 		//var u = $("#username", form).val();
 		//var p = $("#password", form).val();	
 		if(u != '' && p!= '') {            
-            mofLoading(true);
+            //mofLoading(true);
                       
             $.ajax({
                 type: "POST",
@@ -578,20 +583,21 @@ jQuery(document).ready(function($){
                     if(res.success == true) {
                         //http://stackoverflow.com/questions/5124300/where-cookie-is-managed-in-phonegap-app-with-jquery
                         //http://stackoverflow.com/questions/8358588/how-do-i-enable-third-party-cookies-under-phonegap-and-android-3-2
+                        
                         var header = jqXHR.getAllResponseHeaders();
                         var match = header.match(/(Set-Cookie|set-cookie): (.+?);/);
-                        console.log(match);
+                        //console.log(match);
                         if(match) {
                             my_saved_cookie = match[2];
                             console.log(my_saved_cookie);
-                             window.localStorage.setItem("session",my_saved_cookie);
+                            window.localStorage.setItem("session",my_saved_cookie);
                         }
                             
                         //store
                         window.localStorage["username"] = u;
                         window.localStorage["password"] = p; 			
                         //window.sessionStorage["user_id"] = res.user.user_id; 
-                        window.sessionStorage.setItem('user', JSON.stringify(res.user));
+                        window.sessionStorage.setItem('user', JSON.stringify(res.user)); // should be localstorage with a timestamp cache
 
                         //dbAppUser.put(res.user);
                         
@@ -602,7 +608,7 @@ jQuery(document).ready(function($){
                             push_onDeviceReady();
                         }
                         
-                        mofLoading(false);
+                        //mofLoading(false);
                         
                         if (fromform === true) {
                             mofProcessBtn("#btnLogin", false);
@@ -616,7 +622,7 @@ jQuery(document).ready(function($){
                     } else {	
                         console.log(res.message);
                          
-                        mofLoading(false);
+                        //mofLoading(false);
                         
                         if (ENV == 'dev' || ENV == 'production') {
                             mofAlert(res.message);
@@ -697,28 +703,6 @@ jQuery(document).ready(function($){
     }
             
 
-
-function loadChatInit() {
-      console.log('loadChatInit');
-
-        /*    
-        $.getJSON(API+"/account/notificationstatus?user_id="+objUser.user_id+"&operator_id="+objUser.operator_id, function(res) {
-                console.log(res);
-                var valeur = 'Off';
-                if (res.status == '1') {
-                    valeur = 'On';
-                    $('#toggleswitchnotification').attr( "checked", "checked");
-                }		    
-        });
-		*/     
-        
-        //language
-        $('#selectlanguage').val(baseLanguage);
-                        
-        $('body').i18n();
-       
-}
-
 function goRegister() {
 	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
 }
@@ -792,8 +776,7 @@ function initFramework() {
                if (!result) return;
             }                 
            
-            initAfterLogin();
-                    
+            initAfterLogin();                    
         }
         
         if (page.name === 'login') {
@@ -1401,9 +1384,7 @@ app.treatments.displayReportItems = function(items) {
         app.treatments.updateReportPercent();
         
         return true;
-}
-
-
+};
 
 app.treatments.localNotificationInit = function() {
     console.log('localNotificationInit');
@@ -1412,16 +1393,18 @@ app.treatments.localNotificationInit = function() {
             console.log('onadd '+id+' state='+state+' '+JSON.stringify(json));
         };
         */
-        
-        window.plugin.notification.local.ontrigger  = function (id, state, json) {
-            console.log('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
-        };
-        
-        window.plugin.notification.local.onclick   = function (id, state, json) {
-            console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
-            json = JSON.parse(json);
-            app.treatments.createPopupDelivery(json.delivery_dt);
-        };
+       /*
+            window.plugin.notification.local.ontrigger  = function (id, state, json) {
+                console.log('ontrigger '+id+' state='+state+' '+JSON.stringify(json));
+            };
+            */
+            
+            window.plugin.notification.local.onclick   = function (id, state, json) {
+                console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
+                json = JSON.parse(json);
+                // need to have the objUser preloaded
+                app.treatments.createPopupDelivery(json.delivery_dt);
+            };
         
 };
 
@@ -1604,7 +1587,7 @@ app.treatments.createPopupDelivery = function(delivery_dt) {
     var day = delivery_dt.substr(0,10);
     if (objUserTreatments[day]) {
         var delivery_item = objUserTreatments[day].children[delivery_dt];
-        console.log(delivery_item);
+        //console.log(delivery_item);
 
         var html_detail = '';
         
