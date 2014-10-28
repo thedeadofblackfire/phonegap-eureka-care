@@ -1,2 +1,2 @@
-phonegap-mls-eboxsmart
+phonegap-mls-eurekacare
 ======================
