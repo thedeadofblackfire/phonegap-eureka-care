@@ -128,8 +128,7 @@
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
-	<meta http-equiv="Content-Security-Policy" content="default-src *;" >
+    <allow-intent href="geo:*" />	
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
