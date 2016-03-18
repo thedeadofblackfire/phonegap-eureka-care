@@ -247,7 +247,7 @@ i.ks-tabbar-icon-4 {
 .notifications {
   position: absolute;
   left: 0;
-  top: 42px;
+  top: 52px;/*42*/
   width: 100%;
   z-index: 20000;
   color: #fff;

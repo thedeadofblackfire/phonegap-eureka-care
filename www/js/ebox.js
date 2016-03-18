@@ -760,6 +760,7 @@ function initFramework() {
     mainView = fw7.addView('.view-main', {
         // Because we use fixed-through navbar we can enable dynamic navbar
         dynamicNavbar: false
+		//domCache: true
     });
     
     // Events for specific pages when it initialized
@@ -896,6 +897,8 @@ function initFramework() {
     $$('.panel-left, .panel-right').on('close', function () {
         $$('.statusbar-overlay').removeClass('with-panel-left with-panel-right');
     });
+	
+	ipc = new app.pages.IndexPageController(fw7, $$);
 
 }
 
@@ -1624,7 +1627,7 @@ app.treatments.createPopupDelivery = function(delivery_dt) {
                     
         fw7.modal({
             title:  'Prise '+delivery_dt,
-            text: i18n.t('treatments.notakingmedication')+'<br><br><small>'+html_detail+"</small>",
+            text: i18n.t('treatments.notakingmedication')+'<br><small>'+html_detail+"</small>",
             buttons: [
             /*
               {
