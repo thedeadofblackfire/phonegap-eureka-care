@@ -809,7 +809,11 @@ function initFramework() {
         }
         
         //alert(page.name);
-        
+        if (page.name === 'video_feature') {
+			 console.log('video_feature.html pageinit'); 
+			 peer_init();
+		}
+		
         if (page.name === 'video') {
             console.log('video.html pageinit'); 
             if (Object.keys(objUser).length == 0) {

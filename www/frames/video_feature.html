@@ -4,13 +4,8 @@
     <!-- Scrollable page content-->
     <div class="navbar">
 <div class="navbar-inner">
-<div class="left">
-<a href="#" class="back" style="color:#fff">
-                <i class="icon size-24 ion-ios7-arrow-thin-left"></i>
-            </a>
-<!--<a href="#" class="link icon-only open-panel"><i class="icon icon-bars-white"></i></a>-->
-</div>
-<div class="center sliding contacts-list-header" style="color:#fff"><i class="icon size-24 ion-monitor"></i>&nbsp;Video Chat</div>
+<div class="left"><a href="#" class="back link"><i class="icon icon-back"></i><span>Back</span></a></div>
+<div class="center contacts-list-header" style="color:#fff"><!--<i class="icon size-24 ion-monitor"></i>&nbsp;-->Video Chat</div>
 <div class="right contact-add-link">
 <!--<a href="#" class="link icon-only"><i class="icon icon-plus">+</i></a>-->
 <!--<a href="#" class="refresh-click link icon-only"><i class="icon ion-ios7-reload"></i></a> -->
@@ -29,8 +24,69 @@
 </div>
 </div>
     <div class="page-content" style="/*background-color: #FFE599;*/">    
-            
+               <br><br>
+			   <style>
+			   body
+{
+    margin: 0;
 
+    text-align: center;
+
+    background: #111;
+}
+			   *:focus
+{
+    outline: none;
+}
+
+#remoteVideo
+{
+    width: 100%;
+    height: 100vh;
+
+    background: #000;
+}
+
+#localVideo
+{
+    position: absolute;
+    right: 1.1em;
+    bottom: 1em;
+
+    width: 20%;
+
+    border: 1px solid #333;
+    background: #000;
+}
+
+#callButton
+{
+    font-size: 1.5em;
+
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+
+    display: none;
+
+    width: 4em;
+    height: 2em;
+    margin-left: -2em;
+
+    border: none;
+    border-radius: 2em;
+    background-color: #090;
+}
+
+#callButton:active
+{
+    background-color: #808080;
+}
+</style>
+ <video id="localVideo" autoplay muted></video>
+        <video id="remoteVideo" autoplay></video>
+        <button id="callButton">Call</button>
+		
                    <br><br>
 			   <div style="text-align:center" data-controltype="image" class="topband">               				  
                   <!--<img src="img/video.png" />-->
