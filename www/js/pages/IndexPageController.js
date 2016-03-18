@@ -25,8 +25,9 @@ app.pages.IndexPageController = function (app, $$) {
     welcomescreen_slides = [
       {
         id: 'slide0',
-        picture: '<div class="tutorialicon">♥</div>',
+        picture: '<div class="tutorialicon"><img src="img/ecare-w.png" width="256" height="256"><!--♥--></div>',
         text: 'Bienvenue dans le tutorial de présentation. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.'
+		//text: 'Bienvenue dans le tutorial de présentation. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.'
       },
       {
         id: 'slide1',
