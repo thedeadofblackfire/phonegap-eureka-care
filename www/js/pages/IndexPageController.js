@@ -26,12 +26,12 @@ app.pages.IndexPageController = function (app, $$) {
       {
         id: 'slide0',
         picture: '<div class="tutorialicon">♥</div>',
-        text: 'Welcome to this tutorial. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.'
+        text: 'Bienvenue dans le tutorial de présentation. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.'
       },
       {
         id: 'slide1',
         picture: '<div class="tutorialicon">✲</div>',
-        text: 'This is slide 2'
+        text: 'Prend en charge toute une variété de dispositifs connectés, de sorte que vous pouvez suivre toutes vos fonctions vitales partout et à tout moment.'
       },
       {
         id: 'slide2',
