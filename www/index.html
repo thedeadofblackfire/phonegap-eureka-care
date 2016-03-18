@@ -7,6 +7,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!-- content security policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' eureka-platform.com;" >
+  
     <title>eureKa Care</title>
     <!-- Path to Framework7 Library CSS-->
 	<link rel="stylesheet" href="framework7/css/framework7.material.min.css">
@@ -23,9 +26,7 @@
     <link rel="stylesheet" href="css/my-app.css">    
   </head>
   <body class="theme-lightblue">
-	<!-- content security policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src *" >
-  
+	
     <div class="statusbar-overlay"></div>
     <!-- Panels overlay-->
     <div class="panel-overlay"></div>
