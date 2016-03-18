@@ -866,14 +866,15 @@ function initFramework() {
             });
                 
             $$('#selectlanguage').val(baseLanguage);             
-            /*
+            
             $('.page[data-page="settings"] .page-content').html($('.page[data-page="settings"] .page-content').html().replace(/{{version}}/g, objConfig.version).replace(/{{build}}/g, objConfig.build).replace(/{{release_time}}/g, objConfig.release_time));
         
             if (objUserSettings.flashlight) $$('#switch-flashlight').attr( "checked", "checked");       
             if (objUserSettings.vibration) $$('#switch-vibration').attr( "checked", "checked");
             if (objUserSettings.sound) $$('#switch-sound').attr( "checked", "checked"); 
-            $$('#audio_volume').val(objUserSettings.audio_volume);            
-            */
+            $$('#audio_volume').val(objUserSettings.audio_volume);    
+			
+            
         }
         
     

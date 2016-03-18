@@ -192,6 +192,7 @@ i.ks-tabbar-icon-4 {
 
 
 /* switch orange */
+/*
 .label-switch input[type="checkbox"] + .checkbox:before {
   content: ' ';
   position: absolute;
@@ -211,7 +212,7 @@ i.ks-tabbar-icon-4 {
   -ms-transform: scale(1);
   transform: scale(1);
 }
-
+*/
 .content-block-title.title_blue {
  color:#007AFF;
 } 
