@@ -81,7 +81,7 @@ function peer_init() {
             console.log('create connection to the ID server');
             console.log('host: ' + SERVER_IP + ', port: ' + SERVER_PORT);
 			
-				 peer = new Peer(callerId, {host: 'peer.eureka-platform.com', port: 9000, debug: 3, secure: true, config: {'iceServers': [ 
+			peer = new Peer(callerId, {host: 'peer.eureka-platform.com', port: 9000, debug: 3, secure: true, config: {'iceServers': [ 
 	{url:'stun:stun01.sipphone.com'},
 {url:'stun:stun.ekiga.net'},
 {url:'stun:stun.fwdnet.net'},

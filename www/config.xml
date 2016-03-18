@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.02">
+        version   = "0.3.03">
 
     <name>Eureka Care</name>
 
@@ -129,6 +129,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+	<meta http-equiv="Content-Security-Policy" content="default-src *;" >
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
