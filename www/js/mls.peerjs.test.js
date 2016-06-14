@@ -12,7 +12,7 @@ function peer_init() {
 	
     // PeerJS server location
     //var SERVER_IP = '192.168.0.101'; //home
-	var SERVER_IP = 'peer.eureka-platform.com';
+	var SERVER_IP = 'peer.eureka.care';
     // var SERVER_IP = '192.168.1.227'; //office
     var SERVER_PORT = 9000;
 
