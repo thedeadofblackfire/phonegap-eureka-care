@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.10">
+        version   = "0.3.11">
 
     <name>Eureka Care</name>
 
@@ -75,7 +75,8 @@
     <!--<gap:plugin name="com.megster.cordova.bluetoothserial" version="0.2.2" />-->
     <!--<gap:plugin name="com.evothings.ble" version="1.0.0" /> -->
 
-	<plugin name="org.crosswalk.engine" spec="1.3.0" source="pgb" />
+	<plugin name="org.crosswalk.engine" spec="1.7.0" source="pgb" />
+	<!--<plugin name="org.crosswalk.engine" spec="1.3.0" source="pgb" />-->
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />
