@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.13">
+        version   = "0.3.14">
 
     <name>Eureka Care</name>
 
@@ -53,8 +53,9 @@
     <platform name="android" />
     
     <!-- Plugins can also be added here. -->   
+	<plugin name="cordova-plugin-device" spec="1.1.2" source="npm" />
   
-    <plugin name="org.apache.cordova.device" spec="0.2.8" source="pgb" />
+    <!--<plugin name="org.apache.cordova.device" spec="0.2.8" source="pgb" />-->
     <plugin name="org.apache.cordova.dialogs" spec="0.2.6" source="pgb" />
     <plugin name="org.apache.cordova.media" spec="0.2.8" source="pgb" />
     <plugin name="org.apache.cordova.network-information" spec="0.2.7" source="pgb"/>
@@ -122,7 +123,7 @@
     <gap:splash src="splash/ios/Default-Landscape_at_2x.png" gap:platform="ios" width="2048" height="1496" />
     <gap:splash src="splash/ios/Default-Portrait_at_2x.png"  gap:platform="ios" width="1536" height="2008" />
 	-->
-	<plugin name="cordova-plugin-whitelist" spec="~1" source="npm"  />
+	<plugin name="cordova-plugin-whitelist" spec="~1" source="npm" />
     <access origin="*" />    
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
