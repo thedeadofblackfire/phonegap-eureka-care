@@ -76,10 +76,11 @@
 	<gap:plugin name="org.li8.inappbrowser" version="0.1" />
     -->    
 
-	<!--
+	
     <plugin name="com.phonegap.plugins.pushplugin" spec="2.3.1" source="pgb" />
-	-->
-    <plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.1" source="pgb" />
+	
+	<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />
+    <!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.1" source="pgb" />-->
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.7.4" source="pgb" />-->
     <plugin name="nl.x-services.plugins.toast" spec="2.0" source="pgb" />
     <!-- <gap:plugin name="com.simonmacdonald.telephonenumber" version="1.0.0" /> -->
