@@ -15,7 +15,7 @@
                 if (!ImPush.deviceSerial) {
                     ImPush.deviceSerial = window.localStorage["device_serial"];
                 }
-                console.log('device_serial=' + ImPush.deviceSerial);		
+                console.log('PUSH - push_obj_init - device_serial=' + ImPush.deviceSerial);		
                 ImPush.appCode = "eureka_care";
                 //ImPush.appCode = "539F5-D40CA";
                 ImPush.appVersion = "1.0";
@@ -76,8 +76,7 @@
 					push.on('registration', function(data) {
 						// data.registrationId						
 						console.log('PUSH - REGISTERED -> REGID=' + data.registrationId);
-						console.log(data);
-						
+					
 						push_obj_init();
         
 						ImPush.register(data.registrationId, function(data) {     
@@ -108,6 +107,37 @@
 						// data.additionalData
 						console.log('PUSH - --NOTIFICATION--');
 						console.log(data);
+						
+						if (data.additionalData.foreground) {
+							console.log('PUSH - --INLINE NOTIFICATION--');
+							//Whether the notification was received while the app was in the foreground
+							
+							// if the notification contains a soundname, play it.
+                            //console.log('PUSH - ' + JSON.stringify(data));
+                            
+							// on Android soundname is outside the payload. 
+                            // On Amazon FireOS all custom attributes are contained within payload
+                            var soundfile = data.sound;
+                            // if the notification contains a soundname, play it.
+                            var my_media = new Media("file:///android_asset/www/audio/"+ soundfile); //new Media("file:///android_asset/www/audio/"+e.soundname); 
+                            my_media.play();
+						} else {
+							// otherwise we were launched because the user touched a notification in the notification tray.
+							// coldstart Will be true if the application is started by clicking on the push notification, false if the app is already started.
+							if (data.additionalData.coldstart) {
+								console.log('PUSH - --COLDSTART NOTIFICATION--');
+							} else {
+								console.log('PUSH - --BACKGROUND NOTIFICATION--');
+							}
+						}
+						
+						/*
+						console.log('PUSH - MESSAGE -> MSG: ' + data.message);
+                        //Only works for GCM
+						console.log('PUSH - MESSAGE -> MSGCNT: ' + data.count);
+                        //Only works on Amazon Fire OS
+                        console.log('PUSH - MESSAGE -> TIME: ' + e.payload.timeStamp);
+						*/
 						
 						/*
 							if (e.foreground)
