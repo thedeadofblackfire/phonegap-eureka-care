@@ -1407,47 +1407,25 @@ app.treatments.localNotificationInit = function() {
             };
             */
             
-	cordova.plugins.notification.local.on("click", function (notification, state) {
-		console.log(notification);
-		console.log(state);
-    alert(notification.id + ' ' +notification.text);
-	 json = JSON.parse(notification.data);
-	 console.log(json);
-                // need to have the objUser preloaded
-       //         app.treatments.createPopupDelivery(json.delivery_dt);
-	}, scope);
-
-	/*
             window.plugin.notification.local.onclick   = function (id, state, json) {
                 console.log('onclick  '+id+' state='+state+' '+JSON.stringify(json));
                 json = JSON.parse(json);
                 // need to have the objUser preloaded
                 app.treatments.createPopupDelivery(json.delivery_dt);
             };
-        */
+        
 };
 
 app.treatments.localNotificationCancelAll = function() {
-	cordova.plugins.notification.local.cancelAll(function() {
-		console.log('All notifications have been canceled');
-		alert("done");
-	}, this);
-	/*
   window.plugin.notification.local.cancelAll(function() {
              console.log('All notifications have been canceled');
         }); 
-		*/
 };
 
 app.treatments.localNotificationGetScheduledIds = function() {
-	cordova.plugins.notification.local.getAll(function (notifications) {
-console.log(notifications);
-});
-/*
   window.plugin.notification.local.getScheduledIds( function (scheduledIds) {
              console.log('Scheduled IDs: ' + scheduledIds.join(' ,'));
         }); 
-		*/
 };
 
 // add new local notification for upcoming days 
@@ -1492,22 +1470,7 @@ app.treatments.processLocalNotification = function(data) {
                             }
                             url_sound = 'android.resource://' + package_name + '/raw/beep';
         
-                            cordova.plugins && cordova.plugins.notification.local.schedule({
-                                    id: notification_id,
-                                    title: notification_title,
-                                    text: notification_message,
-                                    sound: url_sound,
-                                    badge: 1,
-                                    data: {'message': 'alert', 'delivery_dt': v_delivery.delivery_dt },
-                                    //autoCancel: true,
-                                    ongoing: false,
-                                    //repeat: 5, // 2 minutes
-                                    //icon: 'file:///android_asset/www/img/flower128.png',                               
-                                    at: notification_date
-                                });
-								
-								/*
-								 window.plugin && window.plugin.notification.local.add({
+                            window.plugin && window.plugin.notification.local.add({
                                     id: notification_id,
                                     title: notification_title,
                                     message: notification_message,
@@ -1520,7 +1483,6 @@ app.treatments.processLocalNotification = function(data) {
                                     //icon: 'file:///android_asset/www/img/flower128.png',                               
                                     date: notification_date
                                 });
-								*/
                         //}
     
                      });           
