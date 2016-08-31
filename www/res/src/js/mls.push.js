@@ -1,6 +1,4 @@
             var pushNotification;
-			
-			var push;
             
             var push_senderID = '304393421639';
             
@@ -56,100 +54,8 @@
 				}, false);
 			
 				try 
-				{                 	
-					console.log('PUSH - init');
-					push = PushNotification.init({
-						android: {
-							senderID: push_senderID
-						},
-						browser: {
-							pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-						},
-						ios: {
-							alert: "true",
-							badge: "true",
-							sound: "true"
-						},
-						windows: {}
-					});
-					
-					push.on('registration', function(data) {
-						// data.registrationId						
-						console.log('PUSH - REGISTERED -> REGID=' + data.registrationId);
-						console.log(data);
-						
-						push_obj_init();
-        
-						ImPush.register(data.registrationId, function(data) {     
-							console.log("PUSH - ImPush register success: " + JSON.stringify(data));						
-						
-							// save device_serial on localstorage
-                            if (data.device_serial) {
-                                console.log("PUSH - local store device_serial="+data.device_serial);
-                                window.localStorage["device_serial"] = data.device_serial;
-                                objUser.device_serial = data.device_serial;
-                            }
-                    
-                            //ImPush.sendAppOpen();
-							 
-						}, function(errorregistration) {
-							alert("Couldn't register with ImPush" +  errorregistration);
-						});
-												
-						 
-					});
-
-					push.on('notification', function(data) {
-						// data.message,
-						// data.title,
-						// data.count,
-						// data.sound,
-						// data.image,
-						// data.additionalData
-						console.log('PUSH - --NOTIFICATION--');
-						console.log(data);
-						
-						/*
-							if (e.foreground)
-                    	{
-							console.log('PUSH - --INLINE NOTIFICATION--');
-							
-							// if the notification contains a soundname, play it.
-                            console.log('PUSH - ' + JSON.stringify(e));
-                            
-                            // on Android soundname is outside the payload. 
-                            // On Amazon FireOS all custom attributes are contained within payload
-                            var soundfile = e.soundname || e.payload.sound;
-                            // if the notification contains a soundname, play it.
-                            var my_media = new Media("file:///android_asset/www/audio/"+ soundfile); //new Media("file:///android_asset/www/audio/"+e.soundname); 
-                            my_media.play();
-                             					
-						}
-						else
-						{	// otherwise we were launched because the user touched a notification in the notification tray.
-							if (e.coldstart)
-								console.log('PUSH - --COLDSTART NOTIFICATION--');
-							else
-							console.log('PUSH - --BACKGROUND NOTIFICATION--');
-						}
-							
-						console.log('PUSH - MESSAGE -> MSG: ' + e.payload.message);
-                        //Only works for GCM
-						console.log('PUSH - MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
-                        //Only works on Amazon Fire OS
-                        console.log('PUSH - MESSAGE -> TIME: ' + e.payload.timeStamp);
-						*/
-						
-						
-					});
-
-					push.on('error', function(e) {
-						// e.message
-						console.log('PUSH - ERROR -> MSG:' + e.message);
-					});
-
-					/*
-					pushNotification = window.plugins.pushNotification;
+				{ 
+                	pushNotification = window.plugins.pushNotification;
                 	if (device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos") {
 						console.log('PUSH - registering android');
                     	pushNotification.register(successHandler, errorHandler, {"senderID":push_senderID,"ecb":"onNotification"});		// required!
@@ -157,7 +63,6 @@
 						console.log('PUSH - registering iOS');
                     	pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});	// required!
                 	}
-					*/
                 }
 				catch(err) 
 				{ 
