@@ -1827,6 +1827,9 @@ app.treatments.viewPill = function(type) {
     var message = i18n.t('treatments.notakingmedication');
     window.plugins && window.plugins.toast.show(message, 'long', 'bottom', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
     
+	/*
+	 window.plugins && window.plugins.toast.show(message, 'long', 'bottom', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});    
+	*/
     fw7.addNotification({
                     title: title,
                     message: message, //'Aucun médicament prévu'
