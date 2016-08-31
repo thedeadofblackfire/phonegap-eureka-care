@@ -1407,15 +1407,15 @@ app.treatments.localNotificationInit = function() {
             };
             */
             
-	cordova.plugins.notification.local.on("click", function (notification, state) {
+	cordova.plugins.notification.local.on("click", function (notification) {
 		console.log(notification);
-		console.log(state);
+		//console.log(state);
     alert(notification.id + ' ' +notification.text);
 	 json = JSON.parse(notification.data);
 	 console.log(json);
                 // need to have the objUser preloaded
        //         app.treatments.createPopupDelivery(json.delivery_dt);
-	}, scope);
+	});
 
 	/*
             window.plugin.notification.local.onclick   = function (id, state, json) {
