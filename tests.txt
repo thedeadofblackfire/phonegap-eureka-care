@@ -1,3 +1,10 @@
+http://eureka.api/vendor/v2/pushnotification?user_id=374&message=toto%20est%20parti%20en%20vacances%20depuis%20hier%20soir%20et%20lendemain%202&badge=3
+
+https://github.com/phonegap/phonegap-plugin-push
+https://github.com/katzer/cordova-plugin-local-notifications
+https://www.npmjs.com/package/cordova-plugin-crosswalk-webview
+----
+
 file:///android_asset/www/sounds/fr_alarm01.mp3
 
 cordova.plugins.notification.local.schedule({
@@ -10,3 +17,43 @@ cordova.plugins.notification.local.schedule({
 					led: '#ff00ff'
                                   
                                 });
+								
+								
+								
+								
+cordova.plugins.notification.local.schedule({
+    id: 1,
+    text: "Multi Notification 1",
+    sound: 'file://beep.mp3',
+    icon: 'res://ic_warning.png',
+    data: { secret:'key' }
+});
+
+cordova.plugins.notification.local.schedule({
+    id: 1,
+    text: "Multi Notification 1",
+    sound: 'file://audio/fr_alarm_exit.mp3',
+    icon: 'res://ic_warning.png',
+    data: { secret:'key' }
+});
+
+file://beep.mp3 => ok
+file://beep.wav => ok
+file://audio/fr_alarm_exit.mp3 => ok
+file://sounds/fr_alarm01.mp3 => ok
+
+icon: 'res://ic_warning.png' => ok
+icon: 'res://icon.png' => ok
+
+
+cordova.plugins.notification.local.schedule([{
+    id: 1,
+    text: "Multi Notification 1",
+    sound: 'file://sounds/fr_alarm01.mp3',
+    data: { secret:'key' }
+},{
+    id: 2,
+    title: "Local Notification Example",
+    text: "Multi Notification 2",
+    icon: "https://office.eureka-platform.com/assets/images/overview/128/mesures-blue.png"
+}]);
