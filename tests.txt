@@ -1,0 +1,12 @@
+file:///android_asset/www/sounds/fr_alarm01.mp3
+
+cordova.plugins.notification.local.schedule({
+                                    id: '123',
+                                    title: 'test',
+                                    text: 'super',
+                                    sound: 'file://sounds/fr_alarm01.mp3',
+                                    badge: 2,
+                                    data: {'message': 'alert'},
+					led: '#ff00ff'
+                                  
+                                });
