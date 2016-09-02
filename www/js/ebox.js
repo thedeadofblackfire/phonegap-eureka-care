@@ -999,7 +999,7 @@ app.treatments.load = function() {
               url: API+"/gettreatment",
               datatype: 'json',      
               type: "post",
-              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_page},   
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_page},   
               success:function(res){                    
                  console.log(res);
      
@@ -1172,7 +1172,7 @@ app.treatments.displayPageTreatmentReport = function(page)
                   url: API+"/gettreatment",
                   datatype: 'json',      
                   type: "post",
-                  data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_report_page},   
+                  data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_report_page},   
                   success:function(res){                    
                      console.log(res);
                     
@@ -1212,7 +1212,7 @@ app.treatments.displayPageTreatmentReport = function(page)
               url: API+"/gettreatment",
               datatype: 'json',      
               type: "post",
-              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.user_id, last_days: last_days, page: current_treatment_report_page},   
+              data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_report_page},   
               success:function(res){                    
                  console.log(res);
                  
