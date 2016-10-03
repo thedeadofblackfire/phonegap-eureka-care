@@ -130,7 +130,10 @@ function fail(error) {
      case FileTransferError.CONNECTION_ERR: 
       console.log("Connection error "+error.source+" "+error.target); 
 	  // @todo need to upload again using error.source as imageURI
-      break; 
+      break;  
+	  case FileTransferError.ABORT_ERR:
+	  console.log("upload Abort");
+	  break;
     } 
 
     console.log("An error has occurred: Code = " + error.code); 
@@ -212,6 +215,7 @@ function uploadVin(imageURI) {
     
     var ft = new FileTransfer();
     var url = encodeURI(API+"/uploadprescription?id="+request_id+"&nomimage="+imagefilename+"&office_seq="+objUser.office.office_seq+"&patient_user_seq="+objUser.uuid);
+	console.log(url);
     ft.onprogress = function(progressEvent) {
         if (progressEvent.lengthComputable) {
           var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
