@@ -89,6 +89,7 @@ window.console=(function(origConsole){
 var capturedPhoto = 0;
 var uploadedPhoto = 0;
 var vinPic = 0;
+var prescriptionURI;
 
 //Success callback
 function win(r) {    
@@ -110,7 +111,7 @@ function win(r) {
     console.log("Response = " + r.response);
     console.log("Sent = " + r.bytesSent);
 	
-	alert('upload');
+	console.log('upload done');
 }
 //Failure callback
 function fail(error) {
@@ -151,7 +152,8 @@ function captureVIN(){
 		destinationType = Camera.DestinationType.FILE_URI;
 	}
 	console.log('destinationType='+destinationType);
-    navigator.camera.getPicture(uploadVin, onFail, { quality: 50,
+	
+    navigator.camera.getPicture(showVin, onFail, { quality: 70,
     destinationType: destinationType, });
 }
 
@@ -170,7 +172,27 @@ function getVIN(source) {
     });
 }
 
+function showVin(imageURI) {
+	if (!imageURI) {
+        document.getElementById('camera_status').innerHTML = "Take picture or select picture from library first.";
+        return;
+   }
+   
+      var vehicleVIN = document.getElementById('vehicleVIN');
+      vehicleVIN.src = imageURI;
+      if(imageURI.length != 0){
+        vinPic = 1;
+      }
+	  
+	 //If you wish to display image on your page in app
+	//displayPhoto(imageURI);	 
+	capturedPhoto++;
+	
+	prescriptionURI = imageURI;
+}
+
 function uploadVin(imageURI) {
+	
    if (!imageURI) {
         document.getElementById('camera_status').innerHTML = "Take picture or select picture from library first.";
         return;
@@ -185,7 +207,8 @@ function uploadVin(imageURI) {
 	 //If you wish to display image on your page in app
 	//displayPhoto(imageURI);	 
 	capturedPhoto++;
-    
+	
+	
 	NProgress.start();
 	
 	var request_id = objUser.uuid;
@@ -195,7 +218,7 @@ function uploadVin(imageURI) {
     var options = new FileUploadOptions();
     options.fileKey = "file";
     // var userid = '123456';
-    var imagefilename = request_id + '_vin_' + Number(new Date()) + ".jpg";
+    var imagefilename = request_id + '_ordo_' + Number(new Date()) + ".jpg";
     //options.fileName = imageURI;
 	//options.fileName = imagefilename;
 	options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
@@ -208,13 +231,14 @@ function uploadVin(imageURI) {
 	params.office_seq = objUser.office.office_seq;
 	params.patient_user_seq = objUser.uuid;
 	params.request_id = request_id;
+	params.upload_type = 'prescription';
 	//params.id = request_id;
     //params.userid = sessionStorage.loginuserid;
     options.params = params;
     options.chunkedMode = true; //true;
     
     var ft = new FileTransfer();
-    var url = encodeURI(API+"/uploadprescription?id="+request_id+"&nomimage="+imagefilename);
+    var url = encodeURI(API+"/upload");
 	console.log(url);
 	
     ft.onprogress = function(progressEvent) {
@@ -250,50 +274,9 @@ function uploadVin(imageURI) {
 }
 
 function validPageVin() {
-//var vehiclepic = document.getElementById('vehicleVIN');
-/*
-  if (uploadedPhoto !== capturedPhoto) {
-		navigator.notification.alert(
-            'Please Wait until your data uploads!!',  // message
-            alertDismissed,         // callback
-           'Processing', // title
-            'Ok'                  // buttonName
-        );
-  } 
-*/  
-  if(vinPic == 1){
-  /*
-	var formData = '';
-			$.ajax({
-                    type: "POST",
-                    url: API+"/ajax.php?m=updaterequest&id="+request_id+"&step=4",
-                    cache: false,
-                    data: formData,                    
-                    beforeSend: function() {
-                        // This callback function will trigger before data is sent
-                        $.mobile.showPageLoadingMsg(true); // This will show ajax spinner
-                    },
-                    complete: function() {
-                        // This callback function will trigger on data sent/received complete
-                        $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
-                    },
-                    success: function (result) {
-                        //    resultObject.formSubmitionResult = result;
-                        //                $.mobile.changePage("#second");
-                        console.log(result);  
-						
-						//window.location="#page4
-						if (result.success) {
-							$.mobile.changePage("#page-details");
-						}
-                    },
-                    error: function (request,error) {
-                        // This callback function will trigger on unsuccessful action                
-                        alert('Network error has occurred please try again!');
-                    }
-                });
-				*/
-				
+
+  if(vinPic == 1 && prescriptionURI){
+			/*
 			var formData = $("#form-confirmrequest").serialize();
 		
             console.log(formData);
@@ -344,6 +327,67 @@ function validPageVin() {
                         alert('Network error has occurred please try again!');
                     }
                 });
+			*/
+			
+    
+	NProgress.start();
+	
+	var request_id = objUser.uuid;
+	console.log('request_id='+request_id);
+	
+	// upload
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    var imagefilename = request_id + '_ordo_' + Number(new Date()) + ".jpg";
+	options.fileName = prescriptionURI.substr(prescriptionURI.lastIndexOf('/')+1);
+    options.mimeType = "image/jpeg"; 
+
+    var params = new Object();
+    params.imageURI = prescriptionURI;
+	params.imageFileName = imagefilename;
+	params.seq = capturedPhoto;
+	params.office_seq = objUser.office.office_seq;
+	params.patient_user_seq = objUser.uuid;
+	params.request_id = request_id;
+	params.upload_type = 'prescription';
+	//params.id = request_id;
+    //params.userid = sessionStorage.loginuserid;
+    options.params = params;
+    options.chunkedMode = true; //true;
+    
+    var ft = new FileTransfer();
+    var url = encodeURI(API+"/upload");
+	console.log(url);
+	
+    ft.onprogress = function(progressEvent) {
+        if (progressEvent.lengthComputable) {
+          var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
+		  //statusDom.innerHTML = perc + "% uploaded...";
+          // console.log('uploading '+perc+'%');
+          NProgress.set(perc / 100);
+          //$('.status').html(perc + "% uploaded...");          
+          //loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+        } else {
+          NProgress.inc();
+          //loadingStatus.increment();
+          /*
+          var statusUploaded = $('.status').html();
+          if (statusUploaded == "") {
+              $('.status').html('Uploading');
+          } else {
+              $('.status').html(statusUploaded+'.');
+          }
+          */
+          /*
+          if(statusDom.innerHTML == "") {
+				statusDom.innerHTML = "Uploading";
+		  } else {
+				statusDom.innerHTML += ".";
+		  }
+          */
+        }
+    };
+    ft.upload(prescriptionURI, url, win, fail, options);      
 				
      //window.location = "#page-details";
 	 
