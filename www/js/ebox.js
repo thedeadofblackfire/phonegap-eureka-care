@@ -9,16 +9,13 @@ var API = BASE_URL+'/api/mobile';
 
 var objUser = {};
 var audioEnable = true;
-var isChatSession = false;
-var current_session_id = '';
-var totalVisitors = 0;
 var doRefresh = true;
 
 var current_treatment_page = 0;
 var current_treatment_report_page = 0;
 var objSessionTreatments = {};
 
-var package_name = "com.cordova.eboxsmart";
+var package_name = "com.mls.eurekacare";// "com.cordova.eboxsmart";
 //var package_name = "com.mls.eboxsmart";
 
 var baseLanguage = 'en';        
@@ -208,14 +205,18 @@ function uploadVin(imageURI) {
     params.imageURI = imageURI;
 	params.imageFileName = imagefilename;
 	params.seq = capturedPhoto;
+	params.office_seq = objUser.office.office_seq;
+	params.patient_user_seq = objUser.uuid;
+	params.request_id = request_id;
 	//params.id = request_id;
     //params.userid = sessionStorage.loginuserid;
     options.params = params;
     options.chunkedMode = true; //true;
     
     var ft = new FileTransfer();
-    var url = encodeURI(API+"/uploadprescription?id="+request_id+"&nomimage="+imagefilename+"&office_seq="+objUser.office.office_seq+"&patient_user_seq="+objUser.uuid);
+    var url = encodeURI(API+"/uploadprescription?id="+request_id+"&nomimage="+imagefilename);
 	console.log(url);
+	
     ft.onprogress = function(progressEvent) {
         if (progressEvent.lengthComputable) {
           var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
@@ -247,6 +248,123 @@ function uploadVin(imageURI) {
     ft.upload(imageURI, url, win, fail, options);       
     
 }
+
+function validPageVin() {
+//var vehiclepic = document.getElementById('vehicleVIN');
+/*
+  if (uploadedPhoto !== capturedPhoto) {
+		navigator.notification.alert(
+            'Please Wait until your data uploads!!',  // message
+            alertDismissed,         // callback
+           'Processing', // title
+            'Ok'                  // buttonName
+        );
+  } 
+*/  
+  if(vinPic == 1){
+  /*
+	var formData = '';
+			$.ajax({
+                    type: "POST",
+                    url: API+"/ajax.php?m=updaterequest&id="+request_id+"&step=4",
+                    cache: false,
+                    data: formData,                    
+                    beforeSend: function() {
+                        // This callback function will trigger before data is sent
+                        $.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+                    },
+                    complete: function() {
+                        // This callback function will trigger on data sent/received complete
+                        $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+                    },
+                    success: function (result) {
+                        //    resultObject.formSubmitionResult = result;
+                        //                $.mobile.changePage("#second");
+                        console.log(result);  
+						
+						//window.location="#page4
+						if (result.success) {
+							$.mobile.changePage("#page-details");
+						}
+                    },
+                    error: function (request,error) {
+                        // This callback function will trigger on unsuccessful action                
+                        alert('Network error has occurred please try again!');
+                    }
+                });
+				*/
+				
+			var formData = $("#form-confirmrequest").serialize();
+		
+            console.log(formData);
+			
+              $.ajax({
+                    type: "POST",
+                    url: API+"/ajax.php?m=confirmrequest&id="+request_id,
+                    cache: false,
+                    data: formData,                    
+                    beforeSend: function() {
+                        // This callback function will trigger before data is sent
+                        //$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+                    },
+                    complete: function() {
+                        // This callback function will trigger on data sent/received complete
+                        //$.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+                    },
+                    success: function (result) {
+                        //    resultObject.formSubmitionResult = result;
+                        //                $.mobile.changePage("#second");
+                        console.log(result);  
+						
+                        //$("#page-addlocation").dialog('close');
+                        //$('[data-role=dialog]').dialog( "close" );
+						//window.location="#page4
+						if (result.success) {
+							$('#request_id').html(request_id);
+							
+							// clean datas
+							request_id = '';
+							window.localStorage.setItem('request_id', '');
+							
+							//$('#form-addrequest')[0].reset();
+							$('#form-confirmrequest')[0].reset();	
+							//capturedPhoto = 0;
+							//uploadedPhoto = 0;							
+							//$('#pictures').html('');
+							//$('#picture-demo').show();
+						
+							$('#vehicleVIN').attr('src','img/service-4.png.png');
+							
+							// move to final page
+							//$.mobile.changePage("#page-completed");
+						}
+                    },
+                    error: function (request,error) {
+                        // This callback function will trigger on unsuccessful action                
+                        alert('Network error has occurred please try again!');
+                    }
+                });
+				
+     //window.location = "#page-details";
+	 
+	 //localStorage.clear();
+  } else {
+     navigator.notification.alert(
+            'Take a Picture of Your prescription',  // message
+            alertDismissed,         // callback
+            'Prescription',            // title
+            'Ok'                  // buttonName
+        );
+
+   }
+}
+
+//alert dialog dismissed
+function alertDismissed() {
+    // do something
+}
+
+// -----------------------------------------
 
 
 var app = {
