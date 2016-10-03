@@ -86,7 +86,7 @@
 	<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />
 	<plugin name="cordova-plugin-x-toast" spec="2.5.2" source="npm" />
 	
-	<plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" />
+	<!--<plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" />-->
 	
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />-->
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.7.4" source="pgb" />-->
