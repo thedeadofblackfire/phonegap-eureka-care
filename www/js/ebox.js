@@ -111,6 +111,9 @@ function win(r) {
     console.log("Response = " + r.response);
     console.log("Sent = " + r.bytesSent);
 	
+	var prescriptionFrame = document.getElementById('prescriptionFrame');
+    prescriptionFrame.src = 'img/focus.svg';
+	
 	console.log('upload done');
 }
 //Failure callback
