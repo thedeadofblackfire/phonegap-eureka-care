@@ -88,7 +88,7 @@ window.console=(function(origConsole){
 
 var capturedPhoto = 0;
 var uploadedPhoto = 0;
-var vinPic = 0;
+var hasPic = 0;
 var prescriptionURI;
 
 //Success callback
@@ -146,7 +146,7 @@ function onFail(message) {
     //navigator.notification.alert(msg, null, '');       
 }
 
-function captureVIN(){
+function capturePrescription(){
 	var destinationType = Camera.DestinationType.NATIVE_URI;
 	if (objConfig.platform == 'Android') {
 		destinationType = Camera.DestinationType.FILE_URI;
@@ -154,20 +154,22 @@ function captureVIN(){
 	console.log('destinationType='+destinationType);
 	
     navigator.camera.getPicture(showVin, onFail, { quality: 70,
-    destinationType: destinationType, });
+    destinationType: destinationType, correctOrientation: true });
 }
 
 // A button will call this function
 // To select image from gallery
-function getVIN(source) {
+function getPrescription() {
 	var destinationType = navigator.camera.DestinationType.NATIVE_URI;
 	if (objConfig.platform == 'Android') {
 		destinationType = navigator.camera.DestinationType.FILE_URI;
 	}
 	console.log('destinationType='+destinationType);
+	
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(uploadVin, onFail, { quality: 50,
+    navigator.camera.getPicture(showVin, onFail, { quality: 70,
         destinationType: destinationType,
+		correctOrientation: true,
         sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
     });
 }
@@ -176,16 +178,15 @@ function showVin(imageURI) {
 	if (!imageURI) {
         document.getElementById('camera_status').innerHTML = "Take picture or select picture from library first.";
         return;
-   }
+    }
    
-      var vehicleVIN = document.getElementById('vehicleVIN');
-      vehicleVIN.src = imageURI;
-      if(imageURI.length != 0){
-        vinPic = 1;
-      }
+    var prescriptionFrame = document.getElementById('prescriptionFrame');
+    prescriptionFrame.src = imageURI;
+    if(imageURI.length != 0){
+        hasPic = 1;
+    }
 	  
-	 //If you wish to display image on your page in app
-	//displayPhoto(imageURI);	 
+	//If you wish to display image on your page in app
 	capturedPhoto++;
 	
 	prescriptionURI = imageURI;
@@ -198,10 +199,10 @@ function uploadVin(imageURI) {
         return;
    }
 	
-   var vehicleVIN = document.getElementById('vehicleVIN');
-      vehicleVIN.src =  imageURI;
+   var prescriptionFrame = document.getElementById('prescriptionFrame');
+      prescriptionFrame.src =  imageURI;
       if(imageURI.length != 0){
-        vinPic = 1;
+        hasPic = 1;
       }
 	  
 	 //If you wish to display image on your page in app
@@ -273,9 +274,9 @@ function uploadVin(imageURI) {
     
 }
 
-function validPageVin() {
+function validPagePrescription() {
 
-  if(vinPic == 1 && prescriptionURI){
+  if(hasPic == 1 && prescriptionURI){
 			/*
 			var formData = $("#form-confirmrequest").serialize();
 		
@@ -316,7 +317,7 @@ function validPageVin() {
 							//$('#pictures').html('');
 							//$('#picture-demo').show();
 						
-							$('#vehicleVIN').attr('src','img/service-4.png.png');
+							$('#prescriptionFrame').attr('src','img/service-4.png.png');
 							
 							// move to final page
 							//$.mobile.changePage("#page-completed");
@@ -332,13 +333,10 @@ function validPageVin() {
     
 	NProgress.start();
 	
-	var request_id = objUser.uuid;
-	console.log('request_id='+request_id);
-	
 	// upload
     var options = new FileUploadOptions();
     options.fileKey = "file";
-    var imagefilename = request_id + '_ordo_' + Number(new Date()) + ".jpg";
+    var imagefilename = objUser.uuid + '_ordo_' + Number(new Date()) + ".jpg";
 	options.fileName = prescriptionURI.substr(prescriptionURI.lastIndexOf('/')+1);
     options.mimeType = "image/jpeg"; 
 
@@ -348,10 +346,7 @@ function validPageVin() {
 	params.seq = capturedPhoto;
 	params.office_seq = objUser.office.office_seq;
 	params.patient_user_seq = objUser.uuid;
-	params.request_id = request_id;
 	params.upload_type = 'prescription';
-	//params.id = request_id;
-    //params.userid = sessionStorage.loginuserid;
     options.params = params;
     options.chunkedMode = true; //true;
     
@@ -361,30 +356,10 @@ function validPageVin() {
 	
     ft.onprogress = function(progressEvent) {
         if (progressEvent.lengthComputable) {
-          var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-		  //statusDom.innerHTML = perc + "% uploaded...";
-          // console.log('uploading '+perc+'%');
+          var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);		     
           NProgress.set(perc / 100);
-          //$('.status').html(perc + "% uploaded...");          
-          //loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
         } else {
-          NProgress.inc();
-          //loadingStatus.increment();
-          /*
-          var statusUploaded = $('.status').html();
-          if (statusUploaded == "") {
-              $('.status').html('Uploading');
-          } else {
-              $('.status').html(statusUploaded+'.');
-          }
-          */
-          /*
-          if(statusDom.innerHTML == "") {
-				statusDom.innerHTML = "Uploading";
-		  } else {
-				statusDom.innerHTML += ".";
-		  }
-          */
+          NProgress.inc();       
         }
     };
     ft.upload(prescriptionURI, url, win, fail, options);      
@@ -1211,7 +1186,7 @@ function initFramework() {
 		if (page.name === 'prescription') {        
             $$('.send-prescription').on("click", function() {
 				console.log('send-prescription');
-				validPageVin();
+				validPagePrescription();
             });
                       
               
