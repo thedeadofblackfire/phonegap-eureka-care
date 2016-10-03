@@ -64,9 +64,11 @@
 	<plugin name="cordova-plugin-globalization" spec="1.0.3" source="npm" />
 	
 	<!-- feature - take picture & upload prescription -->
+	<!--
 	<plugin name="cordova-plugin-camera" spec="2.3.0" source="npm" />
 	<plugin name="cordova-plugin-file" spec="4.3.0" source="npm" />
 	<plugin name="cordova-plugin-file-transfer" spec="1.6.0" source="npm" />
+	-->
 	<!--<plugin name="cordova-plugin-media-capture" spec="1.4.0" source="npm" /> -->
   
 
@@ -86,7 +88,7 @@
 	<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />
 	<plugin name="cordova-plugin-x-toast" spec="2.5.2" source="npm" />
 	
-	<!--<plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" />-->
+	<plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" />
 	
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />-->
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.7.4" source="pgb" />-->
