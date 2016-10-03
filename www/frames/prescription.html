@@ -1,0 +1,50 @@
+
+	<div data-page="prescription" class="page navbar-fixed toolbar-fixed">
+    
+        <div class="navbar layout-darkxxx">
+            <div class="navbar-inner">
+                <div class="left"><a href="#" class="back link"><i class="icon icon-back"></i><span>Back</span></a></div>
+                <div class="center" data-i18n="label.prescription">label.prescription</div>
+				<div class="right"></div>
+            </div>
+        </div>
+    
+		<div class="page-content">
+			<div class="content-block-title">General</div>
+			<div class="list-block tablet-inset">
+			
+				<p>Please take a picture of your prescription.</p>
+				<div class="status"></div>
+				<form id="form-confirmrequest" name="form-confirmrequest" action="" enctype="multipart/form-data" method="POST"> 
+					<img style="width: 100%; height: px" src="img/service-4.png" id="vehicleVIN" onclick="captureVIN();">
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-a"><a href="#" onclick="captureVIN()" data-role="button" data-icon="plus" data-theme="b" data-rel="dialog" data-mini="true"> Take Photo</a> </div>
+						<div class="ui-block-b"><a href="#" onclick="getVIN();" data-role="button" data-icon="search" data-theme="d" data-mini="true">Browse</a></div>              
+					</fieldset>
+					<!--
+					<a data-role="button" data-transition="none" data-theme="b" href="#" data-icon="arrow-r ios-pack-color-right-arrow"
+          data-iconpos="right" data-iconsize="26" onclick="validPageVin()">
+              Send your prescription
+					</a>
+					-->
+					
+				<ul class="center ">
+					<li>
+						<a href="#" class="send-prescription">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title btn-logout" style="width: 100%; text-align:center; padding:10px; background-color:#FE504F; color: #fff;" data-i18n="label.sendprescription">label.sendprescription</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+				
+				</form>
+		  
+			</div>
+           
+            
+    
+		</div>
+	</div>

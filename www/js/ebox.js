@@ -84,6 +84,167 @@ window.console=(function(origConsole){
 }(window.console));
 */
 
+
+// ------------------------------------
+// -- PRESCRIPTION
+// ------------------------------------
+
+var capturedPhoto = 0;
+var uploadedPhoto = 0;
+var vinPic = 0;
+
+//Success callback
+function win(r) {    
+    //playBeep();
+    //vibrate();
+    //console.log("Image uploaded successfully!!"); 
+    //alert("Image uploaded successfully!!"); 
+	uploadedPhoto++;
+    //alert(uploadedPhoto);
+    
+    //$('.status').html('');
+    NProgress.done();
+	
+	//document.getElementById('damagedbtn').enabled = true;
+	//NProgress.done(true);				
+				
+    //alert("Sent = " + r.bytesSent); 
+    console.log("Code = " + r.responseCode);
+    console.log("Response = " + r.response);
+    console.log("Sent = " + r.bytesSent);
+	
+	alert('upload');
+}
+//Failure callback
+function fail(error) {
+   console.log("There was an error uploading image");
+   
+   switch (error.code) 
+    {  
+     case FileTransferError.FILE_NOT_FOUND_ERR: 
+      console.log("Photo file not found"); 
+      break; 
+     case FileTransferError.INVALID_URL_ERR: 
+      console.log("Bad Photo URL"); 
+      break; 
+     case FileTransferError.CONNECTION_ERR: 
+      console.log("Connection error "+error.source+" "+error.target); 
+	  // @todo need to upload again using error.source as imageURI
+      break; 
+    } 
+
+    console.log("An error has occurred: Code = " + error.code); 
+    console.log("upload error source " + error.source);
+    console.log("upload error target " + error.target);
+}
+
+// Called if something bad happens.
+function onFail(message) {
+    console.log('Failed because: ' + message);
+	//var msg ='Impossible de lancer l\'appareil photo';        
+    //navigator.notification.alert(msg, null, '');       
+}
+
+function captureVIN(){
+	var destinationType = Camera.DestinationType.NATIVE_URI;
+	if (objConfig.platform == 'Android') {
+		destinationType = Camera.DestinationType.FILE_URI;
+	}
+	console.log('destinationType='+destinationType);
+    navigator.camera.getPicture(uploadVin, onFail, { quality: 50,
+    destinationType: destinationType, });
+}
+
+// A button will call this function
+// To select image from gallery
+function getVIN(source) {
+	var destinationType = navigator.camera.DestinationType.NATIVE_URI;
+	if (objConfig.platform == 'Android') {
+		destinationType = navigator.camera.DestinationType.FILE_URI;
+	}
+	console.log('destinationType='+destinationType);
+    // Retrieve image file location from specified source
+    navigator.camera.getPicture(uploadVin, onFail, { quality: 50,
+        destinationType: destinationType,
+        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+    });
+}
+
+function uploadVin(imageURI) {
+   if (!imageURI) {
+        document.getElementById('camera_status').innerHTML = "Take picture or select picture from library first.";
+        return;
+   }
+	
+   var vehicleVIN = document.getElementById('vehicleVIN');
+      vehicleVIN.src =  imageURI;
+      if(imageURI.length != 0){
+        vinPic = 1;
+      }
+	  
+	 //If you wish to display image on your page in app
+	//displayPhoto(imageURI);	 
+	capturedPhoto++;
+    
+	NProgress.start();
+	
+	var request_id = objUser.uuid;
+	console.log('request_id='+request_id);
+	
+	// upload
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    // var userid = '123456';
+    var imagefilename = request_id + '_vin_' + Number(new Date()) + ".jpg";
+    //options.fileName = imageURI;
+	//options.fileName = imagefilename;
+	options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+    options.mimeType = "image/jpeg"; 
+
+    var params = new Object();
+    params.imageURI = imageURI;
+	params.imageFileName = imagefilename;
+	params.seq = capturedPhoto;
+	//params.id = request_id;
+    //params.userid = sessionStorage.loginuserid;
+    options.params = params;
+    options.chunkedMode = true; //true;
+    
+    var ft = new FileTransfer();
+    var url = encodeURI(API+"/uploadprescription?id="+request_id+"&nomimage="+imagefilename+"&office_seq="+objUser.office.office_seq+"&patient_user_seq="+objUser.uuid);
+    ft.onprogress = function(progressEvent) {
+        if (progressEvent.lengthComputable) {
+          var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
+		  //statusDom.innerHTML = perc + "% uploaded...";
+          // console.log('uploading '+perc+'%');
+          NProgress.set(perc / 100);
+          //$('.status').html(perc + "% uploaded...");          
+          //loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+        } else {
+          NProgress.inc();
+          //loadingStatus.increment();
+          /*
+          var statusUploaded = $('.status').html();
+          if (statusUploaded == "") {
+              $('.status').html('Uploading');
+          } else {
+              $('.status').html(statusUploaded+'.');
+          }
+          */
+          /*
+          if(statusDom.innerHTML == "") {
+				statusDom.innerHTML = "Uploading";
+		  } else {
+				statusDom.innerHTML += ".";
+		  }
+          */
+        }
+    };
+    ft.upload(imageURI, url, win, fail, options);       
+    
+}
+
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -878,6 +1039,16 @@ function initFramework() {
             if (objUserSettings.sound) $$('#switch-sound').attr( "checked", "checked"); 
             $$('#audio_volume').val(objUserSettings.audio_volume);    
 			
+            
+        }
+		
+		if (page.name === 'prescription') {        
+            $$('.send-prescription').on("click", function() {
+				console.log('send-prescription');
+				validPageVin();
+            });
+                      
+              
             
         }
         

@@ -13,7 +13,9 @@
         "somethingwrong": "Something went wrong. Please try again later.",
         "wait": "Wait...",
         "closepanel": "Close panel",
-        "details": "Details"
+        "details": "Details",
+		"prescription": "Prescription",
+		"sendprescription": "Send your prescription"
     },
     "treatments":
     {

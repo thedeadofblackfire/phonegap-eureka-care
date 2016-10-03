@@ -13,7 +13,9 @@
         "somethingwrong": "Erreur! Merci de reessayer ultérieurement.",
         "wait": "En cours...",
         "closepanel": "Fermer",
-        "details": "Détails"
+        "details": "Détails",
+		"prescription": "Ordonnance",
+		"sendprescription": "Envoyer votre ordonnance"
     },
     "treatments":
     {

@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.44">
+        version   = "0.3.45">
 
     <name>Eureka Care</name>
 
@@ -62,6 +62,11 @@
 	<plugin name="cordova-plugin-network-information" spec="1.2.1" source="npm"/>
     <plugin name="cordova-plugin-vibration" spec="2.1.1" source="npm" />  
 	<plugin name="cordova-plugin-globalization" spec="1.0.3" source="npm" />
+	
+	<!-- feature - take picture & upload prescription -->
+	<plugin name="cordova-plugin-camera" spec="2.3.0" source="npm" />
+	<plugin name="cordova-plugin-file-transfer" spec="1.6.0" source="npm" />
+	<!--<plugin name="cordova-plugin-media-capture" spec="1.4.0" source="npm" /> -->
   
 
     <!--
