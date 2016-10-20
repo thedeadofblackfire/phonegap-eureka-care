@@ -9,7 +9,7 @@
                     
             function push_obj_init() {
                 ImPush.vendorSeq = objUser.vendor_seq;
-                ImPush.pid = objUser.user_id;
+                ImPush.pid = objUser.uuid; //user_id
                 ImPush.mid = objUser.reference;
                 ImPush.deviceSerial = objUser.device_serial;
                 if (!ImPush.deviceSerial) {
