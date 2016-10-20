@@ -5,7 +5,7 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.52">
+        version   = "0.3.53">
 
     <name>Eureka Care</name>
 
@@ -38,7 +38,7 @@
     <preference name="show-splash-screen-spinner" value="true" />           <!-- ios: if set to false, the spinner won't appear on the splash screen during app loading -->
     <preference name="auto-hide-splash-screen"    value="true" />           <!-- ios: if set to false, the splash screen must be hidden using a JavaScript API -->
     <preference name="disable-cursor"             value="false" />          <!-- blackberry: prevents a mouse-icon/cursor from being displayed on the app -->
-    <preference name="android-minSdkVersion"      value="18" />              <!-- 14 21 android: MIN SDK version supported on the target device. MAX version is blank by default. -->
+    <preference name="android-minSdkVersion"      value="21" />              <!-- 18 14 21 android: MIN SDK version supported on the target device. MAX version is blank by default. -->
     <preference name="android-installLocation"    value="auto" />           <!-- android: app install location. 'auto' will choose. 'internalOnly' is device memory. 'preferExternal' is SDCard. -->
     <preference name="AndroidLaunchMode"          value="singleInstance"/>
 	<!--<preference name="android-build-tool"         value="ant"/>-->
@@ -86,7 +86,8 @@
 	<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />
 	<plugin name="cordova-plugin-x-toast" spec="2.5.2" source="npm" />
 	
-	<plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" />
+	<plugin name="cordova-plugin-crosswalk-webview" spec="2.1.0" source="npm" />
+	<!-- <plugin name="cordova-plugin-crosswalk-webview" spec="1.8.0" source="npm" /> works with 18-->
 	
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.8.4" source="npm" />-->
 	<!--<plugin name="de.appplant.cordova.plugin.local-notification" spec="0.7.4" source="pgb" />-->
