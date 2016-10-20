@@ -5,12 +5,12 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         xmlns:android = "http://schemas.android.com/apk/res/android"
         id        = "com.mls.eurekacare"
-        version   = "0.3.55">
+        version   = "0.3.56">
 
-    <name>Eureka Care</name>
+    <name>MyEureka</name>
 
     <description>
-         Eureka Care Smart for patient
+         Eureka Care for patient
     </description>
 
     <author href="http://www.robotiktechnology.com" email="n.thomas@robotikdose.com">

@@ -15,9 +15,6 @@ var current_treatment_page = 0;
 var current_treatment_report_page = 0;
 var objSessionTreatments = {};
 
-var package_name = "com.mls.eurekacare";// "com.cordova.eboxsmart";
-//var package_name = "com.mls.eboxsmart";
-
 var baseLanguage = 'en';        
 var info_date = {}; 
 
@@ -1805,7 +1802,7 @@ app.treatments.processLocalNotification = function(data) {
                                 url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
                                
                             }
-                            url_sound = 'android.resource://' + package_name + '/raw/beep';
+                            url_sound = 'android.resource://' + app_settings.package_id + '/raw/beep';
         
                             cordova.plugins && cordova.plugins.notification.local.schedule({
                                     id: notification_id,
@@ -1855,7 +1852,7 @@ app.treatments.processLocalNotification = function(data) {
             message: 'Dont forget your drug',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound: 'android.resource://' + app_settings.package_id + '/raw/beep',
             sound:   'TYPE_ALARM',
             //sound: 'TYPE_NOTIFICATION',
             badge: 0,
@@ -1883,20 +1880,20 @@ app.treatments.processLocalNotification = function(data) {
             url_sound = 'file:///android_asset/www/' + url_sound; //file:///android_asset/www/audio/aqua.mp3
             console.log(url_sound);
         }
-        url_sound = 'android.resource://' + package_name + '/raw/beep';
+        url_sound = 'android.resource://' + app_settings.package_id + '/raw/beep';
     
         window.plugin.notification.local.add({
             id:      2,
             title:   'Reminder sound 1',
             message: 'Allo 1',
             sound: url_sound,
-            //sound:  'android.resource://' + package_name + '/raw/beep',
+            //sound:  'android.resource://' + app_settings.package_id + '/raw/beep',
             //sound: 'beep.wav',
             //sound: 'https://office.eureka-platform.com/assets/media/en_alarm01.mp3',
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound: 'android.resource://' + app_settings.package_id + '/raw/beep',
             //sound:   'TYPE_ALARM',
             badge: 1,
             autoCancel: true,
@@ -1923,7 +1920,7 @@ app.treatments.processLocalNotification = function(data) {
             //repeat:  'daily',
             //sound:   '/www/res/raw/beep',
            // sound:   '/www/sounds/fr_alarm01.mp3',
-            //sound: 'android.resource://' + package_name + '/raw/beep',
+            //sound: 'android.resource://' + app_settings.package_id + '/raw/beep',
             //sound:   'TYPE_NOTIFICATION',
             badge: 1,
             autoCancel: true,

@@ -8,7 +8,7 @@ if ( !isBrowser ) {
 */  
 
 function peer_init() {
-	console.log('peer init');
+	console.log('peer - init');
 	
     // PeerJS server location
     //var SERVER_IP = '192.168.0.101'; //home
@@ -71,15 +71,15 @@ function peer_init() {
     var connect = function() {
 
         if (!callerId) {
-            alert('Please enter your name first');
+            //alert('Please enter your name first');
             setCallerId();
             return;
         }
 
         try {
             // create connection to the ID server
-            console.log('create connection to the ID server');
-            console.log('host: ' + SERVER_IP + ', port: ' + SERVER_PORT);
+            console.log('peer - create connection to the ID server');
+            console.log('peer - host: ' + SERVER_IP + ', port: ' + SERVER_PORT);
 			
 			peer = new Peer(callerId, {host: 'peer.eureka.care', port: 9000, debug: 3, secure: true, config: {'iceServers': [ 
 	{url:'stun:stun01.sipphone.com'},
@@ -172,7 +172,7 @@ function peer_init() {
         }
 
         getLocalStream(function(stream) {
-            console.log('Outgoing call initiated');
+            console.log('peer - Outgoing call initiated');
 
             var call = peer.call(recipientId, stream);
 
@@ -197,7 +197,7 @@ function peer_init() {
             return;
         }
 
-        console.log('Incoming call answered');
+        console.log('peer - Incoming call answered');
 
         call.on('stream', showRemoteStream);
 
@@ -205,7 +205,9 @@ function peer_init() {
     };
 
     var setCallerId = function () {
-        callerId = prompt('Please enter your name');
+        //callerId = prompt('Please enter your name');
+		callerId = objUser.uuid;
+		console.log('peer - callerId='+callerId);
         connect();
     };
 

@@ -2,22 +2,20 @@
 			
 			var push;
             
-            var push_senderID = '304393421639';
-            
+            var push_senderID = app_settings && app_settings.push_senderID || '304393421639';
+            var push_app = app_settings && app_settings.push_app || "eureka_care";
             var push_homeid = 'index';
-            
-                    
+                                
             function push_obj_init() {
                 ImPush.vendorSeq = objUser.vendor_seq;
-                ImPush.pid = objUser.uuid; //user_id
+                ImPush.pid = objUser.uuid;
                 ImPush.mid = objUser.reference;
                 ImPush.deviceSerial = objUser.device_serial;
                 if (!ImPush.deviceSerial) {
                     ImPush.deviceSerial = window.localStorage["device_serial"];
                 }
                 console.log('PUSH - push_obj_init - device_serial=' + ImPush.deviceSerial);		
-                ImPush.appCode = "eureka_care";
-                //ImPush.appCode = "539F5-D40CA";
+                ImPush.appCode = push_app; // "539F5-D40CA";
                 ImPush.appVersion = "1.0";
             }
         
@@ -154,8 +152,6 @@
 					alert(txt); 
 				} 
             }
-
-
 			
             function successHandler(result) {
                 console.log('PUSH - success:'+ result);
