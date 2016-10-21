@@ -188,7 +188,7 @@ var ImPush = {
         }
 };
 
-ImPush.baseurl = BASE_URL+'/api/mobile/';
+ImPush.baseurl = app_settings.api_url + '/';
 /*
       ImPush.userId = 374;
                          ImPush.appCode = "539F5-D40CA";

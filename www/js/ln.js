@@ -197,19 +197,18 @@ var ln =
 };
                 
 function displayLanguage() {
-            ln.getLanguage();
+    ln.getLanguage();
             
-            var message = i18n.t
-            (
+    var message = i18n.t(
                 'messages.success',
                 {
                     code: ln.language.code,
                     local: ln.language.local,
                     language: ln.language.international
                 }
-            );
+    );
 
-            alert(message);
+    alert(message);
 }
 
 //ln.init();

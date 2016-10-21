@@ -7,6 +7,10 @@ var current_treatment_page = 0;
 var current_treatment_report_page = 0;
 var objSessionTreatments = {};
 
+// INIT TREATMENTS
+var dbAppUserTreatments = dbAppUserTreatments || fwkStore.DB("user_treatments");
+var objUserTreatments = {};
+
 app.treatments = {};
 
 app.treatments.constant = {};
@@ -18,7 +22,6 @@ app.treatments.constant.STATUS_PENDING                = app.treatments.constant.
 app.treatments.constant.STATUS_COMPLETED              = app.treatments.constant.STATUS_COMPLETED            || 1;
 app.treatments.constant.STATUS_INPROGRESS             = app.treatments.constant.STATUS_INPROGRESS           || 2;
 app.treatments.constant.STATUS_COMPLETEDWITHERRORS    = app.treatments.constant.STATUS_COMPLETEDWITHERRORS  || 3;
-
 
 app.treatments.init = function() {
 	console.log('TREATMENTS - init');
@@ -43,7 +46,7 @@ app.treatments.load = function() {
         var last_days = 7;
 
         $.ajax({
-              url: API+"/gettreatment",
+              url: app_settings.api_url+"/gettreatment",
               datatype: 'json',      
               type: "post",
               data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_page},   
@@ -215,7 +218,7 @@ app.treatments.displayPageTreatmentReport = function(page) {
             console.log('init objSessionTreatments');
             current_treatment_report_page++;
             $.ajax({
-                  url: API+"/gettreatment",
+                  url: app_settings.api_url+"/gettreatment",
                   datatype: 'json',      
                   type: "post",
                   data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_report_page},   
@@ -255,7 +258,7 @@ app.treatments.displayPageTreatmentReport = function(page) {
           current_treatment_report_page++;           
          
           $.ajax({
-              url: API+"/gettreatment",
+              url: app_settings.api_url+"/gettreatment",
               datatype: 'json',      
               type: "post",
               data: {office_seq: objUser.office.office_seq, patient_user_seq: objUser.uuid, last_days: last_days, page: current_treatment_report_page},   
@@ -302,7 +305,7 @@ app.treatments.updateReportPercent = function() {
     var percent = (app.treatments.stats.totalSuccess / (app.treatments.stats.totalSuccess + app.treatments.stats.totalError)) * 100;
     percent = percent.toFixed(2);
     //console.log(app.treatments.stats.totalSuccess + ' ' + app.treatments.stats.totalError);
-    var str_day = calendarTranslate.day+(app.treatments.stats.totalDays > 1?'s':'')
+    var str_day = app.date.calendarTranslate.day+(app.treatments.stats.totalDays > 1?'s':'')
     $('.percent').html(percent+'%, '+app.treatments.stats.totalDays+' '+str_day);
                 
 };
@@ -844,13 +847,13 @@ app.treatments.renderPill = function(width) {
             str += '<img width="'+config.pillbox_quart_width+'" onclick="app.treatments.viewPill(\'noon\');" border="0" style="position:absolute;top:'+(config.pillbox_quart_width + config.width_pillbox_base_horiz)+'px;left:'+(config.pillbox_quart_width + config.width_pillbox_base_vert)+'px;" ontouchstart="this.src=\'img/ebox/'+config.br+'_pressed.png\';" ontouchend="this.src=\'img/ebox/'+config.br+'.png\';" onmouseup="this.src=\'img/ebox/'+config.br+'.png\';" onmousedown="this.src=\'img/ebox/'+config.br+'_pressed.png\';" src="img/ebox/'+config.br+'.png">';            
             
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:0;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.night+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.night+'.png\';" src="img/ebox/'+config.night+'.png">';
-            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;left:-10px;z-index:10;">'+calendarTranslate.night+' ('+info_date.label_night_day+')</span>';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;left:-10px;z-index:10;">'+app.date.calendarTranslate.night+' ('+info_date.label_night_day+')</span>';
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:0;left:93%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.morning+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.morning+'.png\';" src="img/ebox/'+config.morning+'.png">';
-            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;right:-10px;z-index:10;">'+calendarTranslate.morning+'</span>';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:-20px;right:-10px;z-index:10;">'+app.date.calendarTranslate.morning+'</span>';
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:95%;left:0px;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.evening+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.evening+'.png\';" src="img/ebox/'+config.evening+'.png">';
-            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;left:-10px;z-index:10;">'+calendarTranslate.evening+'</span>';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;left:-10px;z-index:10;">'+app.date.calendarTranslate.evening+'</span>';
             str += '<img width="'+config.width_pillbox_time+'" border="0" style="position:absolute;top:95%;left:93%;z-index:10;" ontouchstart="this.src=\'img/ebox/'+config.noon+'dimmed.png\';" ontouchend="this.src=\'img/ebox/'+config.noon+'.png\';" src="img/ebox/'+config.noon+'.png">';
-            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;right:-10px;z-index:10;">'+calendarTranslate.noon+'</span>';
+            str += '<span width="'+config.width_pillbox_time+'" class="pill_time_title" style="position:absolute;top:90%;right:-10px;z-index:10;">'+app.date.calendarTranslate.noon+'</span>';
             str += '<img width="'+config.width_pillbox_center_logo+'" border="0" style="position:absolute;top:43%;left:'+config.left_position_center_logo+'%;z-index:10;" src="img/ebox/eureka_center_logo_back.png">';
             //document.getElementById("pill").innerHTML = str;
                     

@@ -161,7 +161,7 @@ app.prescription.uploadVin = function(imageURI) {
     options.chunkedMode = true; //true;
     
     var ft = new FileTransfer();
-    var url = encodeURI(API+"/upload");
+    var url = encodeURI(app_settings.api_url+"/upload");
 	console.log(url);
 	
     ft.onprogress = function(progressEvent) {
@@ -206,7 +206,7 @@ app.prescription.validPagePrescription = function() {
 			
               $.ajax({
                     type: "POST",
-                    url: API+"/ajax.php?m=confirmrequest&id="+request_id,
+                    url: app_settings.api_url+"/ajax.php?m=confirmrequest&id="+request_id,
                     cache: false,
                     data: formData,                    
                     beforeSend: function() {
@@ -273,7 +273,7 @@ app.prescription.validPagePrescription = function() {
     options.chunkedMode = true; //true;
     
     var ft = new FileTransfer();
-    var url = encodeURI(API+"/upload");
+    var url = encodeURI(app_settings.api_url+"/upload");
 	console.log(url);
 	
     ft.onprogress = function(progressEvent) {
