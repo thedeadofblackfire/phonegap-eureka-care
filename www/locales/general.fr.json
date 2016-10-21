@@ -15,7 +15,8 @@
         "closepanel": "Fermer",
         "details": "Détails",
 		"prescription": "Ordonnance",
-		"sendprescription": "Envoyer votre ordonnance"
+		"sendprescription": "Envoyer votre ordonnance",
+		"prescriptionpicturedescription": "Merci de prendre une photo de votre ordonnance."
     },
     "treatments":
     {

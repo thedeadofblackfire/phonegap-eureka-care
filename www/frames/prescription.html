@@ -3,18 +3,17 @@
     
         <div class="navbar layout-darkxxx">
             <div class="navbar-inner">
-                <!--<div class="left"><a href="#" class="back link"><i class="icon icon-back"></i></a></div>-->
+                <div class="left"><a href="#" class="back link"><i class="icon icon-back"></i></a></div>
                 <div class="center" data-i18n="label.prescription">label.prescription</div>
-				<!--<div class="right"></div>-->
+				<div class="right"></div>
             </div>
         </div>
     
 		<div class="page-content">
 			<!--<div class="content-block-title">General</div>-->
-			<center>Please take a picture of your prescription.</center>
+			<center data-i18n="label.prescriptionpicturedescription">label.prescriptionpicturedescription</center>
 			<div class="list-block tablet-inset">
-			
-				
+							
 				<div class="status"></div>
 				<form id="form-confirmrequest" name="form-confirmrequest" action="" enctype="multipart/form-data" method="POST"> 
 					<center><img style="width: 90%;" src="img/focus.svg" xsrc="img/service-4.png" id="prescriptionFrame" onclick="app.prescription.capturePrescription();"></center>
@@ -49,16 +48,12 @@
 		  
 			</div>
            
-            
-    
 		</div>
 		
-		 <div class="toolbar toolbar-bottom" style="background:inherit;">
+		<div class="toolbar toolbar-bottom" style="background:inherit;">
             <div class="toolbar-inner" style="border-radius:10px;">
-            <a href="#" class="send-prescription" style="width: 100%; text-align:center; padding:15px; background-color:#FE504F; color: #fff;" data-i18n="label.sendprescription">							
-									label.sendprescription							
-						</a>
+				<a href="#" class="send-prescription" style="width: 100%; text-align:center; padding:15px; background-color:#FE504F; color: #fff;" data-i18n="label.sendprescription">label.sendprescription</a>
             </div>
-          </div> 
+        </div> 
 		  
 	</div>

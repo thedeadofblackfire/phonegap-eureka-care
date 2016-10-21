@@ -15,7 +15,8 @@
         "closepanel": "Close panel",
         "details": "Details",
 		"prescription": "Prescription",
-		"sendprescription": "Send your prescription"
+		"sendprescription": "Send your prescription",
+		"prescriptionpicturedescription": "Please take a picture of your prescription."
     },
     "treatments":
     {
