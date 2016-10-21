@@ -2,6 +2,11 @@
 // ---------------------
 // TREATMENTS
 // ---------------------
+var info_date = {}; 
+var current_treatment_page = 0;
+var current_treatment_report_page = 0;
+var objSessionTreatments = {};
+
 app.treatments = {};
 
 app.treatments.constant = {};
@@ -15,8 +20,9 @@ app.treatments.constant.STATUS_INPROGRESS             = app.treatments.constant.
 app.treatments.constant.STATUS_COMPLETEDWITHERRORS    = app.treatments.constant.STATUS_COMPLETEDWITHERRORS  || 3;
 
 
-app.treatments.init = function()
-{
+app.treatments.init = function() {
+	console.log('TREATMENTS - init');
+	
     objUserTreatments = dbAppUserTreatments.get();   
     // @todo should be clean the old treatments to archives
     
@@ -28,7 +34,7 @@ app.treatments.init = function()
 
 // load 7 last days
 app.treatments.load = function() {
-        console.log('loadTreatment');
+        console.log('TREATMENTS - loadTreatment');
         
         // show loading icon
         mofLoading(true);
@@ -154,8 +160,7 @@ app.treatments.navigatePageTreatment = function(delivery) {
 }; 
 
 
-app.treatments.displayPageTreatmentReport = function(page)
-{        
+app.treatments.displayPageTreatmentReport = function(page) {        
         var delivery = page.query.delivery;
         if (delivery === undefined) {
                 d = new Date();
@@ -187,14 +192,14 @@ app.treatments.displayPageTreatmentReport = function(page)
         //alert(navcontent);
         $$(page.navbarInnerContainer).html(navcontent);
  
-              $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
-              $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
+        $('.current_date').html(info_date.label_current+'<br>'+info_date.label_current_day);
+        $('.current_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_today+'\')');
               
-              $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
-               $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
+        $('.prev_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_prev+'\')');
+        $('.next_date').attr('onclick', 'app.treatments.navigatePageTreatment(\''+info_date.str_next+'\')');
 
-               /*
-       // Generate new items HTML
+        /*
+        // Generate new items HTML
             var html = '';
             for (var i = 1; i <= 20; i++) {
               html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
@@ -202,7 +207,7 @@ app.treatments.displayPageTreatmentReport = function(page)
          
             // Append new items
             $$('.page-archives > .list-block ul').append(html);
-            */
+        */
                
         var last_days = 14; 
 

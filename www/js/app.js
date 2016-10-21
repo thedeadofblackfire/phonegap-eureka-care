@@ -11,20 +11,14 @@ var objUser = {};
 var audioEnable = true;
 var doRefresh = true;
 
-var current_treatment_page = 0;
-var current_treatment_report_page = 0;
-var objSessionTreatments = {};
-
 var baseLanguage = 'en';        
-var info_date = {}; 
-
 
 var objConfig = {
    'version': '1.0.0',
    'build': "1832",
    'release_time': '2014.09.13 11:00',
    'platform': 'Android'
-   };
+};
 
 // INIT SETTING: config
 var dbAppUserSettings = dbAppUserSettings || fwkStore.DB("user_settings");
@@ -125,7 +119,7 @@ var app = {
             }                     
                                             
             if (Object.keys(objUser).length == 0) {                           
-				var result = checkPreAuth(false); 
+				var result = app.auth.checkPreAuth(false); 
                 if (!result) return;
             } 
             
@@ -145,8 +139,7 @@ var app = {
 
         //Android: /android_asset/www/
     },
-    onDeviceReady: function() {
-        //checkConnection();	
+    onDeviceReady: function() {	
 		console.log('onDeviceReady');
                  
         // translation init
@@ -182,7 +175,7 @@ var app = {
             }                     
             
             if (Object.keys(objUser).length == 0) {           
-				var result = checkPreAuth(false); 
+				var result = app.auth.checkPreAuth(false); 
                 if (!result) return;
             } 
             
@@ -201,25 +194,24 @@ var app = {
     },
     onOnline: function() {
         // Handle the online event
-    }
-};
+    },
+	checkConnection: function() {
+		var networkState = navigator.connection.type;
 
-app.checkConnection = function() {
-    var networkState = navigator.connection.type;
+		var states = {};
+		states[Connection.UNKNOWN]  = 'Unknown connection';
+		states[Connection.ETHERNET] = 'Ethernet connection';
+		states[Connection.WIFI]     = 'WiFi connection';
+		states[Connection.CELL_2G]  = 'Cell 2G connection';
+		states[Connection.CELL_3G]  = 'Cell 3G connection';
+		states[Connection.CELL_4G]  = 'Cell 4G connection';
+		states[Connection.CELL]     = 'Cell generic connection';
+		states[Connection.NONE]     = 'No network connection';
 
-    var states = {};
-    states[Connection.UNKNOWN]  = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI]     = 'WiFi connection';
-    states[Connection.CELL_2G]  = 'Cell 2G connection';
-    states[Connection.CELL_3G]  = 'Cell 3G connection';
-    states[Connection.CELL_4G]  = 'Cell 4G connection';
-    states[Connection.CELL]     = 'Cell generic connection';
-    states[Connection.NONE]     = 'No network connection';
-
-    console.log('Connection type: ' + states[networkState]);
-    if (networkState !== Connection.NONE) return true;
-    else return false;
+		console.log('Connection type: ' + states[networkState]);
+		if (networkState !== Connection.NONE) return true;
+		else return false;
+	}
 };
 
 // --
@@ -239,6 +231,49 @@ function initAfterLogin() {
         
 }
 
+function alertDismissed() {
+    // do something
+}
+
+    /* 
+     * mobile framework - Change Page
+     * pageid = test.html or #changePage
+     */
+    function mofChangePage(pageid, options) {
+        console.log('mofChangePage '+pageid);
+        mainView.loadPage(pageid);
+        //$('body').i18n();
+    }
+	
+    /* 
+     * mobile framework - Show/hide loading page
+     * show: true/false
+     */
+    function mofLoading(show) {
+        console.log('loading '+show); 
+        if (show) fw7.showPreloader();
+        else fw7.hidePreloader();               
+    }
+	   
+    /* 
+     * mobile framework - Show/hide loading page
+     * show: true/false
+     */
+    function mofAlert(message, title) {
+        if (title == undefined) title = app_settings.package_name || 'Alert';
+        fw7.alert(message, title);               
+    }
+    
+    function mofProcessBtn(id, state) {
+        if (state) {
+            //$(id).addClass("ui-state-disabled");
+            $(id).attr("disabled", "true");
+            //$(id).html('processing...');
+        } else {
+            //$(id).removeClass("ui-state-disabled");
+            $(id).removeAttr("disabled");
+        }
+    }
 // ---------------------
 // TRANSLATE
 // ---------------------
@@ -269,17 +304,7 @@ function initTranslate() {
             day: 'day',
             week: 'week',
             month: 'month',
-            requiredPatient: 'A patient is required',
-            requiredSubject: 'A subject is required',
-            requiredContributor: 'At least one contributor is required',
-            status: 'Status',
-            location: 'Location',
-            detail: 'Detail',
-            contributors: 'Contributors',
-            timestart: 'Start Time',
-            timeend: 'End Time',
-            statusforbidden: 'Status figé - impossible de déplacer',
-            
+   
             treatments: 'Treatments',
             night: 'Night',
             morning: 'Morning',
@@ -297,19 +322,7 @@ function initTranslate() {
 		    calendarTranslate.day = 'jour';
 		    calendarTranslate.week = 'semaine';
 		    calendarTranslate.month = 'mois';
-            
-            calendarTranslate.requiredPatient = 'Un patient est requis';
-            calendarTranslate.requiredSubject = 'Un sujet est requis';
-            calendarTranslate.requiredContributor = 'Au moins un intervenant est requis';
-            
-            calendarTranslate.status = 'Statut';
-            calendarTranslate.location = 'Lieu';
-            calendarTranslate.detail = 'Détail';
-            calendarTranslate.contributors = 'Intervenants';
-            calendarTranslate.timestart = 'Horaire Début';
-            calendarTranslate.timeend = 'Horaire Fin';
-            calendarTranslate.statusforbidden = 'Status figé - impossible de déplacer';
-            
+ 
             calendarTranslate.treatments = 'Traitements';
             calendarTranslate.night = 'Nuit';
             calendarTranslate.morning = 'Matin';
@@ -454,124 +467,55 @@ app.date.generateProcessingId = function() {
 // ---------------------
 // AUTH
 // ---------------------          
-jQuery(document).ready(function($){
-		        
-	$(document).on('click', '.btn-logout', handleLogout);
-
-	$(document).on('click', "#btnLogin", handleLoginForm);
-	    
-    $(document).on('change', '#toggleswitchnotification', function(e) {		      
-       var current_status = 'Off'; //$(this).val();
-       if ($(this).is(':checked') === true) current_status = 'On';
+app.auth = {};
        
-       handleUpdateNotification(current_status);
-	       		
-	});
-    
-    $(document).on('change', '#selectlanguage', function(e) {		
-       var current_status = $(this).val();
-       console.log('selectlanguage '+current_status);
-       //alert(current_status);
-       //displayLanguage();
-       
-       i18n.setLng(current_status, function(t)
-                {      
-                    baseLanguage = current_status;
-                    initTranslate();
-                    $('body').i18n();
-                });
-       //lang.set(current_status);
-	});
-			
-});
-
-    
-    /* 
-     * mobile framework - Change Page
-     * pageid = test.html or #changePage
-     */
-    function mofChangePage(pageid, options) {
-        console.log('mofChangePage '+pageid);
-        mainView.loadPage(pageid);
-        //$('body').i18n();
-    }
-	
-    /* 
-     * mobile framework - Show/hide loading page
-     * show: true/false
-     */
-    function mofLoading(show) {
-        console.log('loading '+show); 
-        if (show) fw7.showPreloader();
-        else fw7.hidePreloader();               
-    }
-    
-    /* 
-     * mobile framework - Show/hide loading page
-     * show: true/false
-     */
-    function mofAlert(message, title) {
-        if (title == undefined) title = 'eureKa Care';
-        fw7.alert(message, title);               
-    }
-    
-    function mofProcessBtn(id, state) {
-        if (state) {
-            //$(id).addClass("ui-state-disabled");
-            $(id).attr("disabled", "true");
-            //$(id).html('processing...');
-        } else {
-            //$(id).removeClass("ui-state-disabled");
-            $(id).removeAttr("disabled");
-        }
-    }
-    
-	function checkPreAuth(login) {
-		console.log('checkPreAuth');
+app.auth.checkPreAuth = function(login) {
+	console.log('AUTH - checkPreAuth');
                           
-        var result = false;                    
-		if(Object.keys(objUser).length == 0 && window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {			         
-			handleLogin(window.localStorage["username"], window.localStorage["password"], false);
-		} else if (Object.keys(objUser).length == 0) {
-            if (login === false) mofChangePage('login.html');
-        }
-        
-        return result; 
-	}
-
-    function handleLoginForm() {
-		console.log('handleLoginForm');			
-		var form = $("#loginForm");  		
-		var u = $("#username", form).val();
-		var p = $("#password", form).val();
-        handleLogin(u, p, true); 
+    var result = false;                    
+	if(Object.keys(objUser).length == 0 && window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {			         
+		app.auth.handleLogin(window.localStorage["username"], window.localStorage["password"], false);
+	} else if (Object.keys(objUser).length == 0) {
+        if (login === false) mofChangePage('login.html');
     }
         
-	function handleLogin(u,p,fromform) {
-		console.log('handleLogin fromform='+fromform);		
+    return result; 
+}
 
-        // show loading icon
-       //$.mobile.showPageLoadingMsg(); 
-       //$.mobile.loading( 'show' );
-       //$.mobile.showPageLoadingMsg("b", "This is only a test", true);
+app.auth.handleLoginForm = function() {
+	console.log('AUTH - handleLoginForm');			
+	var form = $("#loginForm");  		
+	var u = $("#username", form).val();
+	var p = $("#password", form).val();
+    app.auth.handleLogin(u, p, true); 
+}
+        
+app.auth.handleLogin = function(u,p,fromform) {
+	console.log('AUTH - handleLogin fromform='+fromform);		
+
+    // show loading icon
+    //$.mobile.showPageLoadingMsg(); 
+    //$.mobile.loading( 'show' );
+    //$.mobile.showPageLoadingMsg("b", "This is only a test", true);
    
-        if (fromform === true) mofProcessBtn("#btnLogin", true);
-		//var form = $("#loginForm");  	
-		//disable the button so we can't resubmit while we wait
-		//$("#submitButton",form).attr("disabled","disabled");
-		//$("#btnLogin").attr("disabled","disabled");
-		//var u = $("#username", form).val();
-		//var p = $("#password", form).val();	
-		if(u != '' && p!= '') {            
-            //mofLoading(true);
+    if (fromform === true) mofProcessBtn("#btnLogin", true);
+	//var form = $("#loginForm");  	
+	//disable the button so we can't resubmit while we wait
+	//$("#submitButton",form).attr("disabled","disabled");
+	//$("#btnLogin").attr("disabled","disabled");
+	//var u = $("#username", form).val();
+	//var p = $("#password", form).val();	
+	
+	if(u != '' && p!= '') {            
+        //mofLoading(true);
                       
-            $.ajax({
-                type: "POST",
-                url: API+"/authloginpatient",
-                async: true,
-                dataType: 'json',
-                data: {login:u,pass:p,rememberme:1},
-                success: function(res, textStatus, jqXHR) {
+        $.ajax({
+            type: "POST",
+            url: API+"/authloginpatient",
+            async: true,
+            dataType: 'json',
+            data: {login:u,pass:p,rememberme:1},
+            success: function(res, textStatus, jqXHR) {
                     console.log(res);
                     //$.mobile.hidePageLoadingMsg();
                     if(res.success == true) {
@@ -625,81 +569,89 @@ jQuery(document).ready(function($){
                         }					
                         if (fromform === true) mofProcessBtn("#btnLogin", false);
                    }	
-                }                   
-			});
-		} else {        
-			if (ENV == 'dev' || ENV == 'production' ) {
-				mofAlert('You must enter a username and password');                
-			} else {
-				navigator.notification.alert("You must enter a username and password", alertDismissed);
-			}
-			if (fromform === true) mofProcessBtn("#btnLogin", false);
-		}
-		return false;
-	}
-
-	function handleLogout() {
-		console.log('handleLogout');	
-		mofProcessBtn(".btn-logout", true);
-		$.getJSON(API+"/authlogoutpatient", function(res) {
-			if (res.success) {
-				window.localStorage.clear();  
-				window.sessionStorage.clear();	
-
-			    objUser = {};				
-                
-                mofProcessBtn(".btn-logout", false);
-                mofChangePage('login.html');
-			}
+            }                   
 		});
-				
+	} else {        
+		if (ENV == 'dev' || ENV == 'production' ) {
+			mofAlert('You must enter a username and password');                
+		} else {
+			navigator.notification.alert("You must enter a username and password", alertDismissed);
+		}
+		if (fromform === true) mofProcessBtn("#btnLogin", false);
 	}
-    
-    function alertDismissed() {
-        // do something
-    } 
-    
-    function handleUpdateAvailability(current_status) {
-	   console.log('handleUpdateAvailability '+current_status);			
-      
-       $.ajax({
-              url : API+"/account/onlinestatus",
-              type: "POST",
-              dataType : 'json',
-              data:{user_id: objUser.user_id, action:'chatStatus', status:current_status},
-              success :function(data){
-              	//window.location.reload();
-				console.log(data);
-              },
-              error:function(data){    
-				console.log(data);			  
-              } 
-        });
-        
-    }
-    
-    function handleUpdateNotification(current_status) {
-		console.log('handleUpdateNotification '+current_status);			
-        
-        $.ajax({
-              url : API+"/account/notificationstatus",
-              type: "POST",
-              dataType : 'json',
-              data:{user_id: objUser.user_id, operator_id: objUser.operator_id, action:'notificationStatus', status:current_status},
-              success :function(data){
-				console.log(data);
-              },
-              error:function(data){    
-				console.log(data);			  
-              } 
-        });
-       
-    }
-            
+	return false;
+}
 
-function goRegister() {
+app.auth.handleLogout =	function() {
+	console.log('AUTH - handleLogout');	
+	mofProcessBtn(".btn-logout", true);
+	$.getJSON(API+"/authlogoutpatient", function(res) {
+		if (res.success) {
+			window.localStorage.clear();  
+			window.sessionStorage.clear();	
+
+	        objUser = {};				
+                
+            mofProcessBtn(".btn-logout", false);
+            mofChangePage('login.html');
+		}
+	});				
+}
+    	
+app.auth.goRegister = function() {
 	window.plugins.ChildBrowser.showWebPage('http://patient.eureka-platform.com', { showLocationBar: true });
 }
+    
+/*
+app.auth.handleUpdateNotification = function(current_status) {
+	console.log('AUTH - handleUpdateNotification '+current_status);			
+        
+    $.ajax({
+        url : API+"/account/notificationstatus",
+        type: "POST",
+        dataType : 'json',
+        data:{user_seq: objUser.uuid, action:'notificationStatus', status:current_status},
+        success :function(data){
+			console.log(data);
+        },
+        error:function(data){    
+			console.log(data);			  
+        } 
+    });       
+}
+*/
+            
+jQuery(document).ready(function($){
+		        
+	$(document).on('click', '.btn-logout', app.auth.handleLogout);
+
+	$(document).on('click', "#btnLogin", app.auth.handleLoginForm);
+    
+    $(document).on('change', '#selectlanguage', function(e) {		
+        var current_status = $(this).val();
+        console.log('selectlanguage '+current_status);
+        //alert(current_status);
+        //displayLanguage();
+       
+        i18n.setLng(current_status, function(t) {      
+            baseLanguage = current_status;
+            initTranslate();
+            $('body').i18n();
+        });
+        //lang.set(current_status);
+	});
+	    
+	/*	
+    $(document).on('change', '#toggleswitchnotification', function(e) {		      
+       var current_status = 'Off'; //$(this).val();
+       if ($(this).is(':checked') === true) current_status = 'On';
+       
+       app.auth.handleUpdateNotification(current_status);
+	       		
+	});
+	*/
+	
+});
 
 
 /* ---------------------- */
@@ -767,7 +719,7 @@ function initFramework() {
             // to prevent back url on login
             //alert(page.name);
             if (Object.keys(objUser).length == 0) {        
-               var result = checkPreAuth(false); 
+               var result = app.auth.checkPreAuth(false); 
                if (!result) return;
             }                 
            

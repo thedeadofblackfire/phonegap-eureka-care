@@ -2,12 +2,12 @@
 // ---------------------
 // PRESCRIPTION
 // ---------------------
-app.prescription = {};
-
 var capturedPhoto = 0;
 var uploadedPhoto = 0;
 var hasPic = 0;
 var prescriptionURI;
+
+app.prescription = {};
 
 //Success callback
 app.prescription.win = function(r) {    
