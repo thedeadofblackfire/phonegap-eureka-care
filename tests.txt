@@ -18,9 +18,18 @@ cordova.plugins.notification.local.schedule({
                                   
                                 });
 								
-								
-								
-								
+cordova.plugins.notification.local.schedule({
+    id: 1,
+	title: 'Rappel Prise blablabla',
+    text: "Il est temps de prendre vos médicaments!",
+    sound: 'file://beep.mp3',
+    icon: 'file://img/clock.png',
+	smallIcon: 'res://ic_popup_reminder',
+    data: { secret:'key', delivery_dt: '2016-11-02 15:00:00' }
+});		
+				
+icon: 'res://icon.png',								
+						
 cordova.plugins.notification.local.schedule({
     id: 1,
     text: "Multi Notification 1",
