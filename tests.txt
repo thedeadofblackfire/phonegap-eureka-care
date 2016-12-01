@@ -17,6 +17,18 @@ cordova.plugins.notification.local.schedule({
 					led: '#ff00ff'
                                   
                                 });
+cordova.plugins.notification.local.schedule({
+    id: 1,
+	title: 'Valider la prise de 15:00',
+    text: "C'est l'heure de prendre vos médicaments!",
+    sound: 'file://audio/fr_alarm_exit.mp3',
+    icon: 'file://img/notification_delivery.png',
+	smallIcon: 'res://ic_popup_reminder',
+    data: { 'message': 'alert', delivery_dt: '2016-12-01 15:00:00', 'reminder': false }
+});		
+
+
+
 								
 cordova.plugins.notification.local.schedule({
     id: 1,
